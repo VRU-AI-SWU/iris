@@ -14,10 +14,14 @@ Course descriptions vary widely in richness. A course on "Database Systems" impl
 LLM-based extraction with instructed inference (asking the model to reason about implied skills from the course title and description context) may capture a significant portion of implied skills. The reliability of this needs validation.
 
 ## Papers Addressing This
-_(none yet)_
+- [[xu-2025-llm-curricular-analytics]] — LLMs handle brief and abstract curriculum documents well; RAG outperforms zero-shot for skill extraction
+- [[luyen-2025-skill-decomposition-ontology]] — few-shot prompting with exemplars improves skill granularity consistency; LLMs can infer sub-skills from high-level descriptions
+- [[senger-2024-dl-skill-extraction-survey]] — the field lacks consensus on what counts as an "implied" skill vs an "explicit" skill
 
 ## Current Working Answer
-_(pending literature review)_
+status: partial
+
+LLMs with few-shot prompting (exemplars of good extraction including implied skills) are the most promising approach for capturing implied skills. RAG grounded in a growing skill vocabulary further helps by providing context for what skills are typically associated with a given topic. Zero-shot extraction likely misses implied skills — this is a known risk.
 
 ## Remaining Uncertainty
-_(pending literature review)_
+No benchmark exists for evaluating implied skill extraction specifically. We need to define evaluation criteria (what counts as a correctly inferred implied skill?) before we can measure extraction quality in Phase 4.

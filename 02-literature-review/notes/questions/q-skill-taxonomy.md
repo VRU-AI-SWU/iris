@@ -14,10 +14,15 @@ The taxonomy choice determines how skills are named, grouped, and compared acros
 Use a data-driven emergent vocabulary at extraction time — let skills surface from the data without forcing a fixed taxonomy. Optionally map the resulting clusters to a reference taxonomy (O*NET, ESCO, SFIA) post-hoc for cross-context comparability and academic reporting.
 
 ## Papers Addressing This
-_(none yet)_
+- [[sabet-2024-course-skill-atlas]] — uses O*NET DWAs as fixed taxonomy; highlights the limitation that fixed taxonomies miss emerging skills
+- [[senger-2024-dl-skill-extraction-survey]] — ESCO is dominant in the field; terminology inconsistency across the literature is a known problem
+- [[luyen-2025-skill-decomposition-ontology]] — LLMs can decompose skills to align with ontologies; few-shot prompting improves ontology alignment
+- [[xu-2025-llm-curricular-analytics]] — RAG grounded in a skill knowledge base outperforms zero-shot for curriculum skill extraction
 
 ## Current Working Answer
-_(pending literature review)_
+status: partial
+
+Our emergent vocabulary approach is validated by the literature — fixed taxonomies (O*NET, ESCO) consistently miss emerging and domain-specific skills. ESCO is the most suitable reference taxonomy for post-hoc mapping given its multilingual nature, but lacks Thai language support. The literature shows RAG (retrieval over a growing skill vocabulary) outperforms zero-shot, suggesting we should evolve our extraction from zero-shot toward RAG as our skill vocabulary grows.
 
 ## Remaining Uncertainty
-_(pending literature review)_
+Does any Thai-specific skill taxonomy exist that could serve as a starting point? (Q2 not yet answered.) How should we seed the RAG knowledge base before the first TQF extractions?
