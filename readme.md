@@ -6,122 +6,117 @@
 
 > **Codename:** IRIS
 > **Domain:** Text Analytics · Agentic AI
-> **Status:** In Progress — Phase 0 (Foundation)
+> **Context:** Thai undergraduate academic programmes (TQF / มคอ.2)
+> **Status:** Phase 1 — Brainstorm (in progress)
 
 ---
 
 ## Overview
 
-IRIS is an agentic AI system designed to quantify and explain the gap between the skills and knowledge delivered by an academic programme and those demanded by the current job market. By comparing two independent evidence sources — academic curriculum data and real-world job postings — IRIS produces actionable insights that help curriculum designers, faculty, and students understand where the programme needs to evolve.
+IRIS is an agentic AI system that quantifies and explains the gap between the skills delivered by an academic programme and those demanded by the current job market. It compares two independent evidence sources — Thai university programme documents (TQF / มคอ.2) and real job postings from the Thai labour market — and produces actionable insights for curriculum designers, faculty, students, and institutional researchers.
+
+IRIS addresses two analytical scenarios:
+
+1. **Programme-to-Programme Gap** — Compare skill distributions from two academic programmes to surface differences and quantify the gap.
+2. **Programme-to-Market Gap** — Compare a programme's skill distribution against the skill requirements for a target career path, derived from real job postings.
 
 ---
 
 ## Problem Statement
 
-Academic programmes are updated on multi-year cycles, while the job market evolves continuously. Without a systematic, data-driven comparison, programme committees rely on anecdotal evidence or infrequent industry surveys to decide which competencies to add, remove, or strengthen. IRIS automates this comparison at scale and makes the evidence reproducible.
+Academic programmes are updated on multi-year cycles, while the job market evolves continuously. Without a systematic, data-driven comparison, programme committees rely on anecdotal evidence or infrequent industry surveys to decide which competencies to add, remove, or strengthen. IRIS automates this comparison at scale and makes the evidence reproducible and peer-reviewable.
 
 ---
 
 ## Data Sources
 
-### Source 1 — Academic Programme
+### Source 1 — Academic Programme (TQF / มคอ.2)
 
 | Item | Description |
 |------|-------------|
-| Input | Programme specification documents, course syllabi, learning outcome statements |
-| Granularity | Per academic year (e.g., Year 1 – Year 4) |
-| Output | Skill & knowledge distribution per academic year |
+| Input | Thai university programme specification documents in TQF (มคอ.2) format (PDF) |
+| Primary extraction source | Course descriptions (คำอธิบายรายวิชา) |
+| Course categories | Major-specific (หมวดวิชาเฉพาะ) · General Education (หมวดวิชาศึกษาทั่วไป) · Free Elective (หมวดวิชาเลือกเสรี) |
+| Weighting | Major-specific courses weighted higher; free electives handled via scenario system |
+| Output | Credit-weighted skill distribution per programme |
 
-The AI parses structured and unstructured programme documents to extract a weighted distribution of skills and knowledge areas gained by students who complete each year of the programme.
+**Scenario system for free electives:**
 
-### Source 2 — Job Market Postings
+| Scenario | Description |
+|----------|-------------|
+| Core | Required courses only (หมวดวิชาเฉพาะ บังคับ) — stable baseline |
+| Core + Electives | Include user-specified free elective courses |
+| Hypothetical | Proposed future curriculum — add or remove any courses for what-if analysis |
+
+### Source 2 — Job Market Postings (Thailand)
 
 | Item | Description |
 |------|-------------|
-| Input | Job postings scraped from selected target websites |
-| Granularity | CS career path × Business sector × Timeline (default: yearly) |
-| Output | Required skill & knowledge distribution per segment |
+| Primary sources | JobThai.com · JobsDB Thailand · Indeed Thailand |
+| Secondary source | LinkedIn Thailand (anti-scraping constraints — supplementary only) |
+| Schema | Unified job posting schema (title, description, requirements, company, date) with per-source adapters |
+| Segmentation | CS career path × industry segment × time period |
+| Output | Required skill distribution per segment |
 
-The AI collects and analyzes job descriptions to produce demand distributions broken down by:
-- **CS Career Path** — e.g., Software Engineering, Data Science, Cybersecurity, AI/ML, DevOps
-- **Business Sector** — e.g., Finance, Healthcare, Retail, Government, Tech
-- **Timeline** — yearly aggregation by default; configurable to quarterly or monthly
+**Industry segment enrichment — 3-tier pipeline:**
+
+| Tier | Method | Applies when |
+|------|--------|--------------|
+| 1. Direct | Extract segment from posting (company name or stated industry) | Segment is explicit |
+| 2. Search agent | Look up company profile via Thai registries (DBD, SET) or LinkedIn | Company name known but segment unknown |
+| 3. LLM classifier | Infer segment from job description vocabulary | Agency postings that hide employer identity |
+
+Initial segment taxonomy (~12 segments): Finance/Banking · Insurance · Manufacturing · Technology/Software · Healthcare · Retail/E-commerce · Government/Public Sector · Energy/Utilities · Telecommunications · Logistics/Supply Chain · Education · Professional Services.
 
 ---
 
 ## Core Capabilities
 
-### 1. Curriculum Analysis Agent
-- Ingests programme documents (PDF, DOCX, HTML, structured YAML/JSON)
-- Extracts competency statements and maps them to a standardized skill taxonomy
-- Produces a skill–knowledge distribution vector per academic year
+### 1. TQF Curriculum Parser
+- Parses Thai TQF (มคอ.2) PDF documents
+- Extracts course descriptions, programme learning outcomes, course categories, and credit hours
+- Applies credit weighting (major-specific courses > general education)
+- Supports scenario system for free elective toggling
 
-### 2. Job Market Harvesting Agent
-- Crawls and scrapes job postings from configured target websites
-- Normalizes job descriptions using NLP (entity extraction, keyword clustering, embedding-based classification)
-- Aggregates postings into demand distribution vectors segmented by career path, sector, and time period
+### 2. Skill Extraction Agent
+- Extracts skills from Thai and bilingual text using a local LLM (gemma-4-31b-it via LM Studio)
+- Data-driven emergent vocabulary — no fixed taxonomy forced at extraction time
+- Clusters semantically similar skills using text embeddings (text-embedding-embeddinggemma-300m)
+- Decomposes into **common skills** (shared baseline) and **unique skills** (distinguishing each programme)
+- Optional post-hoc mapping to reference taxonomy (O*NET, ESCO, SFIA) for cross-context comparability
 
-### 3. Gap Analysis Engine
-- Estimates goodness-of-fit between the academic supply distribution and the job market demand distribution
-- Applies statistical methods (e.g., KL divergence, cosine similarity, chi-square test) to quantify alignment
-- Generates ranked gap summaries: skills over-supplied, under-supplied, and absent from the curriculum
+### 3. Job Market Harvesting Agent
+- Multi-source scraping with unified schema and per-source adapters
+- LLM handles within-source format variation
+- Industry segment enrichment via 3-tier pipeline (direct → search agent → LLM classifier)
+- Aggregates demand distributions by career path, industry segment, and time period
 
-### 4. Reporting & Recommendation Agent
-- Synthesizes gap analysis results into human-readable reports
-- Provides prioritized curriculum recommendations
-- Supports drill-down by career path, sector, or year of study
-- Produces trend analysis comparing gap evolution across time periods
+### 4. Gap Analysis Engine
+- **Set-based gap** — skills present in demand but absent from programme (and vice versa); most interpretable for non-technical stakeholders
+- **Cosine distance** — overall similarity score between skill distribution vectors
+- **KL divergence** — asymmetric gap measurement (programme supply vs market demand)
+- Hybrid output: set-based gap for human-readable reports, cosine/KL for aggregate scoring
 
----
-
-## System Architecture (High Level)
-
-```
-Host Machine
-│
-├── Ollama (Gemma 3)  ← runs natively on host; GPU-accelerated if available
-│   └── CUDA (NVIDIA) → MPS (Apple Silicon) → CPU fallback
-│
-├── data/             ← local storage, mounted into containers
-│   ├── job_postings/ ← scraped data (JSON)
-│   ├── programmes/   ← uploaded academic documents (PDF, DOCX)
-│   └── results/      ← gap analysis output (JSON)
-│
-└── Docker Network (iris_net)
-    │
-    ├── nginx          :80   ← reverse proxy (/ → frontend, /api → backend)
-    │
-    ├── frontend       :3000 ← Next.js web UI
-    │   • Programme document upload & folder browser
-    │   • Scraping job controls
-    │   • Gap analysis dashboard & reports
-    │
-    ├── backend        :8000 ← FastAPI
-    │   • File upload & local storage management
-    │   • Scraping orchestration
-    │   • Analysis task dispatch (via Celery)
-    │   • Results API
-    │
-    ├── ai_worker            ← Python / LangGraph
-    │   • Curriculum Analysis Agent
-    │   • Job Market Harvesting Agent
-    │   • Gap Analysis Engine
-    │   • Reporting & Recommendation Agent
-    │   └── calls Ollama on host.docker.internal
-    │
-    └── redis               ← Celery broker & result backend
-```
+### 5. Reporting Agent
+- Gap summary report with common/unique skill decomposition
+- Per-skill traceback to source courses (for programme side) and job postings (for market side)
+- Scenario comparison view — side-by-side skill distributions across scenarios
+- Industry segment heatmap — programme fit score per industry segment
+- Outputs: PDF/Markdown report · interactive web dashboard
 
 ---
 
-## Skill Taxonomy
+## Skill Vocabulary Approach
 
-IRIS uses a two-level taxonomy to ensure consistency across both sources:
+IRIS uses a data-driven emergent vocabulary rather than a fixed taxonomy:
 
-- **Level 1 — Domain** (e.g., Programming, Data Management, Systems, Security, Communication)
-- **Level 2 — Competency** (e.g., Python, SQL, REST API Design, Statistical Modeling)
+1. Extract raw skills from TQF course descriptions using LLM
+2. Cluster semantically similar skills using embeddings (e.g., "machine learning" ≈ "predictive modelling")
+3. Build a shared skill vocabulary from the union of all programmes being compared
+4. Decompose into common skills and unique skills
+5. Optionally map clusters to a reference taxonomy for cross-context comparability
 
-The taxonomy is configurable and can be extended or mapped to external frameworks (e.g., SFIA, ESCO, O*NET).
+This approach avoids the assumption that a gold-standard taxonomy exists for Thai academic programmes, and lets the data surface what skills are actually present.
 
 ---
 
@@ -131,54 +126,56 @@ The taxonomy is configurable and can be extended or mapped to external framework
 |--------|-------------|
 | Supply–Demand Alignment Score | Overall goodness-of-fit between programme output and job market demand |
 | Top-N Skill Gaps | Skills most demanded by the market but least covered by the curriculum |
-| Top-N Surpluses | Skills well-covered by the curriculum but rarely demanded |
-| Trend Delta | Change in gap scores across consecutive time periods |
+| Top-N Surpluses | Skills well-covered by the curriculum but rarely demanded by the target market |
+| Segment Fit Score | Programme alignment score per industry segment |
 | Coverage Rate | Percentage of demanded competencies present in the curriculum |
 
 ---
 
 ## Target Users
 
-- **Curriculum Committees** — Evidence-based input for programme review cycles
-- **Faculty & Course Designers** — Understand which skills to emphasize or de-emphasize
-- **Students & Advisors** — Identify supplementary learning priorities per career path
-- **Institutional Researchers** — Longitudinal tracking of programme relevance
+| User | Key Need |
+|------|----------|
+| Academic administrator | Evidence of which skills are over/under-represented vs market demands |
+| Curriculum designer | Specific, actionable skill gaps to address in course design |
+| Student | Understand their programme's coverage relative to a target career path |
+| Career advisor | Data-driven comparison tool for advising sessions |
+| Accreditation body | Benchmark programmes against industry standards |
+| Employer / HR | Transparency into what skill profile a programme produces |
 
 ---
 
 ## Constraints & Assumptions
 
-- Academic programme documents are uploaded by the user via the web UI (PDF or DOCX) and stored on local host storage
-- Job postings are publicly accessible and scraping is permitted under applicable terms of service; scraped data is stored as JSON on local host storage
-- The AI model (Gemma 3) runs locally via Ollama on the host machine; no external API is used
-- GPU acceleration uses CUDA (NVIDIA) if available, then Apple MPS, then falls back to CPU
-- All Docker services share the same host-mounted data directory; no cloud storage is required
-- Skill taxonomy is defined and maintained separately; initial version is provided by domain experts
-- Timeline aggregation defaults to yearly; finer granularity requires sufficient data volume
-- Analysis is descriptive and advisory; final curriculum decisions remain with human committees
-- Initial release is a single-user local deployment; no user authentication is required
+- TQF documents are in Thai — skill extraction must handle Thai text; bilingual documents (Thai + English) are a bonus
+- Course descriptions vary in richness — some are brief; extraction must be robust to sparse text
+- Job posting data must be ethically sourced and legally usable
+- Analysis must be explainable to non-technical academic stakeholders — black-box results will not be trusted or acted on
+- Must produce outputs suitable for academic publication (rigorous and reproducible methodology)
+- AI models run locally via LM Studio — no external cloud API; primary inference on gpu-linux-server (gemma-4-31b-it)
+- v1 scope: Thai-language TQF documents; English-taught Thai programmes are an extension
 
 ---
 
-## Out of Scope (Initial Release)
+## Out of Scope (v1)
 
-- Automated curriculum modification or scheduling
-- Real-time job posting monitoring (batch processing only)
-- Assessment of teaching quality or pedagogy
-- Integration with student grade or transcript data
+- Real-time job posting scraping (start with a static snapshot dataset)
+- Individual student skill assessment (programme-level analysis only)
+- Soft skills and personality traits (focus on technical and domain skills)
+- Automated curriculum redesign recommendations (gap identification only, not prescription)
+- Overseas academic programmes (different regulatory frameworks)
 
 ---
 
-## Roadmap
+## Research Phases
 
-| Phase | Milestone | Status |
-|-------|-----------|--------|
-| Phase 0 | Project foundation: Docker stack, taxonomy v1, shared schemas | 🔄 In Progress |
-| Phase 1 | Curriculum ingestion: upload documents, extract skill distribution | ⬜ Planned |
-| Phase 2 | Job market harvesting: scrape postings, build demand distributions | ⬜ Planned |
-| Phase 3 | Gap analysis engine: goodness-of-fit scoring, ranked gaps | ⬜ Planned |
-| Phase 4 | Reporting & visualization: dashboard, AI-generated reports | ⬜ Planned |
-| Phase 5 | Multi-programme comparison, longitudinal tracking, export | ⬜ Planned |
+| Phase | Description | Status |
+|-------|-------------|--------|
+| Phase 1 | Brainstorm — problem scoping, hypothesis definition, data source design | 🔄 In Progress |
+| Phase 2 | Literature Review — skill extraction NLP, gap methodologies, Thai ontologies, job posting sources | ⬜ Planned |
+| Phase 3 | Solution Design — system architecture, product design | ⬜ Planned |
+| Phase 4 | Implementation — build and evaluate the system | ⬜ Planned |
+| Phase 5 | Reports — research paper and institutional report | ⬜ Planned |
 
 ---
 
@@ -186,40 +183,28 @@ The taxonomy is configurable and can be extended or mapped to external framework
 
 ```
 iris/
-├── readme.md                  # This file
-├── tech_stack.md              # Technology decisions
-├── implementation_plan.md     # Detailed development plan
-├── .gitignore
-├── .env.example               # Environment variable template
-├── docker-compose.yml         # Container orchestration
-├── assets/                    # Project assets (logo, images)
-├── frontend/                  # Next.js web application
-│   ├── app/
-│   ├── components/
-│   └── Dockerfile
-├── backend/                   # FastAPI application
-│   ├── app/
-│   │   ├── api/               # Route handlers
-│   │   ├── agents/            # Agentic AI components
-│   │   │   ├── curriculum_agent/
-│   │   │   ├── job_market_agent/
-│   │   │   ├── gap_analysis_engine/
-│   │   │   └── reporting_agent/
-│   │   ├── schemas/           # Shared Pydantic schemas
-│   │   ├── tasks/             # Celery task definitions
-│   │   └── utils/
-│   └── Dockerfile
-├── ai_worker/                 # Background AI task worker
-│   └── Dockerfile
-├── nginx/                     # Reverse proxy config
-├── taxonomy/                  # Skill taxonomy definitions (JSON/YAML)
-├── config/                    # Runtime configuration files
-│   └── scraper_config.json    # Scraping target sites and rules
-├── data/                      # Host-mounted local storage (content git-ignored)
-│   ├── job_postings/          # Scraped job data (JSON)
-│   ├── programmes/            # Uploaded academic documents
-│   └── results/               # Gap analysis output
-└── scripts/                   # Utility and automation scripts
+├── readme.md                    # This file
+├── CLAUDE.md                    # Project context for AI-assisted development
+├── assets/                      # Project assets (logo, images)
+├── 01-brainstorm/
+│   └── brainstorm.md            # Problem scoping, hypotheses, initial ideas
+├── 02-literature-review/        # Survey of methods and related work
+├── 03-solution-design/          # System architecture and product design
+├── 04-implementation/           # Source code
+└── 05-reports/                  # Research papers and institutional reports
+```
+
+Data is stored separately (not committed to Git):
+
+```
+data/
+├── tqf/                         # Raw TQF PDF documents
+│   └── <university>/<programme>/
+├── job-postings/                # Raw job posting datasets
+│   └── thailand/
+└── processed/                   # Generated outputs (never edit manually)
+    ├── skill-distributions/     # Extracted skill vectors per programme
+    └── job-skills/              # Extracted skill vectors per career path
 ```
 
 ---
