@@ -21,7 +21,7 @@ Higher education, curriculum design, labour market analysis, HR and talent acqui
 
 ## Current Phase
 
-Phase 1 — Brainstorm (in progress)
+Phase 3 — Solution Design
 
 ## Key Concepts
 
@@ -53,7 +53,9 @@ Phase 1 — Brainstorm (in progress)
 4. What output format is most useful to academic administrators and students?
 
 ## Status (last updated: 2026-04-29)
-Brainstorm complete. All key decisions made. Moving to Phase 2 — Literature Review. Literature review is structured as an Obsidian knowledge graph in 02-literature-review/notes/ with 13 pre-seeded question nodes and an LLM ingestion prompt for systematic paper processing. See 01-brainstorm/brainstorm.md for full decisions and 02-literature-review/README.md for the review workflow.
+**Go decision made 2026-04-29. Phases 1 & 2 complete. Now in Phase 3 — Solution Design.**
+
+Phase 2 literature review produced 13+ paper notes across 9 question nodes in the Obsidian knowledge graph (02-literature-review/notes/). All literature-targeted open questions resolved; 3 questions deferred to Phase 4 empirical validation (credit weighting, segment inference reliability, Thai registry lookup). Key validated decisions: gemma-4-31b-it + USE extraction pipeline, KL divergence (market‖programme) as primary gap metric, RCA for skill weighting, 4 confirmed Thai job platforms, 12-month data window, chaiaroon-2025 20-role taxonomy, heatmap + multi-level output. See 01-brainstorm/brainstorm.md for the full decision log and final idea summary.
 
 ---
 
