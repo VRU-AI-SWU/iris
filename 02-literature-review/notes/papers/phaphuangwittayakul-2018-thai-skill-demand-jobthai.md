@@ -19,10 +19,19 @@ Prior analysis of Thai labour market skill demand relied on surveys or manual re
 First systematic NLP-based analysis of Thai labour market skill demand using web scraping from JobThai and JobsDB. Keyword extraction and word cloud visualisation applied to job descriptions and qualification requirements across job functions.
 
 ## Proposed Method
-Web scraping of job postings from JobThai.com and JobsDB Thailand; keyword extraction from job description and qualification fields; visualisation via word clouds per job function. Exact posting count not published.
+- **Data sources**: JobThai.com and JobsDB Thailand (two largest Thai job portals at time of publication)
+- **Scraping**: Python with Scrapy + BeautifulSoup; auto-triggered monthly; fields extracted: job title, company, skill level, required experience, education degree, industry, job function, job location, salary, job description, qualification
+- **Storage**: MySQL database; each posting stored as a record with 11 attributes
+- **Keyword extraction**: RAKE algorithm (Rapid Automatic Keyword Extraction) applied to job description and qualification text; RAKE chosen over Hulth and TextRank for higher effectiveness; output: keywords + frequency per job category
+- **Visualisation**: Power BI treemap (job category proportions) and word cloud (skills per job category)
+- **Standardisation**: Post-extraction keyword normalisation to reduce synonymous variant forms
 
 ## Key Findings
-Skill demand in Thailand prioritised in order: cognitive skills > social skills > EQ > thinking skills > growth mindset > information and digital literacy > communication > creativity. Significant variation in skill demand across firm sizes. Both Thai and English keywords present in job postings.
+- Job category treemap visualises labour demand distribution across sectors: IT/Technology, Finance, Engineering, Sales/Marketing most prominent
+- Word cloud output for IT job category shows dominant skills: programming, database, web development, communication, teamwork — both Thai and English keywords present
+- Bilingual (Thai+English) nature of job postings confirmed — skill keywords appear in both languages depending on the posting
+- RAKE produces richer, more contextually meaningful keyword phrases compared to single-word extraction methods
+- Demonstrated fully automated, monthly-updated pipeline for Thai job market skill demand monitoring
 
 ## Limitations of This Paper
 Published in 2018 — skill demand landscape has changed significantly. Keyword-based extraction (word clouds) is a shallow method: no semantic normalisation, no taxonomy alignment, no embedding-based clustering. Does not report exact sample size. Word cloud output is not machine-readable for downstream analysis.
