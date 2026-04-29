@@ -27,12 +27,10 @@ status: partial
 - **JobsDB Thailand** — second major platform; confirmed used in academic research; third-party scraper tools exist (Apify)
 - **Indeed Thailand** — global platform with Thai listings; bilingual content
 
-**Likely additional sources** (implied by tipsena-2025's 10-platform list, names undisclosed):
-- Jobbkk.com — major Thai portal
-- Jobtopgun.com — tech-focused Thai portal
-- Workventure.com — startup/tech focus
-- SCB/SCG career portals — large corporate direct-hire
-- Contact tipsena-2025 authors (wirach@kku.ac.th, Khon Kaen University) to request the full platform list
+**Additional confirmed sources** (from chaiaroon-2025):
+- **JOBBKK.com** — confirmed used in academic research (top 5 by Google Trends 2021)
+- **JOBTOPGUN.com** — confirmed used in academic research; tech/professional focus
+- (LinkedIn — confirmed used, but TOS concerns; treat as supplementary only)
 
 **Not yet confirmed for research use:**
 - LinkedIn Thailand — strong signal but aggressive anti-scraping; supplementary only

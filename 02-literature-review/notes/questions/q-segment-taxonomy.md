@@ -16,7 +16,7 @@ A practical flat list of 10–15 segments meaningful in Thai academic context (F
 ## Papers Addressing This
 - [[tipsena-2025-predicting-thai-digital-workforce]] — uses 5-segment Thai digital industry taxonomy: hardware/smart devices, software/software services, digital services, digital content, telecommunications
 - [[siddoo-2019-thai-digital-workforce-competency]] — 3-category EFA-derived taxonomy: Professional skills & IT knowledge, IT technical, IT management & support
-- [[chaiaroon-2025-thai-digital-workforce-matching]] — defines 20 digital job categories for Thai market
+- [[chaiaroon-2025-thai-digital-workforce-matching]] — **Full list of 20 Thai digital job categories confirmed**: .Net-dev, Back-end-dev, Business-analyst, Cloud, Data-analyst, Data-engineer, Database-admin, DevOps, Front-end-dev, Full-stack-dev, Information-security, IT-support, Java-dev, Mobile-dev, Network-engineer, Project-manager, Software-engineer, Tester, UX/UI-designer, Web-developer
 
 ## Current Working Answer
 status: partial

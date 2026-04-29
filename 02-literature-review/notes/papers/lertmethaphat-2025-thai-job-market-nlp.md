@@ -1,37 +1,46 @@
 ---
 type: paper
-authors: Nuttapol Lertmethaphat, Nuarpear Lekfuangfu, Pucktada Treeratpituk
+authors: Lertmethaphat N.N., Lekfuangfu W.N., Treeratpituk P.
 year: 2025
 title: "Exploring the Thai Job Market Through the Lens of Natural Language Processing and Machine Learning"
-venue: PIER Discussion Paper 228, Puey Ungphakorn Institute for Economic Research
+venue: PIER Discussion Paper 228, Puey Ungphakorn Institute for Economic Research (August 2024)
 doi: https://www.pier.or.th/dp/228/
 relevance: high
-questions: [q-thai-nlp, q-job-posting-sources]
+questions: [q-thai-nlp, q-job-posting-sources, q-sample-size]
 ---
 
 ## Research Question
-How can NLP and ML be used to standardise high-frequency Thai job posting data into occupational codes for real-time labour market monitoring?
+How can NLP and ML automatically standardise high-frequency, bilingual Thai job posting data into ISCO-2008 occupational codes to enable construction of the Thai Beveridge curve and real-time labour market monitoring?
 
 ## Limitations of Existing Methods
-Manual classification of Thai job titles into standard occupational codes (ISCO-2008) is too labour-intensive for the volume and velocity of online job posting data. Existing multilingual models handle Thai poorly; bilingual (Thai/English) job titles compound the difficulty.
+No consistent Thai vacancy data exists (unlike US JOLTS or UK Vacancy Survey). Manual classification of Thai job titles to ISCO codes is prohibitively labour-intensive at the scale of online job portals. WangchanBERTa alone is insufficient — it cannot disambiguate closely related Thai job titles (e.g., Physician vs. Dentist scored 97.21% similarity).
 
 ## Contribution
-An algorithm that automatically maps Thai job titles to ISCO-2008 4-digit occupational codes using sentence embeddings. Validated on data from major Thai online job posting platforms. Enables high-frequency, real-time Thai labour market monitoring at scale.
+First large-scale NLP pipeline for classifying bilingual (Thai+English) Thai job titles into 4-digit ISCO-2008 codes. Demonstrates USE + XGBoost achieves ~90% classification accuracy. Applied to 1.1 million job posts from two Thai platforms (Q4 2020 – Q3 2023), enabling the first approximation of Thailand's Beveridge curve from job posting data.
 
 ## Proposed Method
-Sentence embedding of job titles using Universal Sentence Encoder (USE) for English and WangchanBERTa for Thai; similarity-based matching to ISCO-2008 codes. Tested on bilingual (Thai and English) job title data from major Thai job portals.
+- **Training data**: Thailand Department of Employment (DOE) dataset — hundreds of thousands of manually annotated records from regional offices nationwide + ISCO codebooks (1988 + 2008)
+- **Embedders compared**: WangchanBERTa (Thai BERT, AIRESEARCH) vs. Universal Sentence Encoder (USE)
+- **Models evaluated**: Cosine Similarity Classifier, Hierarchical Cosine Similarity Classifier, Random Forest, XGBoost, Neural Networks, BERTopic
+- **Data cleaning**: "Majority rule" (modal ISCO code per unique title) + "close-match" (USE cosine similarity above calibrated threshold)
+- **Evaluation**: 5-fold cross-validation; accuracy at 1-digit through 4-digit ISCO level
+- **Application dataset**: 1.1 million job posts from two Thai online job platforms, Q4 2020 – Q3 2023 (platforms unnamed in paper)
 
 ## Key Findings
-WangchanBERTa outperforms USE for Thai-language job titles. Bilingual job titles require both Thai and English embeddings for good coverage. The approach enables real-time monitoring and significantly reduces manual processing burden. Thai job portals produce sufficient data volume for labour market tracking.
+- **Best model: USE + XGBoost — ~90% accuracy at 4-digit ISCO level** (most granular); outperforms all other configurations
+- **WangchanBERTa limitation confirmed**: struggles to discriminate closely related Thai job titles — high similarity scores between semantically distinct roles (e.g., 97.21% between Physician and Dentist in Thai; 93.08% between Accountant and Bookkeeping Clerks)
+- **USE outperforms WangchanBERTa** for this disambiguation task — better at distinguishing related occupational categories in both Thai and English text
+- Bilingual (Thai+English) nature of postings confirmed: both embedders needed for full coverage
+- Applied to 1.1M job posts: provides first high-frequency, real-time Thai labour market demand signal; enables Beveridge curve construction for Thailand
 
 ## Limitations of This Paper
-Addresses occupation classification (ISCO codes), not skill extraction — a coarser granularity than what Iris requires. Does not reveal which specific Thai job platforms were used. ISCO taxonomy may not capture the skill-level distinctions Iris needs.
+Occupation-level classification (ISCO codes), not skill-level extraction — coarser granularity than what Iris requires. The two application platforms are unnamed — limits reproducibility and direct reuse by other researchers. Training data sourced from DOE (formal language) may underperform on informally written online postings. WangchanBERTa's weakness on related job titles is a significant finding for our skill extraction design.
 
 ## Concepts
-[[thai-nlp]] · [[wangchanberta]] · [[isco-classification]] · [[thai-job-market]] · [[sentence-embedding]]
+[[thai-nlp]] · [[wangchanberta]] · [[job-posting-analysis]] · [[sentence-embedding]]
 
 ## Questions Addressed
-[[q-thai-nlp]] · [[q-job-posting-sources]]
+[[q-thai-nlp]] · [[q-job-posting-sources]] · [[q-sample-size]]
 
 ## Notes for Iris
-The first Thai-specific paper directly relevant to our pipeline. WangchanBERTa is validated for Thai job posting NLP — directly applicable to our Thai skill extraction task. Confirms bilingual (Thai+English) job postings are common on Thai platforms, which aligns with our expectation. The occupation-level focus (ISCO) vs our skill-level focus means we need finer-grained extraction, but the embedding approach transfers. Important: does not name which platforms were used — a gap we need to fill for Q6.
+**Critical design implication: do NOT use WangchanBERTa alone for Thai job title or skill classification.** The paper directly demonstrates that WangchanBERTa fails to discriminate closely related Thai terms — a fatal flaw for fine-grained skill extraction. USE + XGBoost or a multilingual LLM approach (e.g., gemma-4-31b-it) is preferred. For Iris specifically: our pipeline should use USE or a multilingual embedding model for semantic matching, and rely on the LLM (gemma-4-31b-it) for the extraction step rather than WangchanBERTa. The 1.1M posts dataset covers Q4 2020–Q3 2023 — contact PIER (Pucktada Treeratpituk) to explore whether data can be accessed for research.
