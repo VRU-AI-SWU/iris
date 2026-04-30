@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 from sqlalchemy.orm import Session
 import shutil, os, uuid
 
@@ -14,8 +14,8 @@ UPLOAD_DIR = "/app/data/tqf"
 
 @router.post("/", response_model=ProgrammeOut, status_code=201)
 async def upload_programme(
-    name: str,
-    university: str,
+    name: str = Form(...),
+    university: str = Form(...),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
