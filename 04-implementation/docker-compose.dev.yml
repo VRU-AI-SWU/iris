@@ -1,0 +1,97 @@
+version: "3.9"
+
+# Development override — gpu-linux-server (LM Studio on host, port 1234)
+# Usage: docker compose -f docker-compose.dev.yml up
+
+services:
+  # No ollama service in dev — LM Studio runs on the host
+  postgres:
+    image: postgres:16-alpine
+    container_name: iris-postgres-dev
+    ports:
+      - "5432:5432"       # expose for local inspection
+    environment:
+      POSTGRES_USER: iris
+      POSTGRES_PASSWORD: iris_dev_password
+      POSTGRES_DB: iris
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    networks:
+      - iris_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: iris-redis-dev
+    ports:
+      - "6379:6379"
+    networks:
+      - iris_net
+
+  backend:
+    build: ./backend
+    container_name: iris-backend-dev
+    env_file: .env
+    environment:
+      MODEL_SERVER_URL: http://host.docker.internal:1234/v1
+      MODEL_API_KEY: lm-studio
+      DEBUG: "true"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app      # hot reload
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - iris_net
+
+  worker:
+    build: ./worker
+    container_name: iris-worker-dev
+    env_file: .env
+    environment:
+      MODEL_SERVER_URL: http://host.docker.internal:1234/v1
+      MODEL_API_KEY: lm-studio
+      DEBUG: "true"
+    volumes:
+      - ./worker:/app       # hot reload
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - iris_net
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    container_name: iris-frontend-dev
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - iris_net
+
+  nginx:
+    image: nginx:alpine
+    container_name: iris-nginx-dev
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - iris_net
+
+volumes:
+  postgres_dev_data:
+
+networks:
+  iris_net:
+    driver: bridge
