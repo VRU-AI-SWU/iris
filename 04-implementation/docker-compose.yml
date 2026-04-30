@@ -1,5 +1,3 @@
-version: "3.9"
-
 # Production stack — CSML server (NVIDIA A30, Ollama container)
 
 services:
