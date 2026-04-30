@@ -52,6 +52,7 @@ services:
       MODEL_SERVER_URL: http://host.docker.internal:1234/v1
       MODEL_API_KEY: lm-studio
       DEBUG: "true"
+      PYTHONPATH: /app
     volumes:
       - ./worker:/app       # hot reload
       - tqf_uploads:/app/data/tqf

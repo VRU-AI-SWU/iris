@@ -61,6 +61,7 @@ services:
     env_file: .env
     environment:
       MODEL_SERVER_URL: http://ollama:11434/v1
+      PYTHONPATH: /app
     volumes:
       - tqf_uploads:/app/data/tqf
     depends_on:
