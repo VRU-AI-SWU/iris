@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 def extract_tqf(self, programme_id: int, pdf_path: str):
     """Parse TQF PDF → extract skills → store in DB."""
     from sqlalchemy.orm import Session
-    from app.database import SessionLocal
-    from app.models.programme import Programme, Course, CourseSkill
+    from db import SessionLocal
+    from models import Programme, Course, CourseSkill
 
     logger.info("Starting TQF extraction for programme %d: %s", programme_id, pdf_path)
 

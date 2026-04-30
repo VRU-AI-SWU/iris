@@ -37,6 +37,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app      # hot reload
+      - tqf_uploads:/app/data/tqf
     depends_on:
       - postgres
       - redis
@@ -53,6 +54,7 @@ services:
       DEBUG: "true"
     volumes:
       - ./worker:/app       # hot reload
+      - tqf_uploads:/app/data/tqf
     depends_on:
       - postgres
       - redis
@@ -89,6 +91,7 @@ services:
 
 volumes:
   postgres_dev_data:
+  tqf_uploads:
 
 networks:
   iris_net:

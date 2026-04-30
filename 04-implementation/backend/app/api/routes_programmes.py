@@ -1,10 +1,11 @@
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 from sqlalchemy.orm import Session
 import shutil, os, uuid
 
 from app.database import get_db
-from app.models.programme import Programme
-from app.schemas.programme import ProgrammeCreate, ProgrammeOut
+from app.models.programme import Programme, Course
+from app.schemas.programme import ProgrammeOut, CourseOut
+from app.celery_client import enqueue_tqf_extraction
 
 router = APIRouter()
 
@@ -32,9 +33,7 @@ async def upload_programme(
     db.commit()
     db.refresh(programme)
 
-    # Enqueue extraction task
-    from worker.tasks.tqf_tasks import extract_tqf
-    extract_tqf.delay(programme.id, filepath)
+    enqueue_tqf_extraction(programme.id, filepath)
 
     return programme
 
@@ -50,6 +49,14 @@ def get_programme(programme_id: int, db: Session = Depends(get_db)):
     if not p:
         raise HTTPException(status_code=404, detail="Programme not found")
     return p
+
+
+@router.get("/{programme_id}/courses", response_model=list[CourseOut])
+def get_courses(programme_id: int, db: Session = Depends(get_db)):
+    p = db.query(Programme).filter(Programme.id == programme_id).first()
+    if not p:
+        raise HTTPException(status_code=404, detail="Programme not found")
+    return db.query(Course).filter(Course.programme_id == programme_id).all()
 
 
 @router.delete("/{programme_id}", status_code=204)

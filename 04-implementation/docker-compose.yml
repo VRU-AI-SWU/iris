@@ -46,6 +46,8 @@ services:
     env_file: .env
     environment:
       MODEL_SERVER_URL: http://ollama:11434/v1
+    volumes:
+      - tqf_uploads:/app/data/tqf
     depends_on:
       - postgres
       - redis
@@ -59,6 +61,8 @@ services:
     env_file: .env
     environment:
       MODEL_SERVER_URL: http://ollama:11434/v1
+    volumes:
+      - tqf_uploads:/app/data/tqf
     depends_on:
       - postgres
       - redis
@@ -93,6 +97,7 @@ services:
 
 volumes:
   postgres_data:
+  tqf_uploads:
 
 networks:
   iris_net:
