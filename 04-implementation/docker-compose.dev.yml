@@ -32,6 +32,7 @@ services:
     environment:
       MODEL_SERVER_URL: http://host.docker.internal:1234/v1
       MODEL_API_KEY: lm-studio
+      EXTRACTION_MODEL: google/gemma-4-e4b
       DEBUG: "true"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -53,6 +54,7 @@ services:
     environment:
       MODEL_SERVER_URL: http://host.docker.internal:1234/v1
       MODEL_API_KEY: lm-studio
+      EXTRACTION_MODEL: google/gemma-4-e4b
       DEBUG: "true"
       PYTHONPATH: /app
     extra_hosts:
