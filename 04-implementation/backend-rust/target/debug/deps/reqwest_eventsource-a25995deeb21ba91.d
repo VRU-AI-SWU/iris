@@ -1,0 +1,9 @@
+/home/ratchainant/VRU-AI/projects/iris/04-implementation/backend-rust/target/debug/deps/reqwest_eventsource-a25995deeb21ba91.d: /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/lib.rs /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/error.rs /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/event_source.rs /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/reqwest_ext.rs /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/retry.rs
+
+/home/ratchainant/VRU-AI/projects/iris/04-implementation/backend-rust/target/debug/deps/libreqwest_eventsource-a25995deeb21ba91.rmeta: /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/lib.rs /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/error.rs /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/event_source.rs /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/reqwest_ext.rs /home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/retry.rs
+
+/home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/lib.rs:
+/home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/error.rs:
+/home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/event_source.rs:
+/home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/reqwest_ext.rs:
+/home/ratchainant/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-eventsource-0.6.0/src/retry.rs:
