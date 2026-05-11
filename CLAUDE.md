@@ -21,7 +21,7 @@ Higher education, curriculum design, labour market analysis, HR and talent acqui
 
 ## Current Phase
 
-Phase 3 — Solution Design
+Phase 4 — Implementation
 
 ## Key Concepts
 
@@ -30,9 +30,9 @@ Phase 3 — Solution Design
 - **Job postings** — Source data for market skill requirements; must be scraped, cleaned, and skill-extracted.
 - **Curriculum data** — Source data for programme skill profiles; may come from course syllabi, learning outcomes, or programme specifications.
 
-## Team Assignments
+## Team Focus for Iris
 
-| Role | Focus for Iris |
+| Role | Focus |
 |---|---|
 | Researcher | Literature on skill gap methodologies, NLP for skill extraction, labour market studies |
 | Data Engineer | Job posting ingestion pipeline, curriculum data parsing |
@@ -53,11 +53,17 @@ Phase 3 — Solution Design
 4. What output format is most useful to academic administrators and students?
 
 ## Status (last updated: 2026-04-29)
-**Go decision made 2026-04-29. Phases 1 & 2 complete. Now in Phase 3 — Solution Design.**
 
-Phase 2 literature review produced 13+ paper notes across 9 question nodes in the Obsidian knowledge graph (02-literature-review/notes/). All literature-targeted open questions resolved; 3 questions deferred to Phase 4 empirical validation (credit weighting, segment inference reliability, Thai registry lookup). Key validated decisions: gemma-4-31b-it + USE extraction pipeline, KL divergence (market‖programme) as primary gap metric, RCA for skill weighting, 4 confirmed Thai job platforms, 12-month data window, chaiaroon-2025 20-role taxonomy, heatmap + multi-level output. See 01-brainstorm/brainstorm.md for the full decision log and final idea summary.
+**Go decision made 2026-04-29. Phases 1 & 2 complete. Now in Phase 4 — Implementation.**
 
----
+Phase 2 literature review produced 13+ paper notes across 9 question nodes in the Obsidian knowledge graph (`02-literature-review/notes/`). All literature-targeted open questions resolved; 3 questions deferred to Phase 4 empirical validation (credit weighting, segment inference reliability, Thai registry lookup). Key validated decisions: gemma-4-31b-it + USE extraction pipeline, KL divergence (market‖programme) as primary gap metric, RCA for skill weighting, 4 confirmed Thai job platforms, 12-month data window, chaiaroon-2025 20-role taxonomy, heatmap + multi-level output. See `01-brainstorm/brainstorm.md` for the full decision log and final idea summary.
+
+## Tech Stack
+
+- **Backend API** — Rust / Axum
+- **Worker** — Apalis (Rust-based job queue)
+- **Clustering Sidecar** — Python / HDBSCAN
+- **Frontend** — (see `04-implementation/frontend/`)
 
 ## Related Files
 
