@@ -56,7 +56,7 @@ Phase 4 — Implementation
 
 **Go decision made 2026-04-29. Phases 1 & 2 complete. Now in Phase 4 — Implementation.**
 
-Phase 2 literature review produced 13+ paper notes across 9 question nodes in the Obsidian knowledge graph (`02-literature-review/notes/`). All literature-targeted open questions resolved; 3 questions deferred to Phase 4 empirical validation (credit weighting, segment inference reliability, Thai registry lookup). Key validated decisions: gemma-4-31b-it + USE extraction pipeline, KL divergence (market‖programme) as primary gap metric, RCA for skill weighting, 4 confirmed Thai job platforms, 12-month data window, chaiaroon-2025 20-role taxonomy, heatmap + multi-level output. See `01-brainstorm/brainstorm.md` for the full decision log and final idea summary.
+Phase 2 literature review produced 23 paper notes across 13 research questions in the Obsidian knowledge-graph wiki (`02-literature-review/wiki/`), synthesised in `02-literature-review/wiki/literature_review/literature-review.md`. All literature-targeted open questions resolved; 3 questions deferred to Phase 4 empirical validation (credit weighting, segment inference reliability, Thai registry lookup). Key validated decisions: gemma-4-31b-it + USE extraction pipeline, KL divergence (market‖programme) as primary gap metric, RCA for skill weighting, 4 confirmed Thai job platforms, 12-month data window, chaiaroon-2025 20-role taxonomy, heatmap + multi-level output. See `01-brainstorm/brainstorm.md` for the full decision log and final idea summary.
 
 ## Tech Stack
 
