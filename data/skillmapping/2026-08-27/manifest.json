@@ -1,0 +1,22 @@
+{
+ "snapshot_date": "2026-08-27",
+ "source": "https://api.skillmapping.in.th",
+ "operator": "Office of the Permanent Secretary, MHESI (OPS) / KMITL",
+ "api_version": "0.8.1-beta-public",
+ "industries_mirrored": [
+  "digital"
+ ],
+ "counts": {
+  "industries": 5,
+  "careers": 138,
+  "skills_total": 4376,
+  "skills_referenced": 2043,
+  "skills_with_levels": 2043
+ },
+ "skill_types": {
+  "hard-skill": 2911,
+  "soft-skill": 553,
+  "tools": 912
+ },
+ "fetch_seconds": 534.4
+}
