@@ -1,12 +1,19 @@
-# Literature Review Wiki — Index · Iris (Skill Gap Analysis)
+# Literature Review Wiki — Index · Iris (Curriculum Skill Alignment)
 
-Knowledge graph for the Iris project: a skill-gap analysis system comparing skill
-distributions from Thai TQF (มคอ.2) curricula against Thai labour-market job
-postings, using NLP and agentic AI.
+Knowledge graph for the Iris project: expressing a Thai TQF (มคอ.2) curriculum in the
+vocabulary of the **national Thailand Skill Mapping standard** (สป.อว. / KMITL), and
+measuring level-aware alignment against the skill demand that standard publishes.
+
+> ⚠️ **Pivot 2026-08-27.** This review was conducted for a design that built its own
+> skill vocabulary by clustering, and measured demand by scraping Thai job boards. A
+> national skill standard published in July 2025 supersedes both. Papers are unchanged and
+> mostly *more* relevant; **question nodes carry status banners** — five are closed or
+> superseded, five revised, three new. Start with [[thailand-skill-mapping]] and
+> [[q-thai-ontology]], whose answer reversed.
 
 This wiki follows the lab literature-review methodology (`../.claude/instruction.md`).
 Components: **papers/** (per-paper notes), **concepts/** (semantic nodes),
-**questions/** (13 research-question notes → design decisions), and
+**questions/** (research-question notes → design decisions), and
 **[literature_review/](literature_review/literature-review.md)** (the narrative
 academic review with citations). Source provenance is in `../raw/manifest.md`.
 
@@ -64,48 +71,85 @@ academic review with citations). Source provenance is in `../raw/manifest.md`.
 
 ---
 
-## Questions (13)
+## Questions (16)
+
+Status key: **answered** · **open** (live) · **revised** (answer changed by the pivot) ·
+**superseded** / **closed** (no longer applicable — retained for provenance).
+
+### Live
 
 | File | Status | Working answer |
 |------|--------|----------------|
-| [q-skill-taxonomy](questions/q-skill-taxonomy.md) | partial | Emergent vocabulary at extraction, post-hoc map to ESCO; evolve zero-shot → RAG as vocabulary grows. |
-| [q-thai-ontology](questions/q-thai-ontology.md) | **answered** | No Thai skill ontology exists at needed granularity — a confirmed gap; justifies emergent vocabulary + ESCO mapping. |
-| [q-thai-nlp](questions/q-thai-nlp.md) | partial | PyThaiNLP for preprocessing; multilingual LLM for extraction; USE for matching; avoid WangchanBERTa for fine-grained terms. |
-| [q-implied-skills](questions/q-implied-skills.md) | partial | Few-shot LLM + RAG most promising; no benchmark for implied-skill extraction — define eval in Phase 4. |
-| [q-sample-size](questions/q-sample-size.md) | partial | No published threshold; target ~1,000–2,000 postings/career path (vs tipsena ~4,900/segment); run convergence analysis. |
-| [q-job-posting-sources](questions/q-job-posting-sources.md) | partial | JobThai, JobsDB, Indeed TH, JOBBKK, JOBTOPGUN confirmed in research; PDPA applies; LinkedIn supplementary only. |
-| [q-temporal-drift](questions/q-temporal-drift.md) | partial | 12-month window; technical skills volatile, soft skills stable; sliding-window weighting for future live system. |
-| [q-gap-direction](questions/q-gap-direction.md) | partial | Hybrid: KL divergence (market‖programme, asymmetric) for score + set-based gap for readable report. |
-| [q-visualisation](questions/q-visualisation.md) | partial | Course×skill heatmap primary; narrative headline first; multi-level output; RCA-weighted ranking. |
-| [q-segment-taxonomy](questions/q-segment-taxonomy.md) | partial | Adopt tipsena-2025 5-segment DEPA framework; career paths sit within segments. |
-| [q-credit-weighting](questions/q-credit-weighting.md) | open | Deferred to Phase 4 empirical validation (no literature yet). |
-| [q-segment-inference](questions/q-segment-inference.md) | open | Deferred to Phase 4 empirical validation (no literature yet). |
-| [q-registry-lookup](questions/q-registry-lookup.md) | open | Deferred to Phase 4 empirical validation (no literature yet). |
+| [q-skill-taxonomy](questions/q-skill-taxonomy.md) | **answered** | Adopt the national standard as a controlled vocabulary; the task becomes entity linking, not extraction + clustering. |
+| [q-thai-ontology](questions/q-thai-ontology.md) | **answered** ⚠️ reversed | A Thai skill vocabulary at the needed granularity **does** now exist — Thailand Skill Mapping, 4,376 skills with graded levels. |
+| [q-level-inference](questions/q-level-inference.md) | open 🆕 | No literature grades curriculum depth against a competency scale. Combine CLOs, the ● ○ curriculum map, and curriculum position; report disagreement. |
+| [q-out-of-vocabulary](questions/q-out-of-vocabulary.md) | open 🆕 | Record skills outside the standard separately, never score them; the residue becomes coverage feedback upstream. |
+| [q-prevalence-metrics](questions/q-prevalence-metrics.md) | open 🆕 | Demand is prevalence, not a distribution. Primary metric: level-aware coverage gap, RCA-weighted. KL only after explicit renormalisation. |
+| [q-implied-skills](questions/q-implied-skills.md) | revised | Now measurable as **recall in skill entity linking** — the central quantity of the Sprint 4 evaluation gate. |
+| [q-thai-nlp](questions/q-thai-nlp.md) | revised | Answer holds, but a **text-layer integrity gate must run first** — real มคอ.2 text layers are silently corrupted. |
+| [q-gap-direction](questions/q-gap-direction.md) | revised | Directional argument survives; the distributional assumption does not. Superseded on metrics by q-prevalence-metrics. |
+| [q-temporal-drift](questions/q-temporal-drift.md) | revised | Drift becomes a *signal*: the standard publishes per-skill growth rates per career. |
+| [q-visualisation](questions/q-visualisation.md) | revised | Heatmap still primary, now level-shaded; truncation must never render as a confirmed zero. |
+| [q-credit-weighting](questions/q-credit-weighting.md) | open | Still empirical; now interacts with level inference. |
+
+### Closed by the pivot
+
+| File | Status | Why |
+|------|--------|-----|
+| [q-job-posting-sources](questions/q-job-posting-sources.md) | closed | Iris no longer collects job postings. |
+| [q-sample-size](questions/q-sample-size.md) | closed | Sample size is not ours to choose; small-`N` careers are now a data-quality filter. |
+| [q-segment-taxonomy](questions/q-segment-taxonomy.md) | superseded | Replaced by the standard's 5 industries → 371 careers. |
+| [q-segment-inference](questions/q-segment-inference.md) | closed | Careers arrive pre-classified. |
+| [q-registry-lookup](questions/q-registry-lookup.md) | closed | No employers are processed. |
 
 ---
 
-## Concepts (8)
+## Concepts (12)
 
 | File | Summary |
 |------|---------|
+| [thailand-skill-mapping](concepts/thailand-skill-mapping.md) 🆕 | ⭐ The national standard — 4,376 skills, 3 graded levels each, 371 careers, open API. The foundation the project now stands on. |
+| [skill-entity-linking](concepts/skill-entity-linking.md) 🆕 | Mapping free text to IDs in a fixed vocabulary. Iris's core research task after the pivot. |
+| [proficiency-levels](concepts/proficiency-levels.md) 🆕 | Graded skill depth; the standard's criteria meet TQF's own ● ○ depth declarations. The novel contribution. |
+| [thai-pdf-text-integrity](concepts/thai-pdf-text-integrity.md) 🆕 | Silent corruption of Thai marks in institutional PDFs, its diagnostic, and its repair. Unaddressed in the literature. |
 | [curriculum-analytics](concepts/curriculum-analytics.md) | NLP/data analysis on programme documents to extract and compare delivered skills. |
-| [esco-ontology](concepts/esco-ontology.md) | EU multilingual skills/occupations taxonomy (~13.9k skills); field-dominant reference, no Thai. |
-| [kl-divergence](concepts/kl-divergence.md) | Asymmetric distributional distance; primary aggregate gap metric (market‖programme) and drift measure. |
-| [rag-skill-extraction](concepts/rag-skill-extraction.md) | Retrieval-grounded LLM skill extraction; reduces hallucination vs zero-shot. |
+| [rag-skill-extraction](concepts/rag-skill-extraction.md) | Retrieval-grounded LLM extraction; the standard's definitions now supply the corpus this needs. |
+| [kl-divergence](concepts/kl-divergence.md) | Asymmetric distributional distance; demoted to a secondary metric — see q-prevalence-metrics. |
 | [skill-gap-quantification](concepts/skill-gap-quantification.md) | Measuring supply vs demand skill distributions (set diff, cosine, KL, chi-square). |
-| [thai-nlp](concepts/thai-nlp.md) | Thai-language NLP challenges: no word boundaries, tonal, code-switching, low-resource. |
-| [tpqi-framework](concepts/tpqi-framework.md) | Thailand's occupational-standards/competency system; coarser than a skill ontology. |
-| [wangchanberta](concepts/wangchanberta.md) | SOTA Thai RoBERTa; strong on Thai tasks but conflates closely related fine-grained terms. |
+| [thai-nlp](concepts/thai-nlp.md) | Thai NLP challenges: no word boundaries, tonal, code-switching, low-resource. |
+| [esco-ontology](concepts/esco-ontology.md) | EU multilingual taxonomy (~13.9k skills); the field's reference, no Thai. Post-hoc mapping dropped. |
+| [tpqi-framework](concepts/tpqi-framework.md) | Thailand's occupational-standards system; coarser than a skill ontology. |
+| [wangchanberta](concepts/wangchanberta.md) | SOTA Thai RoBERTa; conflates closely related fine-grained terms. |
 
 ---
 
 ## Key Cross-Cutting Findings for Design Decisions
 
-1. **Extraction stack (Q3):** WangchanBERTa conflates closely related Thai terms (97.21% similarity Physician/Dentist; lertmethaphat-2025) — use PyThaiNLP for preprocessing, a multilingual LLM (gemma-4-31b-it) for extraction, and USE for embedding/matching; reserve WangchanBERTa away from fine-grained skill classification.
-2. **Taxonomy (Q1, Q2):** No Thai skill ontology exists at the needed granularity — an emergent, data-driven vocabulary is validated; map post-hoc to ESCO for international comparability; evolve zero-shot extraction toward RAG as the vocabulary grows.
-3. **Gap metric (Q10):** KL divergence (market‖programme) is the asymmetric aggregate score; set-based gap is the interpretable stakeholder output.
-4. **Skill weighting:** RCA (revealed comparative advantage) surfaces career-path-specific skills better than raw frequency (ahadi-2022).
-5. **Visualisation (Q9):** Course×skill heatmap + narrative headline + multi-level drill-down is the validated stakeholder format (ahadi-2022; hilliger-2022).
-6. **Data (Q5, Q6, Q7):** JobThai/JobsDB/Indeed-TH/JOBBKK/JOBTOPGUN are research-confirmed sources; target ~1,000–2,000 postings/career path; 12-month window (technical skills go stale fast; macedo-2022).
-7. **Segments (Q11):** Adopt the tipsena-2025 five-segment DEPA digital taxonomy; the chaiaroon-2025 20-role list refines career paths within it.
-8. **Deferred to Phase 4 (Q8, Q12, Q13):** credit weighting, LLM segment inference reliability, and Thai registry (DBD/SET) lookups have no literature and are empirical-validation tasks.
+*Rewritten 2026-08-27 for the pivot. Findings 1, 4, 5 survive unchanged from the original
+review; the rest were replaced by the adoption of the national standard.*
+
+1. **Extraction stack (Q3):** WangchanBERTa conflates closely related Thai terms (97.21 %
+   similarity Physician/Dentist; lertmethaphat-2025) — use PyThaiNLP for preprocessing and
+   a multilingual LLM for adjudication; keep WangchanBERTa away from fine-grained skill
+   work. *Unchanged.*
+2. **Vocabulary (Q1, Q2):** ⚠️ **Reversed.** A Thai national skill vocabulary now exists
+   (thailand-skill-mapping, 4,376 skills with graded levels). Emergent vocabulary,
+   clustering, and post-hoc ESCO mapping are all dropped. The task is entity linking.
+3. **Method:** RAG over the standard's 4,376 definitions and 6,058 level criteria —
+   the corpus xu-2025 showed beats zero-shot, and which the earlier design lacked.
+4. **Skill weighting:** RCA surfaces career-specific skills better than raw frequency
+   (ahadi-2022). *Unchanged, but must be redefined on prevalence.*
+5. **Visualisation (Q9):** Heatmap + narrative headline + multi-level drill-down is the
+   validated stakeholder format (ahadi-2022; hilliger-2022). *Unchanged*, now level-shaded.
+6. **Metrics (Q10):** ⚠️ Demand is **prevalence**, not a distribution, and is truncated at
+   ~100 skills per career. Primary metric is a level-aware coverage gap; KL is secondary
+   and only after explicit renormalisation.
+7. **Data (Q5, Q6, Q7):** ⛔ No longer applicable — demand is published, not collected.
+8. **Segments (Q11):** ⛔ Superseded by the standard's 5 industries → 371 careers.
+9. **Level-awareness:** 🆕 No reviewed work grades curriculum skill depth against a
+   competency scale — all are binary presence. This is the project's novel contribution.
+10. **Thai PDF integrity:** 🆕 Real มคอ.2 text layers are silently corrupted, and the
+    literature does not address it. A diagnostic gate is mandatory before any NLP.
+11. **Method gap for the lab:** 🆕 A literature search did not surface a government
+    open-data standard that had existed for nine months. Infrastructure questions need
+    ministry and open-data portals searched directly, not only journals.

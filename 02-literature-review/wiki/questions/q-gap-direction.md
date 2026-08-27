@@ -1,8 +1,20 @@
 ---
 type: question
 owner: Data Scientist + Product Manager
-status: open
+status: revised
 ---
+
+> ⚠️ **Revised 2026-08-27.** The working answer below assumed both sides of the
+> comparison were probability distributions. They are not: the national standard publishes
+> **prevalence** — percentages across a career sum to well over 100 — and the demand vector
+> is truncated at ~100 skills per career.
+>
+> KL divergence remains available but only after explicit renormalisation, and its
+> interpretation changes. The metric question is taken up properly in
+> **[[q-prevalence-metrics]]**, which supersedes the working answer here. The *directional*
+> argument below — that administrators need to know what graduates lack, not what they have
+> in excess — survives intact and still motivates the primary metric.
+
 
 ## Question
 Should the skill gap be symmetric or directional? (Programme A lacks skill X vs Programme B has excess of skill Y)

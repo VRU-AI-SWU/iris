@@ -1,8 +1,18 @@
 ---
 type: question
 owner: Data Scientist
-status: open
+status: closed
 ---
+
+> ⛔ **Closed 2026-08-27 — no longer applicable.** Iris no longer collects its own
+> postings, so it does not choose a sample size. The national standard's per-career
+> posting counts `N` are given (range 203 – 6,291,725, median 25,740) and are not under
+> our control.
+>
+> The concern this question raised has not disappeared, it has moved: careers with very
+> small `N` produce unreliable demand vectors and must be flagged or excluded. Tracked in
+> [[q-prevalence-metrics]].
+
 
 ## Question
 What is the minimum number of job postings needed to produce a stable, representative skill distribution for a given career path?

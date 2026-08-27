@@ -5,6 +5,22 @@
 > `(Author Year)` hyperlinked to their paper note; full entries are in the
 > References. This document is regenerated as papers are added.
 
+> ## ⚠️ Addendum — the 2026-08-27 pivot
+>
+> This review was written in April 2026 and its synthesis (§8) drove the Phase 3 design.
+> On 2026-08-27 the project pivoted to align with the **Thailand Skill Mapping** national
+> standard (สป.อว. / KMITL, published July 2025), which supersedes two of the four
+> question clusters named in §1.
+>
+> **The evidence in §§2–7 is unchanged and remains correct.** What changed is the world it
+> describes: §3 concludes that no Thai skill ontology exists at the needed granularity —
+> true when written, false now. §6 and §7 concern sourcing labour-market data, which the
+> project no longer does.
+>
+> Read §§2–7 as the record of how the design was reasoned to, then
+> **[§9](#9-addendum-realignment-to-the-national-standard-2026-08-27)** for what the
+> standard changes and which papers become *more* load-bearing as a result.
+
 ---
 
 ## 1. Introduction
@@ -195,6 +211,201 @@ LLM segment-inference reliability, and Thai registry lookups — have no literat
 and are carried into Phase 4 as empirical-validation tasks. Each conclusion is
 recorded in its `wiki/questions/` note and feeds the Phase 3 design and Phase 4
 implementation.
+
+---
+
+---
+
+## 9. Addendum — realignment to the national standard (2026-08-27)
+
+### 9.1 What was published, and why the review missed it
+
+In July 2025 the Office of the Permanent Secretary, MHESI (สป.อว.) published **Thailand
+Skill Mapping**, developed by KMITL: 4,376 Thai skills, each with a Thai definition and
+three graded proficiency levels with written criteria, mapped to 371 careers across five
+industries, served over an open API. It is national reference data, not an academic
+artefact.
+
+§3 of this review concluded — correctly on the evidence available — that no Thai skill
+ontology existed at the granularity Iris needs, and that conclusion justified the emergent
+vocabulary approach. The standard had existed for nine months when this review was
+written. It was missed because the search was conducted over **peer-reviewed literature**,
+and the standard has no accompanying paper describing the database. Ministry publications
+and government open-data portals were not searched.
+
+That is a methodological lesson worth carrying into the lab's review procedure: for
+questions of the form *does this dataset, ontology, or registry exist?*, a literature
+search is structurally incapable of returning the answer.
+
+⚠️ **A citation hazard for anyone writing this up.** The paper most easily found when
+searching for Thai skill mapping — Anmanatarkul et al. (2025), on learning modules and
+skills mapping for the electric-vehicle industry — is from **KMUTT**, and describes a
+Delphi expert-consensus skill map with seven skill groups. It is a legitimate precedent
+for linking curricula to careers through skill mapping, but it is **not** the
+KMITL/สป.อว. database and must not be cited as if it were.
+
+### 9.2 The task changes from extraction to entity linking
+
+§2 and §3 framed the problem as extracting skill terms from Thai text and organising them
+into a vocabulary. With a fixed vocabulary the problem becomes **skill entity linking**:
+mapping course-description text to IDs in a controlled set.
+
+This is a better-posed research task. Open extraction produces surface strings that must
+be normalised before they can be scored, and the normalisation is itself contested;
+linking against a fixed vocabulary makes precision and recall directly computable against
+expert annotation, and makes results reproducible across runs and across research groups.
+
+The papers this review already collected become the direct methodological template rather
+than a loose analogy. [ESCOX](../papers/kavargyris-2025-escox-skill-extraction.md)
+(Kavargyris et al. 2025) is the closest published system — an LLM combined with taxonomy
+embeddings, linking text to ESCO — and Iris is structurally the same pipeline against the
+Thai standard. [Senger et al. (2024)](../papers/senger-2024-dl-skill-extraction-survey.md)
+document that ESCO-linked approaches dominate the field precisely because open extraction
+suffers terminology inconsistency. [Dixon et al. (2023)](../papers/dixon-2023-occupational-models-42m.md)
+show a bounded 775-skill vocabulary suffices at US national scale, which makes 4,376 a
+comfortable size rather than a constraint.
+
+Most consequentially, [Xu et al. (2025)](../papers/xu-2025-llm-curricular-analytics.md)
+found RAG grounded in a skill knowledge base outperforms zero-shot extraction for
+course→skill work, especially on brief or abstract course descriptions. The Phase 3 design
+acknowledged this and chose zero-shot anyway, on the explicit grounds that RAG "requires a
+retrieval corpus not yet available". **That corpus now exists**: 4,376 skill definitions
+and 6,058 level criteria. The approach the literature recommended is available on the
+evidence that recommended it.
+
+### 9.3 Level-awareness: where the literature runs out
+
+Every curriculum-analytics system reviewed here treats a skill as **present or absent** in
+a course. [Sabet et al. (2024)](../papers/sabet-2024-course-skill-atlas.md) build a
+national Course-Skill Atlas from three million syllabi as a binary course × O*NET-DWA
+matrix. [Ahadi et al. (2022)](../papers/ahadi-2022-skills-taught-vs-sought.md) present
+course × occupation heatmaps with RCA weighting — again binary occupancy, weighted by
+market specificity rather than by depth. None grades how deeply a course develops a skill.
+
+The standard makes grading possible from one side: every skill carries `ระดับพื้นฐาน`,
+`ระดับปานกลาง`, and `ระดับสูง` with explicit criteria. The Thai TQF format supplies the
+other side, and does so under regulation — programmes must publish a
+**แผนที่แสดงการกระจายความรับผิดชอบ** marking each course × learning-outcome pair as
+● *ความรับผิดชอบหลัก* or ○ *ความรับผิดชอบรอง*, and newer outcome-based documents state
+course learning outcomes per course. Both were verified present in the SWU มคอ.2.
+
+Joining them turns the research question from *does this programme teach X?* into *to what
+level, and is that the level the career requires?* No reviewed work asks it, and the
+combination that permits it — a national standard publishing graded criteria alongside a
+national curriculum format requiring depth declarations — appears specific to the Thai
+context. This is the project's novel contribution, and its open problems are recorded in
+[q-level-inference](../questions/q-level-inference.md).
+
+### 9.4 Metrics: prevalence is not a distribution
+
+§4 adopted KL divergence in the market‖programme direction, following
+[Sabet et al. (2024)](../papers/sabet-2024-course-skill-atlas.md). That paper computes it
+over syllabus-derived skill *distributions*. The national standard does not publish a
+distribution: within a career, `count / percentage` is constant, so `percentage` is the
+share of that career's postings mentioning a skill — a prevalence. Percentages across a
+career sum to between roughly 45 % and 3,596 %.
+
+KL divergence is therefore not directly applicable. It remains available after
+renormalising counts into shares, but then measures "share of all skill mentions", which
+is not the quantity a curriculum committee needs and not what §4 argued for.
+
+A second constraint compounds this: the published demand vector is **truncated at
+approximately 100 skills per career**. Any divergence computed over it is taken across an
+incomplete support, and — more importantly for the writing — **absence from the vector
+means below the cut-off, never not demanded**.
+
+The directional argument of §4 survives entirely: administrators need to know what
+graduates lack, not what they have in excess. What changes is the vehicle. The primary
+metric becomes a level-aware coverage gap computed on prevalence and weighted by RCA
+[(Ahadi et al. 2022)](../papers/ahadi-2022-skills-taught-vs-sought.md), with KL retained as
+a secondary aggregate reported only alongside its changed interpretation. See
+[q-prevalence-metrics](../questions/q-prevalence-metrics.md).
+
+One capability is gained rather than lost. §6 treated temporal drift as a threat to
+validity, since a single scrape goes stale —
+[Garcia de Macedo et al. (2022)](../papers/macedo-2022-skills-demand-forecasting-temporal.md)
+put the credible horizon at about twelve months, and
+[Fettach et al. (2025)](../papers/fettach-2025-skill-demand-temporal-kg.md) show technical
+skills are the volatile ones. The standard publishes a per-skill **growth rate** per
+career. Drift becomes a measurable signal, and the review's finding about which skills
+move tells us how to read it.
+
+### 9.5 What the literature does not cover at all
+
+Neither the Thai NLP literature nor the PDF-mining literature addresses a problem that
+blocks the pipeline outright: **Thai text extracted from institutional PDFs is silently
+corrupted**.
+
+Measured on two real มคอ.2 documents, one retains 1 % of its karan (`์`) and 14 % of its
+mai tho (`้`), the marks having been substituted by ASCII glyphs through a WinAnsi font
+encoding; the other has lost every `ำ` in the document. Both extract without error and
+return plausible-looking Thai. PyMuPDF and poppler produce identical output, so this is a
+property of the documents, not the tooling.
+
+Thai NLP papers, including [PyThaiNLP](../papers/phatthiyaphaibun-2023-pythainlp.md)
+(Phatthiyaphaibun et al. 2023), assume correct input text. PDF-extraction work does not
+address Thai mark stacking. Since a missing karan turns `คอมพิวเตอร์` into `คอมพิวเตอร`
+and degrades every downstream match against a correctly-spelled vocabulary, and since the
+corruption is invisible, a pipeline without a detection stage would produce confident
+wrong results.
+
+The diagnostic developed for Iris — Thai combining-mark rate per 1,000 Thai characters,
+compared per-mark against a clean-document baseline — and the deterministic repair that
+follows from the damage being substitution rather than deletion, are therefore a small
+methodological contribution in their own right, reusable by anyone mining Thai
+institutional documents. See [thai-pdf-text-integrity](../concepts/thai-pdf-text-integrity.md).
+
+### 9.6 Revised synthesis
+
+| §8 conclusion | After the pivot |
+|---|---|
+| Emergent vocabulary; post-hoc ESCO mapping | ⛔ National standard as controlled vocabulary; ESCO dropped |
+| Zero-shot extraction (RAG deferred — no corpus) | ✅ RAG, on the corpus the standard provides |
+| KL divergence (market‖programme) primary | ⚠️ Level-aware coverage gap on prevalence; KL secondary, renormalised |
+| RCA weighting | ✅ Retained, redefined on prevalence |
+| Heatmap + narrative + drill-down | ✅ Retained, level-shaded |
+| Four Thai job platforms, 12-month window | ⛔ No collection; demand is published |
+| chaiaroon-2025 20-role taxonomy | ⛔ Standard's 138 digital careers |
+| PyThaiNLP preprocessing | ✅ Retained — preceded by an integrity gate |
+| *(not considered)* | 🆕 Proficiency-level inference from TQF's own ● ○ and CLO declarations |
+| *(not considered)* | 🆕 Thai PDF text-layer integrity |
+
+Three questions the literature cannot answer now sit at the centre of Phase 4: how
+reliably a proficiency level can be inferred from a TQF document
+([q-level-inference](../questions/q-level-inference.md)); what proportion of an academic
+curriculum falls outside a labour-market-derived vocabulary, and what to do with it
+([q-out-of-vocabulary](../questions/q-out-of-vocabulary.md)); and which alignment metrics
+are valid on truncated prevalence data
+([q-prevalence-metrics](../questions/q-prevalence-metrics.md)).
+
+Two further questions are not empirical but institutional, and block the methods section
+until สป.อว./KMITL answer them: what corpus underlies the demand counts — per-career
+posting totals range from 203 to 6,291,725, which is not plausible for Thailand alone —
+and whether the ~100-skill cap is a display limit or a data limit.
+
+---
+
+### Non-peer-reviewed sources (added 2026-08-27)
+
+These are government publications and platform documentation, not journal articles. They
+are load-bearing for the design and must be cited as what they are.
+
+- **สำนักงานปลัดกระทรวง อว. (OPS MHESI) / KMITL.** *Thailand Skill Mapping.* Public
+  platform and open-data API. https://www.skillmapping.in.th/ ·
+  https://skill-mapping.ops.go.th/ · https://skill.kmitl.ac.th/ · API
+  https://api.skillmapping.in.th/docs (v0.8.1-beta-public). Snapshot used in this project:
+  2026-08-27, `data/skillmapping/2026-08-27/`. — [concept note](../concepts/thailand-skill-mapping.md)
+- **Khomfoi S.** *Skill Mapping: Empowering Thailand's Higher Education for the Future.*
+  Invited talk abstract, Kasetsart University, 2568/2025.
+  https://registrar.ku.ac.th/wp-content/uploads/eduserv/academic/training/2568/671112_SkillMapping/Skill_Mapping_Surin_Thailand.pdf
+  — states the platform's framing of open data for curriculum redesign.
+- **Anmanatarkul A., Chomsuwan K., Jiracheewanun S., Sooklamai M., Kirtphaiboon S. &
+  Wiyaratn W.** (2025). *Development of Learning Modules and Skills Mapping to Prepare
+  Workforce Competencies for the Electric Vehicle Industry.* FTE Journal.
+  https://so10.tci-thaijo.org/index.php/FTEJournal/article/view/1351
+  ⚠️ **KMUTT**, not KMITL — a Delphi expert-consensus skill map for the EV industry
+  (seven skill groups). A methodological precedent for curriculum↔career skill mapping;
+  **not** the national database.
 
 ---
 

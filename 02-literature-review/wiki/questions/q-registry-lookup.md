@@ -1,8 +1,13 @@
 ---
 type: question
 owner: Data Engineer
-status: open
+status: closed
 ---
+
+> ⛔ **Closed 2026-08-27 — no longer applicable.** This question concerned looking up
+> Thai company registries (DBD/SET) to classify employers behind job postings. Iris no
+> longer processes job postings or employers.
+
 
 ## Question
 Can Thai company registries (DBD, SET) provide reliable industry segment lookups for the web search agent tier of our enrichment pipeline?

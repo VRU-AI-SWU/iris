@@ -1,8 +1,17 @@
 ---
 type: question
 owner: Domain Expert + Researcher
-status: open
+status: superseded
 ---
+
+> ⛔ **Superseded 2026-08-27.** The tipsena-2025 five-segment DEPA framework and the
+> chaiaroon-2025 20-role list are replaced by the national standard's own hierarchy:
+> 5 industries → 371 careers (138 in `ดิจิทัล`), each with a published demand vector.
+>
+> The reason is not that the academic taxonomies are worse, but that alignment to the
+> standard is the point of the project — a career must be one the standard names, or its
+> demand vector cannot be read.
+
 
 ## Question
 What is the best practical industry segment taxonomy for Thai context — and how many segments?

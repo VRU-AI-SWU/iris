@@ -1,12 +1,12 @@
 .env
 __pycache__/
 *.pyc
-*.pyo
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
+.venv/
 node_modules/
-.next/
-*.egg-info/
 dist/
-build/
+.astro/
+.wrangler/
 *.log

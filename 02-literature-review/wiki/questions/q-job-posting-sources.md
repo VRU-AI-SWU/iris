@@ -1,8 +1,19 @@
 ---
 type: question
 owner: Data Engineer
-status: open
+status: closed
 ---
+
+> ⛔ **Closed 2026-08-27 — no longer applicable.** Iris no longer collects job postings.
+> Labour-market demand comes from [[thailand-skill-mapping]], which publishes it already
+> aggregated per career. The scraper work this question justified was removed from the
+> design, along with the ToS exposure and reproducibility problems that came with it.
+>
+> Retained for provenance: the sources identified here (JobThai, JobsDB, JOBBKK,
+> JOBTOPGUN) remain the correct answer *to this question*, and would matter again only if
+> the national demand corpus turns out to be unusable for Thai claims — see
+> [[q-prevalence-metrics]], "Remaining Uncertainty".
+
 
 ## Question
 Where can we obtain Thai job posting datasets ethically and legally?

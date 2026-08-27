@@ -1,8 +1,18 @@
 ---
 type: question
 owner: AI Engineer + Data Scientist
-status: open
+status: revised
 ---
+
+> ⚠️ **Reframed 2026-08-27.** The question is unchanged in substance but better defined:
+> with a fixed vocabulary, "skills a course develops without naming them" becomes
+> **recall in [[skill-entity-linking]]** — a quantity that can be measured against expert
+> annotation rather than argued about.
+>
+> This is now the central quality question of the Sprint 4 evaluation gate, and RAG over
+> the standard's 4,376 skill definitions is the mechanism the literature
+> ([[xu-2025-llm-curricular-analytics]]) recommends for exactly this.
+
 
 ## Question
 How do we handle skills that are implied by course content but not explicitly stated in the course description?

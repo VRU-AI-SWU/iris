@@ -1,267 +1,372 @@
-# Solution Proposal — Iris (Skill Gap Analysis)
+# Solution Proposal — Iris (Curriculum Skill Alignment)
+
+> Rewritten 2026-08-27 after the pivot to the national Skill Mapping standard.
+> Supersedes the 2026-04-30 proposal, which assumed Iris would build its own skill
+> vocabulary and scrape its own labour-market data. Both assumptions are now obsolete.
+> Empirical basis: [`data-feasibility.md`](data-feasibility.md).
 
 ---
 
-## Problem Recap
+## What changed, and why
 
-Thai academic programmes documented in the TQF format (มคอ.2) are designed with intended learning outcomes but lack a systematic, data-driven mechanism to detect and quantify two types of misalignment: (1) differences in skill profiles between programmes that are rarely made explicit, and (2) drift between what programmes teach and what the job market currently demands for a given career path. Academic administrators, curriculum designers, and students make decisions without access to objective, reproducible evidence of these gaps, resulting in graduates who are underprepared for specific careers and institutions that waste resources on outdated content.
+In July 2025 the Office of the Permanent Secretary, MHESI (สป.อว.) published the
+**Thailand Skill Mapping** database, developed by KMITL. It defines, as national
+reference data, a vocabulary of **4,376 skills** — each with a Thai definition and
+three graded proficiency levels — mapped to **371 careers** across five priority
+industries, with demand figures attached to every career × skill pair.
+
+The platform describes its own purpose as joining a **Demand Side** (skills the labour
+market requires) to a **Supply Side** (competencies curricula produce). Only the demand
+side is published. **The supply side is unbuilt, and that is precisely what Iris does.**
+
+This reframes the project. Iris is no longer a self-contained system that invents its
+own skill vocabulary and measures against data it scrapes itself; it is **the
+supply-side engine for a national standard** — the component that reads a Thai
+university's TQF (มคอ.2) document and expresses its curriculum in the same vocabulary
+the state already uses to describe labour demand.
+
+The consequences are large and mostly subtractive:
+
+| Removed from the design | Because |
+|---|---|
+| Scrapers for JobThai, JobsDB, JOBBKK, JOBTOPGUN | Demand data is published, already aggregated |
+| Emergent vocabulary construction (embedding + HDBSCAN clustering) | The vocabulary is fixed national reference data |
+| Python clustering sidecar | Nothing left to cluster |
+| `pgvector` / any vector database | 4,376 fixed entries is a 13 MB in-memory matrix |
+| Heavy job queue (Celery/Redis, Apalis) | Existed to manage scraping fan-out |
+| chaiaroon-2025 20-role taxonomy | Replaced by 138 official digital careers |
+
+And one large addition: because every skill in the standard carries **three
+proficiency levels with explicit criteria**, and because TQF documents declare their
+own depth signals under regulation, Iris can ask a question no prior work on Thai
+curricula has asked — not *"does this programme teach skill X?"* but ***"to what level,
+and is that the level the career requires?"***
+
+---
+
+## Problem Statement
+
+Thai academic programmes are documented in the TQF (มคอ.2) format, which specifies
+intended learning outcomes in prose and in curriculum-mapping tables. The state now
+publishes, in a controlled vocabulary, what skills each career demands. **No mechanism
+exists to express a curriculum in that same vocabulary**, so the two halves of the
+national skill-mapping effort cannot be compared. Curriculum committees revising a
+programme have no reproducible, evidence-based answer to "which skills that our target
+careers demand does this curriculum not develop, and at what level do we fall short?"
 
 ---
 
 ## Proposed Solution
 
-Iris is an automated skill gap analysis system that extracts skill profiles from TQF course description text using a multilingual LLM, builds comparable skill distributions across programmes, and quantifies gaps between those distributions and against job market demand aggregated from Thai job posting platforms. Outputs are multi-level curriculum analytics reports — a programme-level heatmap with narrative summary for academic administrators, and a course-level skill breakdown for curriculum designers. The system also supports programme-to-programme comparison and scenario-based "what-if" curriculum planning.
+Iris reads a TQF (มคอ.2) document, extracts every course with its description, credit
+weighting, and declared learning-outcome responsibilities, and **links each course to
+the national skill vocabulary at a stated proficiency level**. Aggregating across
+courses yields a *programme skill profile* expressed natively in the national standard.
+That profile is then compared against the published demand profile of any of the 138
+digital-industry careers, producing a prioritised, level-aware alignment report with
+per-course traceability and page-level provenance back into the source document.
+
+**Core research contribution:** level-aware skill entity linking from Thai TQF course
+descriptions to a national controlled vocabulary, evaluated against expert annotation.
 
 ---
 
-## How It Addresses the Gaps
+## Why this is a stronger research position than the previous design
 
-| Gap / Pain Point | How Iris Addresses It |
+| Previous design | This design |
 |---|---|
-| No systematic method to compare skill profiles across Thai programmes | Builds comparable skill distributions from TQF documents using a unified extraction pipeline; supports head-to-head programme comparison with set-based skill decomposition |
-| Curriculum drift from job market not detectable until graduates are already underprepared | Aggregates 1,000–2,000 job postings per career path from 4 confirmed Thai platforms within a 12-month window; KL divergence quantifies the current gap |
-| Gap analysis outputs are not interpretable by non-technical stakeholders | Heatmap (courses × skills) validated in literature as the most interpretable format for academic administrators; narrative summary accompanies all reports |
-| No Thai skill ontology exists for grounding extraction | Data-driven emergent vocabulary — skills are extracted bottom-up from actual document text, not forced into a pre-defined taxonomy |
-| Existing tools are not designed for Thai TQF context | Parser built specifically for TQF (มคอ.2) structure; extraction handles Thai text natively via multilingual LLM |
+| Vocabulary emerged from clustering — unstable across runs, no ground truth | Vocabulary is fixed national reference data — annotation and evaluation are well defined |
+| Gap measured against self-scraped postings — not reproducible, ToS-exposed | Gap measured against published state data — anyone can reproduce it |
+| Zero-shot extraction, because no retrieval corpus existed | RAG-based linking, because 4,376 skill definitions and 6,058 level criteria *are* the corpus |
+| Binary presence of a skill | Graded proficiency, grounded in TQF's own outcome structure |
+| Contribution: a tool | Contribution: the missing half of a national standard, plus a reusable Thai skill-linking method |
+
+The literature already collected in Phase 2 becomes *more* relevant, not less: ESCO
+skill-linking work ([`kavargyris-2025-escox`](../02-literature-review/wiki/papers/kavargyris-2025-escox.md),
+[`senger-2024-dl-skill-extraction-survey`](../02-literature-review/wiki/papers/senger-2024-dl-skill-extraction-survey.md),
+[`luyen-2025-skill-decomposition-ontology`](../02-literature-review/wiki/papers/luyen-2025-skill-decomposition-ontology.md))
+is now the direct methodological analogue — linking free text to a fixed occupational
+taxonomy — rather than a loose parallel.
 
 ---
 
 ## Use Cases
 
-### Use Case 1: Programme-to-Market Gap Report
-- **Actor:** Academic administrator or curriculum designer
-- **Goal:** Understand how their CS programme's skill profile compares to market demand for a specific career path (e.g., Data Engineer)
-- **Preconditions:** TQF document for the programme has been uploaded; job posting dataset for the target career path is available
-- **Main flow:**
-  1. User selects a programme from the programme library
-  2. User selects a target career path from the 20-role Thai digital taxonomy
-  3. System computes skill distribution for the programme (credit-weighted, major courses prioritised)
-  4. System computes market demand distribution for the career path from job postings
-  5. System calculates KL divergence (market‖programme) and RCA-weighted skill gap ranking
-  6. System generates: programme-level heatmap, ranked gap table, narrative summary
-- **Outcome:** Administrator receives a prioritised list of skill gaps with course-level traceability, ready for curriculum review
+### UC1 — Programme-to-Career Alignment Report
+- **Actor:** Curriculum committee member / academic administrator
+- **Precondition:** TQF document ingested; a target career selected from the 138
+  digital careers
+- **Flow:** select programme → select career → system compares the programme's
+  level-aware skill profile against the career's published demand → produces a ranked
+  alignment report
+- **Outcome:** a prioritised list of *demanded skills the curriculum does not develop*
+  and *skills developed below the required level*, each traceable to specific courses
+  and to a page in the source มคอ.2
 
-### Use Case 2: Programme-to-Programme Comparison
-- **Actor:** Academic administrator or accreditation reviewer
-- **Goal:** Understand how two programmes differ in their skill profiles
-- **Preconditions:** TQF documents for both programmes are in the system
-- **Main flow:**
-  1. User selects two programmes to compare
-  2. System builds shared emergent skill vocabulary from the union of both programmes
-  3. System decomposes skills into: common skills (shared baseline), A-unique skills, B-unique skills
-  4. System generates side-by-side comparison view with skill overlap and divergence summary
-- **Outcome:** Clear quantified picture of where two programmes converge and diverge, useful for differentiation or merger decisions
+### UC2 — Programme-to-Programme Comparison
+- **Actor:** Curriculum committee, accreditation reviewer
+- **Flow:** two ingested programmes are expressed in the same national vocabulary and
+  decomposed into shared skills, A-only, B-only, and skills taught at different levels
+- **Outcome:** an objective differentiation profile — the department's stated motivation
+  for this project is comparing its own curriculum against peer institutions'
 
-### Use Case 3: Curriculum Scenario Planning
-- **Actor:** Curriculum designer
-- **Goal:** Explore how adding or removing courses would affect the programme's skill profile and gap scores
-- **Preconditions:** Base programme is already analysed; user has a set of candidate courses to add
-- **Main flow:**
-  1. User opens the scenario builder for a programme
-  2. User selects a scenario: Core only / Core + selected electives / Hypothetical (add/remove any courses)
-  3. System recomputes skill distribution and gap scores under the new scenario
-  4. System shows side-by-side comparison: current vs. proposed scenario
-- **Outcome:** Curriculum designer can see the skill impact of proposed changes before committing to a redesign
+### UC3 — Curriculum Revision Scenario
+- **Actor:** Curriculum designer, during a มคอ.2 revision cycle
+- **Flow:** include/exclude courses, or edit a course's skill assignments, and recompute
+  the programme profile and alignment scores
+- **Outcome:** the skill consequence of a proposed change, before it is committed
 
-### Use Case 4: Student Career Path Alignment
-- **Actor:** Student or career advisor
-- **Goal:** Understand how well the student's enrolled programme aligns with a target career path, and identify personal skill gaps to address
-- **Preconditions:** Programme is in the system; user selects a career path
-- **Main flow:**
-  1. User selects their programme and a target career path
-  2. System displays programme coverage vs. career path requirements
-  3. System highlights skills not covered by the programme that the career path demands
-- **Outcome:** Student understands which skills to develop independently; advisor has data to guide planning
+### UC4 — Public Programme Profile
+- **Actor:** Anyone visiting vru-ai.com
+- **Flow:** browse published analyses — programme profiles, alignment heatmaps,
+  narrative summaries
+- **Outcome:** the research is legible and citable without an account
+
+*Dropped from the previous design:* the "student career alignment" use case. It implies
+individual-level advice the programme-level analysis cannot support, and no student
+stakeholder was ever available to validate it.
 
 ---
 
-## Architecture Overview
+## Architecture
+
+Two deployables, on purpose. The analysis engine needs a GPU, native Python libraries,
+and tens of minutes per run; the public web tier must stay up regardless.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        USER LAYER                            │
-│  Web App (React)  ←→  REST API (FastAPI)                    │
-└──────────────────────────┬──────────────────────────────────┘
-                           │
-┌──────────────────────────▼──────────────────────────────────┐
-│                    APPLICATION LAYER                         │
-│                                                              │
-│  ┌─────────────────┐    ┌──────────────────────────────┐   │
-│  │  Gap Analysis   │    │     Report Generator          │   │
-│  │  Engine         │    │  (heatmap, narrative, PDF)    │   │
-│  │  - KL divergence│    └──────────────────────────────┘   │
-│  │  - RCA weighting│                                        │
-│  │  - Set decomp.  │    ┌──────────────────────────────┐   │
-│  └────────┬────────┘    │   Scenario Engine             │   │
-│           │             │   (Core / +Electives / Hypo.) │   │
-│  ┌────────▼────────┐    └──────────────────────────────┘   │
-│  │  Skill Vocab    │                                        │
-│  │  Builder        │                                        │
-│  │  - Clustering   │                                        │
-│  │  - ESCO mapping │                                        │
-│  └────────┬────────┘                                        │
-└───────────┼─────────────────────────────────────────────────┘
-            │
-┌───────────┼─────────────────────────────────────────────────┐
-│           │          INGESTION LAYER                         │
-│  ┌────────▼──────────┐    ┌─────────────────────────────┐  │
-│  │  TQF Pipeline     │    │  Job Posting Pipeline        │  │
-│  │  - PDF parse      │    │  - Scrapy (4 platforms)      │  │
-│  │  - PyThaiNLP prep │    │  - Unified schema adapter    │  │
-│  │  - LLM extraction │    │  - LLM skill extraction      │  │
-│  │  - Embedding      │    │  - Embedding                 │  │
-│  └───────────────────┘    └─────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-            │
-┌───────────┼─────────────────────────────────────────────────┐
-│           │          INFRASTRUCTURE LAYER                    │
-│  ┌────────▼───────────────────────────────────────────┐     │
-│  │  Model Server (Ollama container — production)       │     │
-│  │  Model Server (LM Studio — dev)                    │     │
-│  │  - gemma-4-31b-it (extraction)                     │     │
-│  │  - text-embedding-embeddinggemma-300m (embedding)  │     │
-│  └────────────────────────────────────────────────────┘     │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │  PostgreSQL — programmes, courses, skills, postings │    │
-│  └─────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
+┌─ CLOUDFLARE ───────────────────────────────────────────────────────────┐
+│                                                                        │
+│  vru-ai.com/iris                    vru-ai.com/iris/app                │
+│  ┌──────────────────────┐           ┌────────────────────────────┐    │
+│  │ Astro static site    │           │ Cloudflare Access          │    │
+│  │ published results    │           │ (department faculty only)  │    │
+│  │ as build-time JSON   │           └─────────────┬──────────────┘    │
+│  │ — no backend         │                         │                    │
+│  └──────────────────────┘                         │                    │
+└───────────────────────────────────────────────────┼────────────────────┘
+                                                    │ Cloudflare Tunnel
+                                                    │ (outbound only)
+┌─ linux-gpu-server — department office, 24/7 ──────▼────────────────────┐
+│                                                                        │
+│  FastAPI ── job table ──► worker process                               │
+│                             │                                          │
+│    ┌────────────────────────▼─────────────────────────────────────┐   │
+│    │ INGESTION                                                     │   │
+│    │  text-layer integrity gate → glyph repair → PageIndex tree    │   │
+│    │  → section extraction (courses, CLOs, curriculum map)         │   │
+│    ├───────────────────────────────────────────────────────────────┤   │
+│    │ LINKING                                                       │   │
+│    │  candidate retrieval (in-memory matrix, 4,376 × d)            │   │
+│    │  → LLM adjudication against level criteria                    │   │
+│    │  → level inference from CLO / ● ○ map / year / prerequisites  │   │
+│    ├───────────────────────────────────────────────────────────────┤   │
+│    │ ANALYSIS                                                      │   │
+│    │  programme profile → alignment vs published demand → report   │   │
+│    └───────────────────────────────────────────────────────────────┘   │
+│                             │                                          │
+│  PostgreSQL (source of truth) ──► publish/export ──► static JSON       │
+│  LLM + embeddings via OpenAI-compatible endpoint (local)               │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Key components:**
+**The publish step is the contract.** The engine writes a versioned result document;
+the web tier only ever reads published result documents. Nothing on the public site
+queries the GPU server at request time, so the site is unaffected when the engine is
+busy, restarting, or offline.
+
+### Components
 
 | Component | Responsibility | Technology |
 |---|---|---|
-| TQF Parser | Extracts course list, descriptions, credit hours, and category (major/general/elective) from TQF PDF | Python, pdftotext / pdfplumber |
-| Thai Preprocessor | Tokenisation, segmentation, stop word removal on Thai text | PyThaiNLP |
-| Skill Extractor | Extracts skill terms from course descriptions and job posting text | gemma-4-31b-it via OpenAI-compatible API |
-| Skill Embedder | Generates vector representations of extracted skill terms | text-embedding-embeddinggemma-300m |
-| Skill Vocabulary Builder | Clusters semantically similar skills; builds shared vocabulary across programmes | scikit-learn (HDBSCAN or k-means), cosine similarity |
-| Job Posting Scraper | Scrapes job postings from 4 Thai platforms with unified schema | Scrapy, BeautifulSoup |
-| Gap Analysis Engine | Computes KL divergence, RCA-weighted ranking, and set-based decomposition | Python, scipy, numpy |
-| Scenario Engine | Recomputes skill distributions under user-defined course inclusion/exclusion scenarios | Python |
-| Report Generator | Produces heatmap, ranked gap tables, and narrative summary | matplotlib / seaborn (heatmap), Jinja2 (narrative), WeasyPrint (PDF) |
-| REST API | Exposes all analysis functions to the frontend | FastAPI |
-| Web Application | Interactive dashboard for all user personas | React |
-| Model Server (dev) | Serves LLM and embedding models via OpenAI-compatible API | LM Studio on gpu-linux-server host, port 1234 |
-| Model Server (prod) | Serves LLM and embedding models via OpenAI-compatible API | Ollama Docker container on CSML, models volume-mounted from host |
-| Database | Stores programmes, courses, extracted skills, job postings, computed distributions | PostgreSQL |
+| Snapshot mirror | Pin a reproducible copy of the national standard | `fetch_snapshot.py` (stdlib) |
+| Text-layer gate | Classify a PDF `clean / repairable / unusable` via Thai mark-rate diagnostic | Python |
+| Glyph repair | Restore tone marks and karan lost to WinAnsi font encoding | Python, deterministic mapping table |
+| Document indexer | Build a navigable tree of the มคอ.2; locate sections with page provenance | PageIndex |
+| Section extractor | Exhaustively parse the located sections into courses, CLOs, curriculum map | Python |
+| Candidate retriever | Top-k skill candidates per course from the fixed vocabulary | NumPy in-memory matrix + lexical |
+| Skill linker | Decide which candidates apply; assign proficiency level with evidence | Local LLM, structured output |
+| Alignment engine | Compare programme profile to career demand; rank gaps | NumPy / SciPy |
+| Report generator | Heatmap, ranked gap table, narrative, PDF | Python, WeasyPrint |
+| API | Upload, job status, results, publish | FastAPI |
+| Web | Public results + gated analysis UI | Astro on Cloudflare Workers |
 
 ---
 
-## AI / ML Components
+## Method
 
-### 1. Skill Extraction (LLM)
-- **Model:** `gemma-4-31b-it` (multilingual, handles Thai natively)
-- **Approach:** Zero-shot prompt — given a course description, extract a list of technical skills as a JSON array
-- **Input:** Course description text (Thai or bilingual), job posting requirements text
-- **Output:** List of skill terms per document
-- **Constraint:** v1 uses zero-shot; RAG-enhanced extraction earmarked for v2
+### 1. Ingestion, with an integrity gate
 
-### 2. Skill Embedding
-- **Model:** `text-embedding-embeddinggemma-300m`
-- **Purpose:** Generate dense vectors for extracted skill terms to enable semantic clustering and similarity matching
-- **Output:** 300-dimensional embedding per skill term
+Real TQF documents produced by print drivers lose Thai tone marks and karan to WinAnsi
+font encoding (measured: karan 1 % retained, mai tho 14 % in the SWU document), while
+others silently collapse `ำ` to `า`. Both defects are invisible to a naive parser and
+would poison every downstream stage.
 
-### 3. Skill Vocabulary Construction
-- **Method:** Cluster skill embeddings using HDBSCAN (density-based, no fixed cluster count) or agglomerative clustering; representative term per cluster becomes the canonical skill label
-- **Output:** Shared skill vocabulary — a flat list of canonical skill labels with cluster membership mapping
-- **Optional:** Post-hoc ESCO taxonomy alignment for cross-context comparability
+Every document therefore passes a **diagnostic gate** before ingestion: the rate of
+Thai combining marks per 1,000 Thai characters, compared against a clean-document
+baseline (~171). Documents are classified:
 
-### 4. Skill Distribution Construction
-- **Programme distribution:** Frequency of each canonical skill across all courses, weighted by credit hours (major-specific courses weighted higher than general education; free electives excluded in Core scenario)
-- **Market distribution:** Frequency of each canonical skill across job postings for a target career path within the 12-month collection window
+- **clean** → proceed
+- **repairable** → apply the glyph repair table, re-run the gate, proceed on pass
+- **unusable** → reject with a report naming the defect; request a better source file
 
-### 5. Gap Quantification
-- **Primary metric:** KL divergence in the market‖programme direction — D_KL(market ‖ programme) — quantifies what the market demands that the programme does not cover
-- **Skill ranking:** RCA (Revealed Comparative Advantage) weights each skill by its career-path specificity; penalises common cross-path skills, rewards discriminating skills
-- **Programme-to-programme:** Set-based decomposition into common, A-unique, and B-unique skill sets; cosine similarity for aggregate score
+The repair is deterministic and auditable — a table keyed on the substitute glyph and
+its preceding character — rather than an OCR or LLM guess, so the pipeline stays
+reproducible and every restored character can be justified.
+
+### 2. Document navigation
+
+มคอ.2 has a regulated section structure, but universities paginate and format it
+differently. PageIndex builds a tree index of the document (from the PDF's own layout,
+with LLM summarisation of nodes) and locates the target sections — `3.1.5
+คำอธิบายรายวิชา`, the curriculum mapping table, the programme ELO list.
+
+Two constraints on its use:
+
+- **Locate, then extract exhaustively.** PageIndex is a retrieval system; Iris needs
+  *all* courses, not the most relevant ones. It is used to find section boundaries,
+  after which the section is parsed in full.
+- **Provenance is a deliverable.** Tree nodes carry page ranges, so every extracted
+  course description records the page it came from — required for the paper and for
+  a curriculum committee to trust a finding.
+
+### 3. Skill linking
+
+For each course, candidate skills are retrieved from the 4,376-entry vocabulary, then
+adjudicated by a local LLM against the candidates' definitions.
+
+- **Retrieval** combines dense similarity (embeddings of skill title + definition,
+  held as a 13 MB in-memory matrix — exact cosine, no ANN index, no vector database)
+  with lexical matching, which is essential for tool names and English terms.
+- **Bilingual channel.** The vocabulary is fully bilingual and some TQF documents give
+  every course an English description. Where both languages are available, linking runs
+  on both and agreement is recorded as a confidence signal — and it bypasses Thai text
+  damage entirely.
+- **Adjudication is multiple-choice, not open generation** — "which of these 30
+  candidate skills does this course develop?" — which is materially easier for a small
+  local model than free-form extraction, and produces output that is constrained to
+  valid skill IDs by construction.
+
+### 4. Level inference
+
+Proficiency level is inferred from evidence the document already contains, not guessed
+from the description alone:
+
+1. **Course learning outcomes (CLOs)** where present — matched against the skill's own
+   level criteria from the standard
+2. **Curriculum mapping table** — ● ความรับผิดชอบหลัก vs ○ ความรับผิดชอบรอง, the
+   programme's own regulated declaration of how central an outcome is to a course
+3. **Position in the curriculum** — year of study from the course code, and
+   prerequisite depth
+
+Where the sources disagree, the conflict is recorded rather than silently resolved;
+disagreement rate is itself a reportable finding.
+
+### 5. Alignment measurement
+
+The published demand figure is **prevalence** — the share of postings for a career that
+mention a skill — not a probability distribution; percentages across a career sum to
+far more than 100. Metrics are therefore defined on prevalence directly:
+
+- **Level-aware coverage gap** (primary): for each skill the career demands, the
+  shortfall between the level demanded and the highest level the programme develops,
+  weighted by prevalence. Directly interpretable: *"62 % of postings ask for SQL at
+  intermediate level; the programme develops it only at foundational."*
+- **Career specificity weighting** (RCA): down-weights skills demanded by every career,
+  up-weights discriminating ones, so the ranked gap list is actionable rather than
+  dominated by universal skills.
+- **Growth-adjusted view**: the standard publishes a per-skill growth rate per career,
+  supporting a second question — is the curriculum keeping pace with skills that are
+  growing, not merely with the current stock?
+- **Distributional divergence** (secondary): KL divergence remains available, but only
+  after explicit renormalisation of prevalence into a share distribution, and its
+  changed interpretation must be stated wherever it is reported.
+
+**Truncation constraint.** The published demand vector is capped at roughly 100 skills
+per career. Absence from that list means *below the cut-off*, not *not demanded*. No
+metric or narrative may assert that a career does not require a skill.
 
 ---
 
-## Data Requirements
+## Evaluation
 
-| Data Source | Type | Volume (est.) | Availability | Owner |
-|---|---|---|---|---|
-| TQF PDFs (มคอ.2) | Structured PDF documents | 2–10 documents per analysis run | Publicly available from Thai university websites | Academic institutions |
-| Job postings — Jobthai.com | Web-scraped structured text | 1,000–2,000 per career path per 12-month window | Publicly accessible; confirmed in academic research | Jobthai.com |
-| Job postings — Jobsdb Thailand | Web-scraped structured text | Supplementary to Jobthai target | Publicly accessible; third-party scrapers available | Jobsdb Thailand |
-| Job postings — JOBBKK.com | Web-scraped structured text | Supplementary | Publicly accessible; confirmed academic research | JOBBKK |
-| Job postings — JOBTOPGUN.com | Web-scraped structured text | Supplementary; tech/professional focus | Publicly accessible; confirmed academic research | JOBTOPGUN |
+The evaluation gate governs the project: **no user-facing feature is built until
+linking quality is measured.** This is the discipline the previous phase stated and
+then did not follow, and it is why that phase stalled.
 
-**Data ethics notes:**
-- Collect job posting metadata only (title, description, requirements, company, date) — no applicant PII
-- Thai PDPA 2019 applies; company names and job requirements are not personal data
-- Collection date range must be documented for reproducibility (academic publication requirement)
-- Static snapshot for v1; no live continuous scraping
+| Stage | Method | Gate |
+|---|---|---|
+| Text-layer repair | Character-level accuracy on a manually corrected sample | Repair must not introduce errors |
+| Section extraction | Course count and field completeness vs manual reading of both documents | All courses found |
+| Skill linking | Precision / recall / F1 against expert annotation of a stratified sample of ~50 courses, two annotators, inter-annotator agreement reported | Established before any UI work |
+| Level inference | Agreement with expert-assigned level; per-source agreement analysis | Reported honestly, including disagreement |
+| End-to-end | Runtime on a full 216-page document | Fits an interactive workflow |
 
 ---
 
-## Infrastructure Design
+## Data
 
-### Development Environment
-```
-gpu-linux-server (RTX 3090, 32GB RAM)
-├── LM Studio (host, port 1234)
-│   ├── gemma-4-31b-it
-│   └── text-embedding-embeddinggemma-300m
-├── PostgreSQL (host or Docker)
-└── Iris services (run locally, call LM Studio at localhost:1234)
-```
+| Source | Type | Volume | Licence / access |
+|---|---|---|---|
+| Thailand Skill Mapping API | Public open-data JSON | 4,376 skills · 371 careers · snapshot 14 MB | Open, no auth; pinned locally per analysis |
+| TQF (มคอ.2) documents | PDF | 2–10 per study | Published by universities; SWU and KU obtained |
+| Expert annotation | Manual labels | ~50 courses | Produced by the project |
 
-### Production Environment (CSML)
-```
-CSML Server (NVIDIA A30 24GB, 512GB RAM)
-├── /home/comsci/models/          ← models on host filesystem
-│   ├── gemma-4-31b-it
-│   └── text-embedding-embeddinggemma-300m
-└── docker-compose (production stack)
-    ├── ollama (model server container)
-    │   └── volume: /home/comsci/models → /root/.ollama/models
-    ├── iris-api (FastAPI backend)
-    ├── iris-web (React frontend, nginx)
-    ├── iris-worker (pipeline workers — scraping, extraction, analysis)
-    └── postgres (database)
-```
-
-**Pre-deployment requirement:** Disable MIG on CSML A30 (`sudo nvidia-smi --mig 0`) to allow full GPU allocation to the Ollama container.
+**Ethics.** No personal data is processed. Job postings are never touched — only
+aggregate published statistics. TQF documents are public institutional records.
+Programme analyses are published only with the owning department's consent.
 
 ---
 
-## Risks & Mitigations
+## Risks
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| LLM extraction quality on formal Thai TQF text is unvalidated | Medium | High | Manual evaluation on sample of 50 course descriptions before full pipeline run; adjust prompt if recall is low |
-| Job posting platform ToS changes or scraping blocks | Medium | Medium | Scrape once for v1 dataset; document collection date; add rate limiting and respectful crawl delays |
-| CSML is a shared department resource — GPU may not always be available | Medium | Medium | Queue-based pipeline; extract and store results in DB so re-inference is not needed per query; design for async processing |
-| MIG configuration on CSML A30 causing reduced GPU performance | Low (fixable) | High | Disable MIG before deployment (`nvidia-smi --mig 0`); verify with `nvidia-smi` post-disable |
-| Emergent skill vocabulary instability across runs | Low | Medium | Fix vocabulary snapshot after initial construction; only update vocabulary when new programmes are added via explicit re-clustering step |
-| Thai PDPA compliance for job posting data | Low | High | Collect only non-personal job metadata; document data handling in methods section of paper |
+| **Demand corpus is not Thai-only.** Posting counts range 203 to 6.3 M per career, implausible for Thailand alone; the corpus may be international or cumulative | High | High | Clarify with สป.อว./KMITL before writing methods. If international, reframe claims from "Thai labour market" to "the national standard's reference demand data" — the contribution survives, the wording must not overstate |
+| Demand vector truncated at ~100 skills per career | Certain | Medium | Stated as a limitation; no "not demanded" claims; ask whether full vectors are available for research |
+| Glyph repair table does not generalise to other producers | Medium | Medium | Validate on a third document from a different producer; the integrity gate fails safe by rejecting rather than silently corrupting |
+| `ำ` collapse (KU) is genuinely lossy | Certain for that document | Medium | Lexicon-based restoration; report residual error rate; prefer a better source file |
+| Full KU มคอ.2 unavailable — current file is an excerpt without the curriculum map | High | Medium | Request the full document; until then level inference is evaluable on one programme only |
+| Local model too weak for reliable linking | Medium | High | RAG turns the task into constrained selection; if quality is insufficient, escalate model size before changing method — measured at the evaluation gate, not assumed |
+| API is beta (0.8.1) and may change | Medium | Low | Snapshots are pinned and versioned; the engine never calls the live API during analysis |
+| Single self-hosted server is a single point of failure | Medium | Low | Public site is fully static and unaffected; engine downtime delays new analyses only |
 
 ---
 
 ## Alternatives Considered
 
-| Alternative | Reason Not Selected |
+| Alternative | Why not |
 |---|---|
-| WangchanBERTa for Thai skill extraction | Fails to discriminate closely related Thai terms (97.21% cosine similarity between Physician/Dentist — lertmethaphat-2025); would collapse skill distinctions essential to the analysis |
-| Fixed skill taxonomy (O*NET, ESCO, SFIA) | No Thai-language version exists; imposing an English taxonomy on Thai TQF text would introduce translation noise and miss domain-specific terms; emergent vocabulary is more honest |
-| Symmetric gap metric | Directional KL divergence is more actionable — administrators need to know what graduates lack (market‖programme direction), not what they have in excess |
-| Live job posting scraping | Increases v1 complexity; temporal stability of static snapshot is sufficient for academic publication and initial institutional use; live scraping earmarked for v2 |
-| RAG-based curriculum extraction | Validated as superior to zero-shot (xu-2025) but requires a retrieval corpus not yet available; earmarked for v2 |
-| Single-container deployment | Tightly couples model server, application, and database; harder to update and scale; multi-container docker-compose is the correct architecture for the CSML environment |
+| Continue with an emergent, self-clustered vocabulary | Unstable across runs, no ground truth, and now incompatible with the national standard the sector is adopting |
+| Keep scraping job postings | Duplicates published state data, exposes the project to ToS risk, and produces results nobody can reproduce |
+| Vector database (pgvector, Qdrant) for skill retrieval | 4,376 fixed vectors fit in 13 MB of RAM; exact search is microseconds. A vector DB solves a scaling problem this design does not have |
+| OCR or a vision model for damaged Thai PDFs | Measurement shows the damage is glyph substitution, not deletion — deterministic repair is cheaper, auditable, and reproducible |
+| Keep the Rust backend | Its concurrency advantage existed for scraping. The remaining work is PDF parsing, Thai NLP, numerics, and evaluation tooling — all Python — and a Rust core would need a Python sidecar anyway |
+| Run the engine on CSML | Shared departmental resource with contended GPU. The project's own server is dedicated and always on |
+| Expose the analysis API publicly | Unauthenticated GPU access is abuse-prone; the department's faculty are the only intended users at this stage |
+| Next.js for the web tier | The public tier is data display; OpenNext machinery is not justified. Astro matches the lab site's existing static-assets-on-Workers deployment |
 
 ---
 
-## Open Technical Questions
+## Open Questions
 
-- What credit-hour weighting function best reflects a course's contribution to the programme skill profile? (empirical — Phase 4)
-- What is the optimal HDBSCAN parameter set (min_cluster_size, min_samples) for the Thai skill term embedding space? (empirical — Phase 4)
-- How reliable is gemma-4-31b-it zero-shot extraction on sparse TQF course descriptions (1–3 sentences)? (requires manual evaluation on sample — early Phase 4)
-- What prompt template produces the most accurate skill extraction from bilingual (Thai+English) TQF descriptions? (empirical — Phase 4)
-- Will Ollama serve `text-embedding-embeddinggemma-300m` (a custom Unsloth-quantized model) or does a custom inference endpoint need to be built? (technical investigation — early Phase 4)
-- Does disabling MIG on CSML A30 require a reboot? (operational — pre-deployment check)
+Blocking the methods section:
+
+- What corpus underlies the demand counts — Thai or international, what window, is `N`
+  cumulative? *(external — สป.อว. / KMITL)*
+- Is the ~100-skill cap a display limit or a data limit, and can full vectors be
+  obtained for research? *(external)*
+
+Empirical, resolved during implementation:
+
+- Does the glyph repair table generalise across PDF producers?
+- What retrieval depth `k` balances recall against adjudication cost?
+- Which of the three level-inference sources is most reliable, and how often do they
+  disagree?
+- Can a model that fits the available VRAM adjudicate reliably, given RAG turns the
+  task into constrained selection?
+- How should skills a course develops that the *standard* does not contain be recorded?
 
 ---
 
-_Phase complete when: Architecture is agreed, use cases are validated with stakeholders, product design is complete, and the team can begin detailed design and implementation._
+_Phase 3 is complete when: this proposal is agreed, the product design is rewritten to
+match, and the implementation plan's Sprint 0 can begin._

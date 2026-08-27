@@ -1,8 +1,20 @@
 ---
 type: question
 owner: UX/UI Designer + Domain Expert
-status: open
+status: revised
 ---
+
+> ⚠️ **Extended 2026-08-27.** The heatmap remains the primary format and the validation
+> behind it ([[ahadi-2022-skills-taught-vs-sought]], [[hilliger-2022-curriculum-analytics-tool]])
+> still stands. Two additions:
+>
+> 1. **The heatmap gains a third dimension** — cells now carry a proficiency level, not
+>    binary presence ([[proficiency-levels]]). Level must be legible without relying on
+>    colour alone.
+> 2. **Truncation must be visible.** Absence from a career's demand vector means *below the
+>    ~100-skill cut-off*, never *not demanded*. The visualisation may not render absence in
+>    a way that reads as a confirmed zero.
+
 
 ## Question
 What visualisation format is most actionable for academic administrators and non-technical stakeholders?

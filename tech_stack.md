@@ -1,240 +1,170 @@
-# IRIS — Technology Stack
+# Iris — Technology Stack
+
+> Rewritten 2026-08-27 for the national-standard pivot. The previous stack
+> (Rust/Axum + Apalis + HDBSCAN sidecar, or before that FastAPI + Celery + JSON files)
+> was built around scraping job boards and clustering an emergent skill vocabulary.
+> Neither exists any more. See [`solution-proposal.md`](03-solution-design/solution-proposal.md).
 
 ---
 
-## Deployment Model
+## Shape of the system
 
-IRIS runs as a **web application in Docker containers** orchestrated with Docker Compose. All services (frontend, backend, AI worker) are containerized. Data (job postings, uploaded programme documents) is persisted in **local host storage** mounted into the containers via Docker volumes — nothing is stored inside the containers themselves.
+Two deployables with one contract between them.
+
+| | Engine | Web |
+|---|---|---|
+| **Runs on** | `linux-gpu-server` — department office, 24/7 | Cloudflare Workers |
+| **Language** | Python 3.12 | TypeScript |
+| **Why there** | Needs a GPU, native libraries, and tens of minutes per run | Must stay up regardless of the engine |
+| **Reached by** | Cloudflare Tunnel, behind Cloudflare Access | `vru-ai.com/iris` |
+
+The engine **publishes** versioned result documents. The web tier only reads published
+results. Nothing on the public site touches the GPU server at request time.
 
 ---
 
-## Architecture Overview
+## Engine — Python
+
+| Concern | Choice | Note |
+|---|---|---|
+| Language | Python 3.12 | The whole task — PDF parsing, Thai NLP, numerics, evaluation tooling — is Python-native |
+| API | FastAPI | Upload, job status, results, publish |
+| Job execution | DB-backed job table + a worker process | Runs are minutes-long and few; Celery/Redis would be machinery without a purpose |
+| Database | PostgreSQL 16 | Source of truth. **No `pgvector`** — see below |
+| Migrations | Alembic | |
+| PDF text | PyMuPDF | Verified against poppler on both test documents — identical output, so either works; PyMuPDF for the richer API |
+| Document index | [PageIndex](https://github.com/VectifyAI/PageIndex) | Locates มคอ.2 sections across universities; nodes carry page ranges, giving provenance |
+| Thai NLP | PyThaiNLP | Tokenisation, and lexicon-based restoration of collapsed `ำ` |
+| Numerics | NumPy, SciPy | Retrieval matrix, alignment metrics |
+| Report | Jinja2 + WeasyPrint | HTML report, PDF export |
+| Structured LLM output | Pydantic v2 | Linking output constrained to valid skill IDs |
+| Tests | pytest | Metric functions have known-input/known-output tests |
+| Lint / format | ruff | |
+
+### Why not a vector database
+
+The skill vocabulary is **fixed national reference data**: 4,376 entries. At 768
+dimensions that is a 13 MB `float32` matrix. Exact cosine similarity over it is a
+single `numpy` matrix multiply — microseconds, no index to build, no extra service to
+run, no approximation to tune.
+
+`pgvector` was in the previous design to hold an *emergent* vocabulary that grew as new
+programmes were clustered in. The pivot deleted that vocabulary. The scaling problem a
+vector database solves does not exist here.
+
+Retrieval combines that dense matrix with lexical matching — necessary because tool
+names (`Docker`, `.NET Core`, `Apache Spark`) match far better lexically than
+semantically.
+
+### Models
+
+Served over an OpenAI-compatible endpoint so dev and production differ only by
+`MODEL_SERVER_URL`.
+
+| Role | Requirement |
+|---|---|
+| Adjudication | Follows a constrained multiple-choice instruction and returns valid JSON. RAG reduces this from open generation to selection among ~30 candidates, so a model sized to the available VRAM is viable — to be confirmed at the evaluation gate, not assumed |
+| Embedding | Multilingual, handles Thai and English skill terms |
+| Serving | LM Studio (dev) / Ollama (production), both on `linux-gpu-server` |
+
+> ⚠️ Model choice is **pending a VRAM check** on `linux-gpu-server`. A previous commit
+> recorded dropping from `gemma-4-31b-it` to `gemma-4-e4b` to fit 19 GB. Decide against
+> measured linking quality, not model size.
+
+---
+
+## Web — Astro on Cloudflare
+
+| Concern | Choice | Note |
+|---|---|---|
+| Framework | Astro | Static-first with islands for the interactive views; matches how `vru-ai-web` already deploys |
+| Hosting | Cloudflare Workers (static assets) | Same pattern as the lab site |
+| Route | `vru-ai.com/iris` | Listed among lab projects |
+| Auth | Cloudflare Access | Department faculty allowlist. No login code in the application |
+| Engine access | Cloudflare Tunnel | Outbound-only from the office server — no port forwarding, no public IP, no university firewall changes |
+| Charts | Client-side island | Heatmap (courses × skills), ranked gap tables |
+| Published results | **Build-time JSON** | Not D1/R2 in v1 — a handful of programmes, versioned in git, reproducible. Move to D1/R2 when the result set outgrows a build artefact |
+
+### Public and gated surfaces
 
 ```
-Host Machine
-├── docker-compose.yml
-├── .env                           ← secrets (git-ignored; copy from .env.example)
-├── config/                        ← runtime config (git-tracked)
-│   └── scraper_config.json        ← scraping targets, selectors, rate limits
-├── data/                          ← mounted into containers (content git-ignored)
-│   ├── job_postings/              ← scraped job data (JSON)
-│   │   └── <source>/<year>/
-│   ├── programmes/                ← uploaded academic documents
-│   │   └── <programme_name>/<year>/
-│   └── results/                   ← gap analysis output (JSON)
-│       └── <programme_name>/<timestamp>/
-│
-└── Docker Network (iris_net)
-    ├── frontend    (Next.js)       :3000
-    ├── backend     (FastAPI)       :8000
-    └── ai_worker   (Python)        ← background task runner
+vru-ai.com/iris          public  · Astro static · published results · no backend
+vru-ai.com/iris/app      gated   · Cloudflare Access → Tunnel → FastAPI
 ```
 
----
-
-## Services
-
-### Frontend — Next.js
-| Item | Choice |
-|------|--------|
-| Framework | Next.js 14+ (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS |
-| UI Components | shadcn/ui |
-| State Management | Zustand |
-| HTTP Client | Axios / fetch |
-
-**Key UI features:**
-- Programme document manager — upload documents (PDF, DOCX), browse programmes as folder tree, list documents per programme per year
-- Job market scraping controls — configure target sites, trigger scraping jobs, monitor progress
-- Gap analysis dashboard — alignment scores, skill gap charts, trend visualizations
-- Report viewer — narrative summaries and recommendations
+The public surface has no runtime dependency on the engine, so it is unaffected when
+the engine is busy, restarting, or offline.
 
 ---
 
-### Backend — FastAPI
-| Item | Choice |
-|------|--------|
-| Framework | FastAPI |
-| Language | Python 3.11+ |
-| Task Queue | Celery + Redis |
-| File Handling | python-multipart (upload), aiofiles |
-| Document Parsing | PyMuPDF (PDF), python-docx (DOCX) |
-| Web Scraping | Scrapy / httpx + BeautifulSoup4 |
-| Data Validation | Pydantic v2 |
-| API Docs | Auto-generated via FastAPI (Swagger UI) |
+## Data storage
 
-**Responsibilities:**
-- REST API for frontend
-- Programme document upload and file system management
-- Trigger and monitor scraping jobs
-- Trigger and monitor AI analysis tasks
-- Serve gap analysis results and reports
+| What | Where | Committed? |
+|---|---|---|
+| National standard snapshot | `data/skillmapping/<YYYY-MM-DD>/` | **Yes** — the reproducibility anchor |
+| Source TQF PDFs | `data/programmes/` | No — institutional documents |
+| Engine working data | PostgreSQL | No |
+| Published results | Versioned JSON, built into the web tier | **Yes** |
+| Generated PDF reports | Engine filesystem; R2 if they outgrow it | No |
+
+The snapshot is pinned deliberately: the upstream API is beta (`0.8.1-beta-public`) and
+its data will change. **The engine never calls the live API during an analysis** — it
+reads the pinned snapshot, so a result can be reproduced years later.
 
 ---
 
-### AI Worker — Python
-| Item | Choice |
-|------|--------|
-| LLM | Gemma 3 (local, via Ollama or llama.cpp) |
-| GPU Acceleration | CUDA (NVIDIA) → MPS (Apple Silicon) → CPU fallback |
-| Agent Framework | LangChain / LangGraph |
-| Embeddings | sentence-transformers (local) |
-| NLP Utilities | spaCy, NLTK |
-| Statistical Analysis | NumPy, SciPy, scikit-learn |
-| Data Processing | Pandas |
+## Repository layout
 
-**GPU Priority Logic:**
-```python
-import torch
-
-if torch.cuda.is_available():
-    device = "cuda"
-elif torch.backends.mps.is_available():
-    device = "mps"
-else:
-    device = "cpu"
 ```
-
----
-
-### Infrastructure
-| Item | Choice |
-|------|--------|
-| Containerization | Docker |
-| Orchestration | Docker Compose |
-| Reverse Proxy | Nginx (routes `/` → frontend, `/api` → backend) |
-| Message Broker | Redis (Celery broker + result backend) |
-| Local Storage | Host-mounted Docker volumes |
-
----
-
-## Data Storage
-
-IRIS uses **local file system storage** on the host machine only — no database server is required in the initial release.
-
-### Job Postings
-- Format: **JSON** files
-- Location: `./data/job_postings/<source_name>/<year>/YYYY-MM-DD.json`
-- Each file contains an array of normalized job posting objects
-
-```json
-{
-  "scraped_at": "2026-03-12T10:00:00Z",
-  "source": "example-jobs-site",
-  "postings": [
-    {
-      "id": "abc123",
-      "title": "Data Engineer",
-      "company": "Acme Corp",
-      "sector": "Finance",
-      "career_path": "Data Engineering",
-      "skills": ["Python", "SQL", "Spark"],
-      "posted_date": "2026-03-10"
-    }
-  ]
-}
-```
-
-### Academic Programme Documents
-- Format: **PDF, DOCX** (as uploaded by user)
-- Location: `./data/programmes/<programme_name>/<year>/`
-- Parsed text and extracted competencies cached as JSON alongside source files
-
-### Analysis Results
-- Format: **JSON**
-- Location: `./data/results/<programme_name>/<run_timestamp>/`
-
----
-
-## Docker Compose Structure
-
-```yaml
-services:
-  frontend:
-    build: ./frontend
-    ports: ["3000:3000"]
-    depends_on: [backend]
-
-  backend:
-    build: ./backend
-    ports: ["8000:8000"]
-    volumes:
-      - ./data:/app/data          # host storage mounted
-    depends_on: [redis]
-    environment:
-      - DATA_DIR=/app/data
-
-  ai_worker:
-    build: ./ai_worker
-    volumes:
-      - ./data:/app/data          # same host storage
-    depends_on: [redis, backend]
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]  # enable GPU passthrough when available
-
-  redis:
-    image: redis:7-alpine
-    ports: ["6379:6379"]
-
-  nginx:
-    image: nginx:alpine
-    ports: ["80:80"]
-    depends_on: [frontend, backend]
+iris/
+├── 01-brainstorm/
+├── 02-literature-review/
+├── 03-solution-design/
+│   ├── solution-proposal.md
+│   ├── product-design.md
+│   └── data-feasibility.md
+├── 04-implementation/
+│   ├── engine/                 Python — ingestion, linking, analysis, API
+│   └── web/                    Astro — public site + gated app
+├── 05-reports/
+└── data/skillmapping/          pinned national standard snapshots
 ```
 
 ---
 
-## AI Model
+## Environment
 
-| Item | Detail |
-|------|--------|
-| Model | Gemma 3 (Google) |
-| Serving | Ollama (recommended) or llama.cpp |
-| Quantization | Q4_K_M for CPU/MPS; full precision or Q8 for CUDA |
-| Context Window | 8k tokens (default); configurable per task |
-| Hardware Priority | CUDA GPU → Apple MPS → CPU |
+```
+# Model server
+MODEL_SERVER_URL=http://localhost:1234/v1     # LM Studio (dev)
+# MODEL_SERVER_URL=http://ollama:11434/v1     # Ollama (production)
+EXTRACTION_MODEL=<pending VRAM check>
+EMBEDDING_MODEL=<pending VRAM check>
 
-Ollama runs on the **host machine** (not in Docker) and is accessed by the AI worker container via `host.docker.internal` or a configured host IP. This avoids GPU passthrough complexity while still keeping services containerized.
+# Database
+DATABASE_URL=postgresql://iris:...@localhost:5432/iris
 
----
+# Standard snapshot
+SKILLMAP_SNAPSHOT=data/skillmapping/2026-08-27
 
-## Development Environment
-
-| Tool | Purpose |
-|------|---------|
-| VS Code | Primary IDE |
-| Docker Desktop | Container management |
-| Ollama | Local LLM serving |
-| Python 3.11+ | Backend and AI worker |
-| Node.js 20+ | Frontend |
-| Git + GitHub | Version control |
+# PageIndex
+PAGEINDEX_MODE=local
+```
 
 ---
 
-## Security Considerations
-
-- Secrets are stored in `.env` (git-ignored); `.env.example` documents all variables with safe placeholders
-- Uploaded documents are stored only on the local host file system; no cloud upload
-- Backend API is not exposed publicly; Nginx acts as the sole entry point
-- File upload validation: MIME type and extension checks (PDF, DOCX only); path traversal prevented by sanitizing filenames
-- Scraping respects `robots.txt` and rate limits per target site configuration
-- Scraper configuration (`config/scraper_config.json`) is git-tracked but contains no credentials
-- No user authentication required in the initial release (single-user local deployment)
-
----
-
-## Technology Decision Log
+## Decision log
 
 | Decision | Rationale |
-|----------|-----------|
-| Gemma 3 (local) | Privacy-preserving; no API cost; runs on-device with GPU acceleration |
-| Ollama for model serving | Simplest way to run Gemma 3 locally; avoids GPU-in-Docker complexity |
-| FastAPI | Async-native, fast, excellent Pydantic integration, auto API docs |
-| Next.js App Router | Modern React with server components; good for document management UI |
-| Local JSON storage | Simplicity; no DB setup; easily inspectable and portable |
-| Celery + Redis | Decouples long-running scraping/AI tasks from HTTP request cycle |
-| Docker Compose | Single-command startup; reproducible across machines |
+|---|---|
+| Python everywhere in the engine | PDF parsing, Thai NLP, numerics, and evaluation tooling are all Python. Rust's advantage was scraping concurrency, which the pivot removed; a Rust core would have needed a Python sidecar regardless |
+| No vector database | Fixed 4,376-entry vocabulary fits in RAM; exact search beats approximate search at this size |
+| No Celery/Redis | Few, long, low-concurrency jobs. A job table and a worker process are less to operate and easier to reproduce |
+| PageIndex for document navigation | มคอ.2 structure is regulated but formatting is not; page-range provenance is a research requirement |
+| Deterministic glyph repair, not OCR | Measurement showed substitution rather than deletion — repair is auditable and reproducible where OCR is neither |
+| Two deployables | The public site must not depend on a GPU server's availability |
+| Own `linux-gpu-server`, not CSML | CSML's GPU is contended across the department; this machine is dedicated and always on |
+| Cloudflare Tunnel + Access | Reaches a machine behind university NAT with no inbound exposure, and provides auth without application code |
+| Astro, not Next.js | Data-display workload; matches the lab site's existing deployment; better static/SEO fit for a project page |
+| Build-time JSON, not D1/R2, in v1 | Small result set, versioned in git, one fewer moving part |
+| Snapshot pinned and committed | Upstream is beta and will change; reproducibility is a publication requirement |

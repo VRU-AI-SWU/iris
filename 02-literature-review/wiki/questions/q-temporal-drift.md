@@ -1,8 +1,20 @@
 ---
 type: question
 owner: Data Engineer + Data Scientist
-status: open
+status: revised
 ---
+
+> ⚠️ **Reframed 2026-08-27.** This question was posed for a system taking a single
+> 12-month scrape, where drift was a threat to validity. The national standard publishes a
+> per-skill **`growth`** rate per career (10,815 values in the digital industry, range
+> 0–706 %), so temporal change becomes an available *signal* rather than an unmeasurable
+> risk.
+>
+> The new question is what to do with it: a growth-adjusted view asks whether a curriculum
+> keeps pace with skills that are rising, not merely whether it matches the current stock.
+> See [[q-prevalence-metrics]], option 4. The literature below still grounds the
+> interpretation — technical skills volatile, soft skills stable.
+
 
 ## Question
 How do we handle temporal drift in job postings — the fact that skill demand shifts over time?

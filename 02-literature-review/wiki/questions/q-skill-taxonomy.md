@@ -1,31 +1,61 @@
 ---
 type: question
 owner: Researcher + Domain Expert
-status: open
+status: answered
 ---
 
+> ⚠️ **Answer replaced 2026-08-27.** The previous working answer — emergent vocabulary at
+> extraction time, post-hoc ESCO mapping — is superseded by the adoption of the national
+> standard. See [[q-thai-ontology]] for why.
+
 ## Question
-What skill taxonomy or ontology should we use? (O*NET, ESCO, SFIA, or a Thai-specific custom taxonomy?)
+What skill taxonomy or ontology should Iris use?
 
 ## Why This Matters for Iris
-The taxonomy choice determines how skills are named, grouped, and compared across programmes and job postings. A fixed taxonomy enforced at extraction time risks missing context-specific skills; a purely emergent vocabulary risks inconsistency across datasets.
-
-## Initial Hypothesis
-Use a data-driven emergent vocabulary at extraction time — let skills surface from the data without forcing a fixed taxonomy. Optionally map the resulting clusters to a reference taxonomy (O*NET, ESCO, SFIA) post-hoc for cross-context comparability and academic reporting.
+The taxonomy determines how skills are named, grouped, and compared. It also determines
+whether results are reproducible and whether they can be compared with anyone else's.
 
 ## Papers Addressing This
-- [[sabet-2024-course-skill-atlas]] — uses O*NET DWAs as fixed taxonomy; highlights the limitation that fixed taxonomies miss emerging skills
-- [[senger-2024-dl-skill-extraction-survey]] — ESCO is dominant in the field; terminology inconsistency across the literature is a known problem
-- [[luyen-2025-skill-decomposition-ontology]] — LLMs can decompose skills to align with ontologies; few-shot prompting improves ontology alignment
-- [[xu-2025-llm-curricular-analytics]] — RAG grounded in a skill knowledge base outperforms zero-shot for curriculum skill extraction
-- [[kavargyris-2025-escox-skill-extraction]] — ESCOX: LLM + ESCO embeddings pipeline; top extracted SE skills: Java, SQL, DevOps, Python, Agile — cross-check benchmark for our extraction
-- [[dixon-2023-occupational-models-42m]] — 775-skill curated vocabulary sufficient for US national scale; confirms bounded vocabulary size is viable
-- [[vo-2022-nlp-curriculum-learning-path]] — CSIT-NER: domain-specific BERTOverflow fine-tuning outperforms general BERT for CS/IT skill NER
+- [[thailand-skill-mapping]] — ⭐ the adopted vocabulary: 4,376 Thai skills with
+  definitions and three graded levels, official national standing
+- [[dixon-2023-occupational-models-42m]] — a bounded 775-skill vocabulary suffices at US
+  national scale; supports fixed-vocabulary viability, and 4,376 is comfortably above it
+- [[kavargyris-2025-escox-skill-extraction]] — LLM + taxonomy-embedding linking pipeline
+  against ESCO; the direct methodological template
+- [[xu-2025-llm-curricular-analytics]] — RAG grounded in a skill base beats zero-shot for
+  course→skill work; the standard's definitions supply that base
+- [[senger-2024-dl-skill-extraction-survey]] — fixed taxonomies miss emerging and
+  domain-specific skills; the cost being accepted here, tracked in [[q-out-of-vocabulary]]
+- [[sabet-2024-course-skill-atlas]] — fixed O*NET DWAs applied to syllabi at national
+  scale; the closest precedent for the curriculum side
+- [[luyen-2025-skill-decomposition-ontology]] — few-shot decomposition to close
+  text↔taxonomy granularity gaps
+- [[vo-2022-nlp-curriculum-learning-path]] — domain-tuned NER for CS/IT curriculum text;
+  an alternative candidate-generation route
 
 ## Current Working Answer
-status: partial
+status: **answered — the national standard, pinned by snapshot**
 
-Our emergent vocabulary approach is validated by the literature — fixed taxonomies (O*NET, ESCO) consistently miss emerging and domain-specific skills. ESCO is the most suitable reference taxonomy for post-hoc mapping given its multilingual nature, but lacks Thai language support. The literature shows RAG (retrieval over a growing skill vocabulary) outperforms zero-shot, suggesting we should evolve our extraction from zero-shot toward RAG as our skill vocabulary grows.
+Iris adopts **Thailand Skill Mapping** as its controlled vocabulary. The task becomes
+[[skill-entity-linking]] rather than open extraction plus clustering.
+
+What this buys:
+
+| | Emergent vocabulary | National standard |
+|---|---|---|
+| Stability across runs | varies | fixed |
+| Ground truth for evaluation | none | annotation is well defined |
+| Comparability with other work | none | anyone using the standard |
+| Reproducibility | poor | pinned snapshot |
+| Proficiency grading | absent | three levels with criteria |
+| Official standing | none | สป.อว. reference data |
+
+The trade — coverage of skills outside the vocabulary — is accepted knowingly and
+tracked in [[q-out-of-vocabulary]]. ESCO mapping is dropped: it was a proxy for the
+comparability the national standard now provides directly, and translating Thai
+curriculum content into a European English taxonomy would add noise for no gain.
 
 ## Remaining Uncertainty
-Does any Thai-specific skill taxonomy exist that could serve as a starting point? (Q2 not yet answered.) How should we seed the RAG knowledge base before the first TQF extractions?
+- Coverage of academic CS content — [[q-out-of-vocabulary]]
+- Retrieval depth `k` for candidate generation, and dense/lexical balance
+- Snapshot refresh policy as the standard evolves

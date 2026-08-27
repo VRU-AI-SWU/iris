@@ -1,8 +1,21 @@
 ---
 type: question
 owner: AI Engineer + Data Scientist
-status: open
+status: revised
 ---
+
+> ⚠️ **Extended 2026-08-27.** The answer below still holds for *processing* Thai text.
+> It assumed, as the Thai NLP literature generally does, that the input text is correct.
+>
+> Measurement on real มคอ.2 documents shows it is not: one loses 99 % of karan and 86 % of
+> mai tho to font encoding, another drops every `ำ`. Both extract without error and look
+> plausible. **A text-layer integrity gate must run before any of the NLP below.** See
+> [[thai-pdf-text-integrity]].
+>
+> Also note the extraction-model reasoning has changed: RAG makes adjudication a
+> constrained selection task among ~30 candidates rather than open generation, which
+> favours smaller models than the earlier zero-shot design required.
+
 
 ## Question
 How do we handle Thai-language skill extraction — translate to English first, or extract directly in Thai?
