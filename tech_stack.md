@@ -80,9 +80,25 @@ Served over an OpenAI-compatible endpoint so dev and production differ only by
 | Disk free | 193 GB |
 | Python | 3.12.3 — engine verified against it (23 tests pass) |
 
-⚠️ **The usable ceiling is 15 GB, not 24 GB, until the 9 GB is accounted for.** A previous
-commit recorded 19 GB available, so the figure has moved. Candidate models are sized to
-15 GB; if the 9 GB is reclaimable, larger candidates come back into range.
+**Where the 9 GB goes** (measured 2026-08-28): a Prostate MRI training run holds
+**7,794 MiB** (`/opt/conda/bin/python`, PID 689325, expected to finish in ~2 days), and
+Xorg, Cinnamon, a browser, Steam and the terminal hold a further **~1,190 MiB permanently**.
+Nothing is stale or leaking.
+
+⚠️ **Plan for the contended case, not the free case.** This machine is shared with the
+lab's other projects, so ~15 GB is the figure an analysis must survive on; ~23 GB is what
+is available when nothing else is training. Sizing to 23 GB would mean analyses failing
+unpredictably whenever another project starts a run.
+
+Mitigations, all cheap:
+
+- **Set `OLLAMA_KEEP_ALIVE` explicitly.** It is currently unset, so Ollama's 5-minute
+  default applies. That default happens to be the right behaviour under contention —
+  models release VRAM between runs — but it should be a decision, not an accident.
+- **Check free VRAM before a run and queue rather than fail.** The job table already exists
+  for this.
+- **Ingestion needs no GPU.** Sprints 1–2 — the integrity gate, glyph repair, PageIndex
+  navigation and section extraction — are CPU work and proceed while the card is busy.
 
 > Model choice is decided at the **Sprint 4 gate on measured linking quality**, not here.
 > Sprint 0's job is to select *candidates that fit* and confirm they can be served.
@@ -180,7 +196,7 @@ PAGEINDEX_MODE=local
 | Extraction engine choice is not a lever | poppler, PyMuPDF and xberg return byte-identical damage on the SWU document (134.5 marks/1k Thai chars each). The defect is the PDF's missing `ToUnicode` mapping, so no reader can recover it — repair and vision fallback are the only routes |
 | Deterministic glyph repair **first**, vision fallback second | Where damage is substitution, repair is exact, auditable and free. Where the text layer has genuinely lost information (KU's `ำ` collapse), no table can recover it — a self-hostable Thai-tuned 3B VLM is the fallback, with provenance flagged |
 | Two deployables | The public site must not depend on a GPU server's availability |
-| Own `gpu-linux-server`, not CSML | CSML's GPU is contended across the department; this machine is dedicated and always on |
+| Own `gpu-linux-server`, not CSML | CSML's GPU is contended across the department and outside the project's control. This machine is **also shared** — with the lab's other projects — but the contention is self-scheduled, which is the real and narrower advantage |
 | Cloudflare Tunnel + Access | Reaches a machine behind university NAT with no inbound exposure, and provides auth without application code |
 | Astro, not Next.js | Data-display workload; matches the lab site's existing deployment; better static/SEO fit for a project page |
 | Build-time JSON, not D1/R2, in v1 | Small result set, versioned in git, one fewer moving part |

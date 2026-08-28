@@ -118,8 +118,14 @@ commit. Finding evidence is not applying it — that lesson cost a full review r
 
 ## Environment
 
-- Engine runs on **`gpu-linux-server`** — the project's own machine, department office,
-  24/7. **Not CSML** (shared, contended GPU)
+- Engine runs on **`gpu-linux-server`** — RTX 3090 24 GB, department office, 24/7.
+  **Not CSML**, whose GPU is contended across the whole department and outside the
+  project's control
+- ⚠️ **`gpu-linux-server` is shared with the lab's other projects.** Measured 2026-08-28:
+  a Prostate MRI training run held 7.8 GB for ~2 days; desktop and X11 hold ~1.2 GB
+  permanently. **Size model residency for ~15 GB, not 24 GB** — an analysis must survive
+  contention rather than fail when another project starts training. Ingestion (Sprints 1–2)
+  needs no GPU at all
 - Models served over an OpenAI-compatible endpoint; dev and production differ only by
   `MODEL_SERVER_URL`
 - Model selection is **pending a VRAM check** — decide on measured linking quality, not

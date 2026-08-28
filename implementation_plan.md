@@ -54,8 +54,17 @@ the method — not to proceed and hope the UI distracts from it.
 - [x] Confirm host capability on `gpu-linux-server`: RTX 3090 24 GB (driver 580.173.02),
       **15.4 GB free**, Ollama running with no models pulled, 193 GB disk, Python 3.12.3
 - [x] Verify the engine runs on the host's Python 3.12 — 23 tests pass on 3.12.13
-- [ ] Account for the ~9 GB of VRAM held by a non-Ollama process — it sets the ceiling
-- [ ] Pull and smoke-test candidate models (decision itself belongs to the Sprint 4 gate)
+- [x] Account for the ~9 GB of held VRAM: a Prostate MRI training run holds 7.8 GB
+      (~2 days remaining), desktop and X11 hold ~1.2 GB permanently. Nothing stale
+- [ ] Set `OLLAMA_KEEP_ALIVE` explicitly (currently unset → 5-minute default)
+- [ ] Pull and smoke-test candidate models — **deferred until the training run finishes**,
+      to avoid competing for VRAM with the lab's other project. The decision itself belongs
+      to the Sprint 4 gate regardless
+
+> ⚠️ **`gpu-linux-server` is shared.** Model residency is sized for the *contended* case
+> (~15 GB), not the free case (~23 GB), so an analysis does not fail unpredictably when
+> another project starts training. **Sprints 1 and 2 need no GPU**, so ingestion work is
+> unblocked by this.
 
 **Deliverable:** ✅ `GET /health` returns 200 and reports snapshot provenance; the snapshot
 loads; 4,376 skills queryable; 12 seniority ladders computed.
@@ -75,6 +84,10 @@ degenerate-career filter. The solution proposal, product design, `CLAUDE.md` and
 ## Sprint 1 — Text-layer integrity gate and glyph repair
 
 **Goal:** turn a damaged TQF PDF into trustworthy Thai text, or refuse it clearly.
+
+🟢 **No GPU required for the main path.** The diagnostic, the glyph repair table and the
+integrity gate are pure CPU work. Only the vision fallback needs the card, and it is
+exercised on the KU excerpt alone — deferrable until the GPU is free.
 
 - [ ] Thai combining-mark diagnostic — marks per 1,000 Thai characters, per mark, with
       the clean-document baseline (~171 total; per-mark table in `data-feasibility.md`)

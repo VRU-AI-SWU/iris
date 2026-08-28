@@ -566,6 +566,7 @@ Programme analyses are published only with the owning department's consent.
 | Local model too weak for reliable linking | Medium | High | RAG turns the task into constrained selection; if quality is insufficient, escalate model size before changing method — measured at the evaluation gate, not assumed |
 | API is beta (0.8.1) and may change | Medium | Low | Snapshots are pinned and versioned; the engine never calls the live API during analysis |
 | Single self-hosted server is a single point of failure | Medium | Low | Public site is fully static and unaffected; engine downtime delays new analyses only |
+| **GPU contention with the lab's other projects.** `gpu-linux-server` is shared: a Prostate MRI training run held 7.8 GB of the 24 GB card for ~2 days in August 2026, leaving 15.4 GB. Desktop and X11 hold a further ~1.2 GB permanently | High — it will recur | Medium | Size model residency for the **contended** case (~15 GB), not the free case, so an analysis does not fail unpredictably when another project is training. Set `OLLAMA_KEEP_ALIVE` explicitly so models release VRAM between runs rather than holding it. Check free VRAM before starting a run and queue rather than fail. Sprints 1–2 need no GPU at all, so ingestion work proceeds regardless |
 
 ---
 
@@ -580,7 +581,7 @@ Programme analyses are published only with the owning department's consent.
 | A different extraction engine | poppler, PyMuPDF and xberg return byte-identical damage on the SWU document (134.5 marks per 1,000 Thai chars each). The defect is the PDF's missing `ToUnicode` mapping; no reader can recover what is not there |
 | Delegating the integrity decision to a document engine's own quality score | xberg reports `quality_score: 1.0` on a document whose karan is 99 % destroyed. Generic quality metrics do not model Thai diacritic integrity, so an automatic low-quality fallback would never fire |
 | Keep the Rust backend | Its concurrency advantage existed for scraping. The remaining work is PDF parsing, Thai NLP, numerics, and evaluation tooling — all Python — and a Rust core would need a Python sidecar anyway |
-| Run the engine on CSML | Shared departmental resource with contended GPU. The project's own server is dedicated and always on |
+| Run the engine on CSML | CSML's GPU is contended across the whole department and its availability is outside the project's control. `gpu-linux-server` is **not dedicated either** — it is shared with the lab's other projects — but the contention is *self-scheduled*: the same people decide what runs and when. That is the real distinction, and it is smaller than "dedicated" would imply |
 | Expose the analysis API publicly | Unauthenticated GPU access is abuse-prone; the department's faculty are the only intended users at this stage |
 | Next.js for the web tier | The public tier is data display; OpenNext machinery is not justified. Astro matches the lab site's existing static-assets-on-Workers deployment |
 
