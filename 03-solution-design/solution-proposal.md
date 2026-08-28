@@ -205,13 +205,25 @@ Every document therefore passes a **diagnostic gate** before ingestion: the rate
 Thai combining marks per 1,000 Thai characters, compared against a clean-document
 baseline (~171). Documents are classified:
 
-- **clean** → proceed
+- **clean** → use the text layer
 - **repairable** → apply the glyph repair table, re-run the gate, proceed on pass
-- **unusable** → reject with a report naming the defect; request a better source file
+- **lossy or unusable** → re-extract with a Thai vision-language model, re-run the gate,
+  and **flag the document as vision-derived in its provenance**
 
 The repair is deterministic and auditable — a table keyed on the substitute glyph and
-its preceding character — rather than an OCR or LLM guess, so the pipeline stays
-reproducible and every restored character can be justified.
+its preceding character — rather than an OCR or LLM guess, so wherever it applies the
+pipeline stays reproducible and every restored character can be justified. It is preferred
+for that reason.
+
+It does not always apply. Where the text layer has *lost* information rather than
+mis-rendered it — KU's collapse of every `ำ` into `า` — no repair table can recover it. The
+fallback is a Thai-tuned open vision model: Typhoon OCR reaches **Levenshtein 0.04 on Thai
+government forms** at 3B parameters, self-hostable alongside the adjudication model. The
+provenance flag matters, because a vision extraction is a model output rather than a
+faithful reading, and any finding traced back to it must say so. The integrity gate runs on
+the vision output too — Thai diacritic loss is a documented failure mode of vision models
+as well, so the same check applies — together with a Thai-character-proportion check to
+catch the language-bias failure where a model drifts into English.
 
 ### 2. Document navigation
 
@@ -244,7 +256,16 @@ adjudicated by a local LLM against the candidates' definitions.
 - **Adjudication is multiple-choice, not open generation** — "which of these 30
   candidate skills does this course develop?" — which is materially easier for a small
   local model than free-form extraction, and produces output that is constrained to
-  valid skill IDs by construction.
+  valid skill IDs by construction. Every accepted link carries an **evidence span**; the
+  constrained, evidence-producing formulation is reported to outperform unconstrained
+  prompting, not merely to explain it better.
+- **Out-of-vocabulary is an explicit decision, not a threshold.** A curriculum teaches
+  theory, research method and ethics that no job advertisement describes; mapping those to
+  the nearest labour-market skill would be confidently wrong. Modelling "none of these"
+  as a first-class output beats similarity thresholding.
+- **An LLM adjudicator is not assumed to be the best ranker.** A supervised ranking
+  baseline is included in the evaluation, because at least one comparable study found
+  supervised models beating decoder-only LLMs at this step.
 
 ### 4. Level inference
 
@@ -260,6 +281,15 @@ from the description alone:
 
 Where the sources disagree, the conflict is recorded rather than silently resolved;
 disagreement rate is itself a reportable finding.
+
+Two constraints from the literature. First, **level is not asked of the LLM holistically**:
+zero-shot LLM classification of learning outcomes into Bloom levels measures at 0.72–0.73,
+more than twenty points behind a classical verb-feature classifier on the same data, so a
+non-LLM baseline over CLO text is part of the evaluation and may win. Second, **the ● / ○
+matrix is evidence, not ground truth** — it is hand-authored for accreditation, and
+reconstructing it automatically reaches only 83–88% agreement with domain experts, varying
+by five points between two programmes at one institution. That variance is also a caveat on
+cross-institution comparison.
 
 ### 5. Alignment measurement
 
@@ -293,11 +323,21 @@ The evaluation gate governs the project: **no user-facing feature is built until
 linking quality is measured.** This is the discipline the previous phase stated and
 then did not follow, and it is why that phase stalled.
 
+**What "adequate" means.** Four independent studies put strict top-1 skill linking against
+a large occupational vocabulary at **0.23–0.29**, and end-to-end pipeline scores near
+**0.56** — and all of them report that ranking is far better than selection (Acc@32 roughly
+double Acc@1; MRR 0.82 against F1 0.57). Iris has grounds to expect better, with a
+3× smaller candidate space and a whole course description rather than a job-posting span as
+input, but must not present its numbers as comparable to theirs. **The consequence is that
+the human review screen is a requirement of the method, not a convenience: at these accuracy
+levels an unreviewed mapping is not evidence.**
+
 | Stage | Method | Gate |
 |---|---|---|
 | Text-layer repair | Character-level accuracy on a manually corrected sample | Repair must not introduce errors |
 | Section extraction | Course count and field completeness vs manual reading of both documents | All courses found |
-| Skill linking | Precision / recall / F1 against expert annotation of a stratified sample of ~50 courses, two annotators, inter-annotator agreement reported | Established before any UI work |
+| Skill linking | Precision / recall / F1 against expert annotation of a stratified sample of ~50 courses, two annotators, inter-annotator agreement reported. **Multiple correct links per course permitted** — single-gold scoring understates performance | Established before any UI work |
+| Out-of-vocabulary | Hold out part of the vocabulary and check the linker declines to link courses that develop it (KB Versioning) | No extra annotation needed |
 | Level inference | Agreement with expert-assigned level; per-source agreement analysis | Reported honestly, including disagreement |
 | End-to-end | Runtime on a full 216-page document | Fits an interactive workflow |
 

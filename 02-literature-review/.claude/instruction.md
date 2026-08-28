@@ -203,53 +203,81 @@ the graph consistent.
 
 ---
 
-## 11. Project-Specific Additions (Iris — Skill Gap Analysis)
+## 11. Project-Specific Additions (Iris — Curriculum Skill Alignment)
 
 These extend — do not replace — the lab standard above.
+*Rewritten 2026-08-28 after the pivot to the national skill standard.*
 
-- **Map every paper to the research questions.** Iris's review is organised
-  around 13 research questions (listed in the ingestion prompt below). Each
-  paper note's `questions:` frontmatter and *Questions Addressed* section must
-  link the `q-*` notes it informs; the narrative is structured by these
-  questions.
-- **Thai-context tagging.** Note whether a paper's evidence is Thai-specific or
-  imported from another labour market — the Thai NLP / Thai job-market subset is
-  the project's distinctive contribution and its scarcest evidence.
-- **Decision discipline.** A `q-*` note reaches `status: resolved` only when the
-  literature settles it; questions deferred to Phase 4 empirical validation stay
-  `open` with the deferral noted. If a new paper changes a working answer, update
-  the question note *and* the narrative section.
+- **Map every paper to the research questions.** Iris's review is organised around the
+  questions in `wiki/questions/` (currently 16, listed in the ingestion prompt below). Each
+  paper note's `questions:` frontmatter and *Questions Addressed* section must link the
+  `q-*` notes it informs; the narrative is structured by these questions.
+- **Thai-context tagging.** Note whether a paper's evidence is Thai-specific or imported
+  from another labour market or language. The Thai subset is the project's distinctive
+  contribution and its scarcest evidence.
+- **Decision discipline.** A `q-*` note reaches `status: answered` only when the literature
+  settles it; questions deferred to Phase 4 empirical validation stay `open` with the
+  deferral noted. If a new paper changes a working answer, update the question note *and*
+  the narrative section.
+- **Superseded questions are retained, not deleted.** When the project's direction changes,
+  mark the affected `q-*` note `closed` / `superseded` / `revised` with a banner explaining
+  why, and keep the original reasoning below it. The decision log is only useful if it
+  records decisions that were later reversed.
+- **Search beyond journals for infrastructure questions.** ⚠️ The April 2026 round
+  concluded "no Thai skill ontology exists" and missed a สป.อว. open-data standard that had
+  been public for nine months, because the standard has no accompanying paper. For any
+  question of the form *does this dataset / ontology / registry / API exist?*, search
+  ministry sites, government open-data portals, and platform documentation directly — a
+  literature search is structurally incapable of answering it.
+- **Record concrete performance numbers.** Where a paper reports accuracy, F1, Acc@k or
+  agreement, the note carries the figure and the conditions it was measured under. These
+  are what calibrate the project's own evaluation targets, and vague summaries cannot.
 
 ### LLM Ingestion Prompt
 
-Copy everything in the block below, append the paper text, and send to the LLM;
-it fills the `papers/` note template (§5). Keep each section to 3–5 sentences.
+Copy everything in the block below, append the paper text, and send to the LLM; it fills
+the `papers/` note template (§5). Keep each section to 3–5 sentences.
 
 ```
-You are a research assistant helping with a project called IRIS — a skill gap
-analysis system for Thai academic programmes. IRIS compares skill distributions
-extracted from TQF (มคอ.2) curriculum documents against job posting data from
-the Thai labour market, using NLP and agentic AI.
+You are a research assistant helping with a project called IRIS. IRIS expresses a Thai
+university curriculum in the vocabulary of the national Thailand Skill Mapping standard
+(สป.อว. / KMITL): it reads a TQF (มคอ.2) document, links each course to the 4,376-skill
+national vocabulary at a stated proficiency level, and compares the resulting programme
+profile against the skill demand that standard publishes for each career.
 
 We are conducting a literature review to answer these open research questions:
 
-Q1  [q-skill-taxonomy]       What skill taxonomy or ontology should we use? (O*NET, ESCO, SFIA, or custom?)
-Q2  [q-thai-ontology]        Does a Thai skill ontology exist that maps well to TQF content?
-Q3  [q-thai-nlp]             How do we handle Thai-language skill extraction — translate first or extract in Thai?
-Q4  [q-implied-skills]       How do we handle skills implied by course content but not explicitly stated?
-Q5  [q-sample-size]          What is the minimum job posting sample size for a stable career path distribution?
-Q6  [q-job-posting-sources]  Where can we obtain Thai job posting datasets ethically?
-Q7  [q-temporal-drift]       How do we handle temporal drift in job postings?
-Q8  [q-credit-weighting]     Should course credit hours weight the skill contribution?
-Q9  [q-visualisation]        What visualisation format is most actionable for academic administrators?
-Q10 [q-gap-direction]        Should the gap be symmetric or directional?
-Q11 [q-segment-taxonomy]     What is the best practical industry segment taxonomy for Thai context?
-Q12 [q-segment-inference]    How reliable is LLM-based segment inference from job description text?
-Q13 [q-registry-lookup]      Can Thai company registries (DBD, SET) provide reliable industry segment lookups?
+LIVE
+Q1  [q-skill-taxonomy]      What controlled vocabulary should we link to, and what does
+                            adopting a fixed national standard cost us?
+Q2  [q-thai-ontology]       Does a Thai skill vocabulary exist at the granularity we need?
+                            (ANSWERED — yes, since July 2025)
+Q3  [q-level-inference]     How do we infer a proficiency level for a course-skill link
+                            from a TQF document, and how reliable is each signal?
+Q4  [q-out-of-vocabulary]   What happens to skills a course develops that the national
+                            vocabulary does not contain?
+Q5  [q-prevalence-metrics]  Which alignment metrics are valid on prevalence data that is
+                            truncated at ~100 skills per career?
+Q6  [q-implied-skills]      How well can we link skills a course develops without naming
+                            them? (recall in skill entity linking)
+Q7  [q-thai-nlp]            How do we process Thai curriculum text — including detecting
+                            and repairing corrupted PDF text layers?
+Q8  [q-gap-direction]       Should the gap be symmetric or directional?
+Q9  [q-temporal-drift]      How do we use the standard's per-skill growth rates?
+Q10 [q-visualisation]       What output format is actionable for a curriculum committee?
+Q11 [q-credit-weighting]    Should course credit hours weight the skill contribution?
+
+CLOSED BY THE PIVOT — do not link papers to these
+Q12 [q-job-posting-sources] · Q13 [q-sample-size] · Q14 [q-segment-taxonomy]
+Q15 [q-segment-inference]   · Q16 [q-registry-lookup]
 
 Read the paper below and fill in the papers/ note template exactly.
-- For "Concepts", suggest 2–5 lowercase-hyphenated slugs (e.g. [[esco-ontology]]).
+- For "Concepts", suggest 2–5 lowercase-hyphenated slugs (e.g. [[skill-entity-linking]]).
 - For "Questions Addressed", list only slugs for questions this paper addresses.
+- ALWAYS record concrete reported numbers (accuracy, F1, Acc@k, dataset size, agreement)
+  and the conditions they were measured under. Numbers over adjectives.
+- In "Notes for the Project", say what the paper changes about Iris's design — including
+  when it changes nothing, and when it rules an approach out.
 - Keep each section concise — 3 to 5 sentences maximum.
 
 [PASTE PAPER TEXT HERE]
@@ -257,9 +285,11 @@ Read the paper below and fill in the papers/ note template exactly.
 
 ### Obsidian Graph Tips
 
-- Tag questions `#question`, papers `#paper`, concepts `#concept`; colour them
-  differently in Graph View.
-- An isolated question node (no paper links) is a genuine research gap —
-  prioritise it.
-- A concept linked by many papers is well-established and safe to rely on in
-  Solution Design.
+- Tag questions `#question`, papers `#paper`, concepts `#concept`; colour them differently
+  in Graph View.
+- An isolated question node (no paper links) is a genuine research gap — prioritise it.
+  Three such gaps are currently confirmed and are contributions rather than oversights:
+  NLP on Thai TQF documents, PDF text-layer corruption in Thai, and grading curriculum
+  skill depth against a published competency scale.
+- A concept linked by many papers is well-established and safe to rely on in Solution
+  Design.

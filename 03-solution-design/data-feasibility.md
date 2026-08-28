@@ -192,9 +192,13 @@ should use both channels where available and agree between them as a confidence 
 
 ## Consequences for the architecture
 
-1. **No OCR or vision pipeline is required** for the SWU failure mode — a deterministic
-   glyph repair table handles it, is auditable, costs nothing, and is reproducible.
-   KU's `ำ` collapse needs a lexicon-based restoration pass.
+1. **Deterministic glyph repair handles the SWU failure mode** — auditable, free,
+   reproducible, and preferred wherever the damage is substitution rather than deletion.
+   ⚠️ **Corrected 2026-08-28:** the original conclusion "no OCR is required" was wrong as a
+   general rule. KU's `ำ` collapse is genuinely lossy, and the literature round found a
+   self-hostable Thai-tuned 3B vision model reaching **Levenshtein 0.04 on Thai government
+   forms** ([[nonesung-2026-typhoon-ocr]]). The gate therefore has **three** outcomes —
+   clean / repairable / lossy-or-unusable → vision re-extraction, flagged as vision-derived.
 2. **A text-layer integrity gate is a first-class pipeline stage,** not an afterthought.
    Documents must be classified `clean / repairable / unusable` before ingestion.
 3. **PageIndex is the right tool for locating sections** across universities that

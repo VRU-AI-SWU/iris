@@ -15,6 +15,22 @@ status: revised
 > Also note the extraction-model reasoning has changed: RAG makes adjudication a
 > constrained selection task among ~30 candidates rather than open generation, which
 > favours smaller models than the earlier zero-shot design required.
+>
+> **2026-08-28 round — two findings.**
+> [[arslan-2026-turkish-skill-extraction]] runs a controlled comparison in a
+> morphologically complex, low-resource language and finds **native-language extraction
+> beats translate-to-English-first**. This confirms the position below with evidence rather
+> than argument, and settles how Iris uses its bilingual channel: the English course
+> description is a *cross-check* on the Thai one, never a substitute for it.
+> Their best pipeline — embedding retrieval then LLM re-ranking, scoring 0.56 end-to-end —
+> is the architecture Iris has chosen.
+>
+> [[nonesung-2026-typhoon-ocr]] adds a self-hostable escape hatch for documents the text
+> layer cannot serve: a **3B Thai-tuned VLM reaching Levenshtein 0.04 on Thai government
+> forms**, against GPT-4o's 0.57. [[nonesung-2025-thaiocrbench]] independently confirms
+> that Thai diacritics are the systematic failure point across all vision models, which is
+> the same vulnerability the text-layer study found by a different route — so the integrity
+> gate must run on the vision path too.
 
 
 ## Question

@@ -32,6 +32,15 @@ whether results are reproducible and whether they can be compared with anyone el
   text↔taxonomy granularity gaps
 - [[vo-2022-nlp-curriculum-learning-path]] — domain-tuned NER for CS/IT curriculum text;
   an alternative candidate-generation route
+- **[[zhang-2024-job-market-entity-linking]]** — ⭐ **added 2026-08-28.** The first
+  span-level skill EL study; sets the field's performance expectation at Acc@1 23.55%
+  against 13,890 ESCO skills
+- **[[arslan-2026-turkish-skill-extraction]]** — a low-resource language with no native
+  taxonomy, forced to borrow ESCO; the position Thai was in before the national standard
+- [[saroglou-2025-esco-eqf-linking]] — sentence context helps linking, and supervised
+  rankers can beat decoder-only LLMs
+- [[dong-2023-out-of-kb-mention-discovery]] — how to handle what a fixed vocabulary misses
+- [[herandi-2024-skill-llm]] — the fine-tuning alternative, not adopted (no labelled Thai data)
 
 ## Current Working Answer
 status: **answered — the national standard, pinned by snapshot**
@@ -59,3 +68,9 @@ curriculum content into a European English taxonomy would add noise for no gain.
 - Coverage of academic CS content — [[q-out-of-vocabulary]]
 - Retrieval depth `k` for candidate generation, and dense/lexical balance
 - Snapshot refresh policy as the standard evolves
+- Whether Iris's smaller candidate space (4,376 vs ESCO's 13,890) and richer input (a whole
+  course description rather than a job-posting span) actually yield better accuracy than
+  the 0.23–0.29 the literature reports. There are grounds to expect it; results must not be
+  presented as directly comparable
+- Whether a supervised ranker beats LLM adjudication, as [[saroglou-2025-esco-eqf-linking]]
+  found for their step — include it in the Sprint 4 ablation

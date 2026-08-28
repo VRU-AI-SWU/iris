@@ -12,6 +12,23 @@ status: revised
 > This is now the central quality question of the Sprint 4 evaluation gate, and RAG over
 > the standard's 4,376 skill definitions is the mechanism the literature
 > ([[xu-2025-llm-curricular-analytics]]) recommends for exactly this.
+>
+> **2026-08-28 round — the quantity is now known, approximately.** Three independent
+> studies put strict top-1 linking accuracy against a large occupational taxonomy at
+> **0.23–0.29** ([[zhang-2024-job-market-entity-linking]] 23.55%,
+> [[saroglou-2025-esco-eqf-linking]] 0.2881) and end-to-end pipeline scores near **0.56**
+> ([[arslan-2026-turkish-skill-extraction]]; [[le-2026-competency-tagging-evidence]]
+> micro-F1 0.57).
+>
+> All of them also report that **ranking is far better than selection** — Acc@32 roughly
+> double Acc@1, MRR 0.82 against F1 0.57. Implicit skills are therefore usually *retrieved*
+> and then *dropped at the decision step*, which is precisely where a human reviewer adds
+> value. This is the evidential basis for ordering the skill-link review screen by
+> confidence, lowest first.
+>
+> [[zhang-2024-job-market-entity-linking]] confirms both models could link genuinely
+> implicit mentions, and warns that single-gold-label scoring understates performance —
+> Iris's annotation protocol must allow multiple correct links per course.
 
 
 ## Question

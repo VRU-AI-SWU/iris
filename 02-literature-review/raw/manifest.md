@@ -4,7 +4,11 @@ Provenance ledger for the literature review. One row per `wiki/papers/` note.
 `PDF in raw/` is the archived filename (`<paper-note-slug>.pdf`), or **—** with
 the reason it is not yet stored.
 
-23 paper notes · 17 PDFs archived · 6 to source.
+34 paper notes · 27 PDFs archived · 7 to source.
+
+> **Updated 2026-08-28** — 11 papers added in the post-pivot review round
+> (see the *Post-pivot round* section below). 10 of the 11 are arXiv-hosted and
+> archived here; 1 is closed-access (Springer).
 
 > The 6 gaps are either closed-access (IEEE, Springer) or open-access papers
 > whose publishers block automated download (Elsevier/ScienceDirect, Cogent) —
@@ -59,3 +63,58 @@ the reason it is not yet stored.
 | macedo-2022-skills-demand-forecasting-temporal | Garcia de Macedo et al. 2022 | macedo-2022-skills-demand-forecasting-temporal.pdf | arXiv:2205.09508 |
 | fettach-2025-skill-demand-temporal-kg | Fettach et al. 2025 | fettach-2025-skill-demand-temporal-kg.pdf | arXiv:2504.07233 |
 | seif-2024-dynamic-jobs-skills-kg | Seif et al. 2024 | seif-2024-dynamic-jobs-skills-kg.pdf | CEUR Vol-3788 |
+
+
+---
+
+## Post-pivot round (added 2026-08-28)
+
+Sourced for the research questions the pivot to the national skill standard opened:
+skill entity linking, out-of-vocabulary handling, proficiency-level inference, Thai
+document extraction, and structure-aware retrieval.
+
+### Skill Entity Linking
+
+| Paper note | Authors, Year | PDF in `raw/` | DOI / link |
+|---|---|---|---|
+| zhang-2024-job-market-entity-linking | Zhang et al. 2024 | zhang-2024-job-market-entity-linking.pdf | 10.48550/arXiv.2401.17979 |
+| arslan-2026-turkish-skill-extraction | Arslan İltüzer et al. 2026 | arslan-2026-turkish-skill-extraction.pdf | 10.48550/arXiv.2601.22885 |
+| saroglou-2025-esco-eqf-linking | Saroglou et al. 2025 | saroglou-2025-esco-eqf-linking.pdf | 10.48550/arXiv.2512.03195 |
+| dong-2023-out-of-kb-mention-discovery | Dong et al. 2023 | dong-2023-out-of-kb-mention-discovery.pdf | 10.1145/3583780.3615036 |
+| herandi-2024-skill-llm | Herandi et al. 2024 | herandi-2024-skill-llm.pdf | 10.48550/arXiv.2410.12052 |
+
+### Curriculum, Competency & Proficiency Level
+
+| Paper note | Authors, Year | PDF in `raw/` | DOI / link |
+|---|---|---|---|
+| le-2026-competency-tagging-evidence | Le et al. 2026 | le-2026-competency-tagging-evidence.pdf | 10.48550/arXiv.2605.28483 |
+| kumar-2025-bloom-taxonomy-classification | Kumar et al. 2025 | kumar-2025-bloom-taxonomy-classification.pdf | 10.48550/arXiv.2511.10903 |
+| zaki-2023-clo-plo-mapping-automation | Zaki et al. 2023 | **—** closed access (Springer) | 10.1007/s10639-023-11877-4 |
+
+### Thai Document Extraction
+
+| Paper note | Authors, Year | PDF in `raw/` | DOI / link |
+|---|---|---|---|
+| nonesung-2026-typhoon-ocr | Nonesung et al. 2026 | nonesung-2026-typhoon-ocr.pdf | 10.48550/arXiv.2601.14722 |
+| nonesung-2025-thaiocrbench | Nonesung et al. 2025 | nonesung-2025-thaiocrbench.pdf | 10.48550/arXiv.2511.04479 |
+
+### Structure-Aware Retrieval
+
+| Paper note | Authors, Year | PDF in `raw/` | DOI / link |
+|---|---|---|---|
+| sarthi-2024-raptor | Sarthi et al. 2024 | sarthi-2024-raptor.pdf | 10.48550/arXiv.2401.18059 |
+
+---
+
+## Non-paper sources
+
+Government publications and platform documentation that the design depends on. These are
+**not** review papers and have no `wiki/papers/` note; they are cited in the narrative's
+*Non-peer-reviewed sources* section and described in
+[[thailand-skill-mapping]].
+
+| Source | Kind | Link |
+|---|---|---|
+| Thailand Skill Mapping (สป.อว. / KMITL) | Open-data platform + API | https://api.skillmapping.in.th/docs |
+| Khomfoi S., *Skill Mapping: Empowering Thailand's Higher Education* | Invited talk abstract | registrar.ku.ac.th (2568/2025) |
+| Anmanatarkul et al. 2025, EV skills mapping | FTE Journal article — **KMUTT, not the KMITL database** | https://so10.tci-thaijo.org/index.php/FTEJournal/article/view/1351 |

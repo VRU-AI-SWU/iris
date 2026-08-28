@@ -65,13 +65,17 @@ the method — not to proceed and hope the UI distracts from it.
 - [ ] Glyph repair table keyed on `(substitute glyph, preceding character)`, derived from
       the SWU document's substitution set (`2`→้, `=`→์, `‚`→ั, `-`→้, `?`→็, `A`→่, …)
 - [ ] `ำ`-collapse restoration via PyThaiNLP lexicon, with a reported residual error rate
-- [ ] Re-run the gate after repair; fail closed if it still does not pass
+- [ ] **Vision fallback** — Typhoon OCR (3B) for documents whose text layer is lossy or
+      unusable; flag the document as vision-derived in provenance
+- [ ] Thai-character-proportion check to catch vision language-bias (drift into English)
+- [ ] Re-run the gate after repair **and after vision extraction**; fail closed if it still
+      does not pass
 
 **Evaluation:** character-level accuracy against a manually corrected 2-page sample from
 each document. Repair must not introduce new errors.
 
 **Deliverable:** `iris ingest --check <pdf>` prints a diagnosis; repaired text for SWU
-passes the gate.
+passes the gate; the KU excerpt passes via the vision path.
 
 > ⚠️ Validate the repair table against a **third** TQF document from a different producer
 > before treating it as general.
@@ -108,7 +112,10 @@ documents — SWU (78 codes seen) and KU (67). Every course must be found.
 - [ ] Bilingual channel — link Thai and English descriptions independently where both
       exist; record agreement as a confidence signal
 - [ ] Record evidence span and retrieval rank for every accepted link
-- [ ] Record skills a course appears to develop that the standard does not contain
+- [ ] **Out-of-vocabulary as an explicit output**, not a similarity threshold — record
+      skills a course appears to develop that the standard does not contain
+- [ ] Synonym enhancement from the three surface forms per skill (Thai title, English
+      title, Thai definition)
 
 **Evaluation:** retrieval recall@k on a small labelled set, to fix `k` before adjudication
 cost is spent.
@@ -123,14 +130,25 @@ cost is spent.
 
 - [ ] Stratified annotation sample: ~50 courses across core / elective / general education
 - [ ] Annotation guideline written from the standard's own skill definitions
-- [ ] **Two annotators**, independently; inter-annotator agreement reported
-- [ ] Precision / recall / F1 for linking; error taxonomy (missed, spurious, wrong-sense)
+- [ ] **Two annotators**, independently; inter-annotator agreement reported —
+      **multiple correct links per course permitted**, since single-gold scoring understates
+      performance
+- [ ] Precision / recall / F1 **and Acc@k** for linking; error taxonomy (missed, spurious,
+      wrong-sense)
+- [ ] **Out-of-vocabulary evaluation via KB Versioning** — hold out part of the vocabulary,
+      check the linker declines to link courses that develop it. No extra annotation
 - [ ] Ablations: dense-only vs hybrid retrieval; Thai-only vs bilingual; `k` sensitivity;
-      model size
+      model size; **supervised ranker vs LLM adjudicator**
 - [ ] Prompt revision driven by the error taxonomy, re-measured on a held-out split
 
 **Gate:** linking quality is documented, reproducible, and adequate for the claims the
 paper intends to make. If it is not, iterate here — do not proceed.
+
+**Reference points from the literature** (Acc@1 0.23–0.29, end-to-end ≈0.56, and ranking
+consistently far ahead of selection). Iris has grounds to expect better — a 3× smaller
+vocabulary and a whole course description as input — but its numbers are not directly
+comparable and must not be reported as such. The same evidence is why the review screen in
+Sprint 9 is a requirement rather than a convenience.
 
 **Deliverable:** an evaluation report in `05-reports/`, and the annotated set committed
 as a reusable benchmark.
@@ -144,8 +162,12 @@ as a reusable benchmark.
 - [ ] Level assignment from CLO text matched against the skill's own level criteria
 - [ ] Level signal from the curriculum mapping table (● vs ○)
 - [ ] Level signal from curriculum position — year from course code, prerequisite depth
-- [ ] Combine the three; **record disagreement rather than silently resolving it**
-- [ ] Report per-source reliability and disagreement rate
+- [ ] **Non-LLM baseline: a verb-feature classifier over CLO text.** Zero-shot LLM Bloom
+      classification measures at 0.72–0.73 against 94% for a classical model on the same
+      data — this baseline may win, and that must be found out before an LLM-only path is built
+- [ ] Combine the sources; **record disagreement rather than silently resolving it**
+- [ ] Report per-source reliability and disagreement rate. The ● / ○ matrix reconstructs at
+      only 83–88% against domain experts — treat it as evidence, not ground truth
 
 **Evaluation:** agreement with expert-assigned level on the Sprint 4 sample.
 

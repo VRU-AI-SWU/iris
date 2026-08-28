@@ -38,14 +38,36 @@ committee will notice immediately, and reasonably distrust the whole report.
   limitation; the closest precedent for the curriculum side specifically
 - [[luyen-2025-skill-decomposition-ontology]] — decomposition can bridge granularity
   mismatch, but not genuine absence
+- **[[dong-2023-out-of-kb-mention-discovery]]** — ⭐ **added 2026-08-28.** BLINKout models
+  out-of-KB status as an explicit NIL prediction target and beats threshold- and
+  feature-based methods across five datasets and three knowledge bases. Also contributes
+  *KB Pruning and Versioning* — synthesising out-of-KB evaluation cases from an ordinary
+  in-KB dataset, with no new annotation
+- [[zhang-2024-job-market-entity-linking]] — evaluates against a single gold ESCO title per
+  mention and notes this underestimates performance where several links are valid; the same
+  scoring trap applies to Iris's annotation protocol
 
 ## Current Working Answer
-status: open
+status: open — *method settled 2026-08-28, magnitude still empirical*
 
-Leaning to **option 2 with option 4 as a by-product**: record out-of-vocabulary skills,
-report them separately, never let them enter a score, and let the accumulated residue
-inform a coverage report back to the standard's maintainers. Option 3 is rejected —
-mapping to a near neighbour would contaminate the alignment metric with fabricated matches.
+**Option 2, with option 4 as a by-product**, and the *how* is now settled on evidence
+rather than principle.
+
+[[dong-2023-out-of-kb-mention-discovery]] shows that treating out-of-vocabulary as an
+**explicit prediction target** measurably beats the similarity-threshold approach that
+would otherwise have been the default implementation. Option 3 (map to the nearest
+in-vocabulary skill) is rejected outright: it fabricates matches and, in a curriculum
+setting, would map *"ทฤษฎีการคำนวณ"* to whatever labour-market skill sits closest —
+confidently and wrongly. See [[nil-entity-linking]].
+
+Two techniques transfer directly and are adopted:
+
+1. **Synonym enhancement** — BLINKout had to construct alternative surface forms; the
+   national standard ships three per skill for free (Thai title, English title, Thai
+   definition).
+2. **KB Versioning as a cheap evaluation set** — hold out a random subset of the 4,376
+   skills and check the linker declines to link courses that develop them. This produces
+   out-of-vocabulary test cases with no extra annotation, and is added to the Sprint 4 gate.
 
 ## Remaining Uncertainty
 - What proportion of a Thai CS curriculum falls outside the vocabulary? *(measurable in

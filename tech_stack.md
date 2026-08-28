@@ -35,6 +35,7 @@ results. Nothing on the public site touches the GPU server at request time.
 | PDF text | PyMuPDF | Verified against poppler on both test documents — identical output, so either works; PyMuPDF for the richer API |
 | Document index | [PageIndex](https://github.com/VectifyAI/PageIndex) | Locates มคอ.2 sections across universities; nodes carry page ranges, giving provenance |
 | Thai NLP | PyThaiNLP | Tokenisation, and lexicon-based restoration of collapsed `ำ` |
+| Vision fallback | Typhoon OCR (3B) | For text layers that are lossy rather than merely substituted. Thai government forms at Levenshtein 0.04, self-hosted; output flagged as vision-derived |
 | Numerics | NumPy, SciPy | Retrieval matrix, alignment metrics |
 | Report | Jinja2 + WeasyPrint | HTML report, PDF export |
 | Structured LLM output | Pydantic v2 | Linking output constrained to valid skill IDs |
@@ -161,7 +162,7 @@ PAGEINDEX_MODE=local
 | No vector database | Fixed 4,376-entry vocabulary fits in RAM; exact search beats approximate search at this size |
 | No Celery/Redis | Few, long, low-concurrency jobs. A job table and a worker process are less to operate and easier to reproduce |
 | PageIndex for document navigation | มคอ.2 structure is regulated but formatting is not; page-range provenance is a research requirement |
-| Deterministic glyph repair, not OCR | Measurement showed substitution rather than deletion — repair is auditable and reproducible where OCR is neither |
+| Deterministic glyph repair **first**, vision fallback second | Where damage is substitution, repair is exact, auditable and free. Where the text layer has genuinely lost information (KU's `ำ` collapse), no table can recover it — a self-hostable Thai-tuned 3B VLM is the fallback, with provenance flagged |
 | Two deployables | The public site must not depend on a GPU server's availability |
 | Own `linux-gpu-server`, not CSML | CSML's GPU is contended across the department; this machine is dedicated and always on |
 | Cloudflare Tunnel + Access | Reaches a machine behind university NAT with no inbound exposure, and provides auth without application code |

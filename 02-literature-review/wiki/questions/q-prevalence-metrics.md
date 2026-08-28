@@ -44,6 +44,13 @@ biased by construction.
 - [[macedo-2022-skills-demand-forecasting-temporal]] — grounds the growth-adjusted view
 - [[rikala-2024-skill-gaps-industry40-review]] — how the field defines and measures gaps;
   useful for justifying a non-distributional primary metric
+- **[[saroglou-2025-esco-eqf-linking]]** — ⭐ **added 2026-08-28.** Uses Accuracy@1 and
+  strict F1 rather than distributional divergence, and links qualification *levels* (EQF)
+  alongside entities — precedent for reporting alignment as ranked, level-aware matches
+  rather than as a distance between distributions
+- [[zhang-2024-job-market-entity-linking]] — Acc@k reporting across k; the natural metric
+  family for a truncated candidate list, and a model for how Iris should report against a
+  demand vector capped at ~100 skills
 
 ## Current Working Answer
 status: open

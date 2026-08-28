@@ -29,7 +29,18 @@ This gives three independent evidence sources for level inference, so the level 
 be guessed from a course description alone.
 
 ## Papers That Discuss This
-*(populated via Obsidian backlinks)*
+- [[kumar-2025-bloom-taxonomy-classification]] — ⚠️ **zero-shot LLMs reach only 0.72–0.73**
+  on six-way Bloom classification, while SVM with augmentation reaches 94%; a direct
+  argument against asking an LLM to judge level holistically
+- [[zaki-2023-clo-plo-mapping-automation]] — automating the CLO→PLO matrix reaches
+  **83.1% / 88.1%** precision against domain experts; a caution that the ● ○ matrix Iris
+  reads is itself hand-authored and noisy
+- [[le-2026-competency-tagging-evidence]] — competency tagging with required evidence spans
+  and graph constraints; micro-F1 0.57 over 22 competencies
+- [[saroglou-2025-esco-eqf-linking]] — links qualification *levels* (EQF) as well as
+  entities; precedent for level as a linking target
+- [[sabet-2024-course-skill-atlas]] · [[ahadi-2022-skills-taught-vs-sought]] — both treat
+  skills as **binary presence**, confirming the gap Iris addresses
 
 ## Related Concepts
 [[thailand-skill-mapping]] · [[skill-entity-linking]] · [[tpqi-framework]] · [[curriculum-analytics]]

@@ -19,7 +19,10 @@
 >
 > Read §§2–7 as the record of how the design was reasoned to, then
 > **[§9](#9-addendum-realignment-to-the-national-standard-2026-08-27)** for what the
-> standard changes and which papers become *more* load-bearing as a result.
+> standard changes and which papers become *more* load-bearing as a result, then
+> **[§10](#10-second-round-evidence-for-the-new-questions-2026-08-28)** for the eleven
+> papers added in the second review round, which supply the performance expectations the
+> project must plan against.
 
 ---
 
@@ -385,6 +388,191 @@ and whether the ~100-skill cap is a display limit or a data limit.
 
 ---
 
+---
+
+## 10. Second round — evidence for the new questions (2026-08-28)
+
+The April 2026 round answered the questions of a design that no longer exists. This round
+searched four themes the original never touched, because the original had no reason to:
+skill entity linking, out-of-knowledge-base handling, proficiency-level inference, and Thai
+document extraction. Eleven papers were added. Three findings matter more than the rest.
+
+### 10.1 What accuracy to expect, and what follows from it
+
+The single most useful result of this round is a number the project did not have.
+
+[Zhang et al. (2024)](../papers/zhang-2024-job-market-entity-linking.md) conducted the first
+span-level skill entity-linking study, mapping mentions in job advertisements to ESCO's
+13,890 skills. Training on 123,619 synthetic mention–skill pairs and evaluating on 1,824
+human-annotated instances, their bi-encoder reached **Acc@1 of 23.55%**, rising to 48.98% at
+Acc@32; the autoregressive alternative reached 11.48% at rank one.
+[Saroglou et al. (2025)](../papers/saroglou-2025-esco-eqf-linking.md), working on ESCO and
+EQF with different data and a different architecture, report Entity Linking
+**Accuracy@1 of 0.2881**. [Arslan İltüzer et al. (2026)](../papers/arslan-2026-turkish-skill-extraction.md),
+in Turkish, report a best **end-to-end score of 0.56**, and
+[Le et al. (2026)](../papers/le-2026-competency-tagging-evidence.md), tagging learning
+resources against a competency framework, report **micro-F1 0.57**.
+
+Four studies, four languages, three taxonomies, four research groups, converging on the same
+range. Strict top-1 linking against a large occupational vocabulary is a hard problem that
+nobody solves well, and any expectation that Iris will do so is unsupported.
+
+The second regularity is more actionable than the first. Every one of these papers reports
+that **ranking is substantially better than selection**: Acc@32 roughly doubles Acc@1 in
+Zhang et al.; Le et al. report MRR 0.82 against micro-F1 0.57. The correct answer is
+usually retrieved and then discarded at the decision step. That is an argument for a
+generous retrieval depth, and a much stronger argument for something the product design had
+justified only from stakeholder reasoning: **a human review screen between the linker and
+any published claim**. At these accuracy levels an unreviewed automated mapping is not
+evidence, and the literature now says so in numbers.
+
+Two qualifications keep this honest. Iris's candidate space is 4,376 entries against ESCO's
+13,890, and its input is a whole course description rather than a job-posting span —
+Saroglou et al. find precisely that sentence context helps, which is why their Sentence
+Linking outperformed Entity Linking. There are grounds to expect better than 0.23–0.29. But
+Iris's numbers will not be directly comparable to any of these, and the write-up must say so
+rather than borrowing their difficulty as an excuse or their scale as a claim.
+
+Zhang et al. also flag an evaluation trap Iris would otherwise have walked into: they score
+against exactly one gold ESCO title per mention, which underestimates performance wherever
+several links are legitimately valid. A course develops several related skills. Iris's
+annotation protocol must permit multiple correct links per span.
+
+### 10.2 How to infer a level, and how not to
+
+[Kumar et al. (2025)](../papers/kumar-2025-bloom-taxonomy-classification.md) compared
+classical models, RNNs, transformers and frontier LLMs on the same Bloom's-taxonomy
+classification data — 600 learning outcomes across six cognitive levels. **SVM with data
+augmentation reached 94% accuracy. Zero-shot LLMs reached 0.72–0.73.** RNNs and BERT
+overfitted badly; RoBERTa degraded during training.
+
+This measures the approach Iris might casually have taken — asking a language model what
+level a course teaches a skill at — and finds it more than twenty points behind a classical
+classifier. The feature the SVM exploits is Bloom's cognitive verbs, and Thai TQF course
+learning outcomes follow the same convention: `อธิบาย` (explain) sits low, `ออกแบบ` (design)
+sits high. The design's decision to derive level from the document's own declared signals is
+therefore not merely more traceable, it is likely more accurate — and the Sprint 4 ablation
+must include a non-LLM verb-feature baseline, because on this evidence it may win.
+
+[Zaki et al. (2023)](../papers/zaki-2023-clo-plo-mapping-automation.md) supply a caution no
+other source in the corpus does. They automate construction of the CLO→PLO matrix and
+validate against domain experts, reaching **83.1% and 88.1% precision** on two programmes —
+differing by five points purely on how the outcomes were written. Iris reads that matrix
+rather than generating it: in Thai TQF it is **แผนที่แสดงการกระจายความรับผิดชอบ**, with
+● ความรับผิดชอบหลัก and ○ ความรับผิดชอบรอง marking each course × outcome pair. It is a
+required, regulated artefact — and it is hand-authored for accreditation, with its own noise
+and its own incentives. Iris is inferring level partly from a signal that is not gold. The
+design's decision to combine it with CLO text and curriculum position, and to **record
+disagreement between sources rather than resolve it**, is the correct response; this is the
+citation for why it is necessary. The five-point swing between two programmes at one
+institution is also a warning about cross-institution comparability that belongs in the
+limitations of any comparison result.
+
+Both papers omit inter-annotator agreement on their gold labels. For a judgement as
+contested as cognitive level, that omission is serious, and Iris's protocol reporting it is a
+small methodological improvement worth claiming.
+
+### 10.3 The architecture, independently arrived at
+
+[Le et al. (2026)](../papers/le-2026-competency-tagging-evidence.md) — from the same group as
+[Luyen and Abel (2025)](../papers/luyen-2025-skill-decomposition-ontology.md) — describe a
+pipeline that segments learning resources, retrieves candidate competencies with BM25 and
+graph-enriched profiles, has an LLM select from those candidates **and return the evidence
+span justifying each selection**, then applies graph constraints to suppress inconsistent
+tags. It outperforms zero-shot and few-shot LLM variants, retrieval-only baselines, and
+supervised classifiers.
+
+That is, component for component, the architecture Iris specified — including the evidence
+span, which Iris had justified only on the grounds that a curriculum committee will
+challenge specific assignments and the tool must answer immediately. Le et al. show the
+constrained, evidence-producing formulation is not merely more auditable but *more
+accurate* than unconstrained prompting. Their scores must be read carefully: micro-F1 0.57
+over **22 competencies** is an optimistic bound, not a target for a system facing 4,376.
+
+[Arslan İltüzer et al. (2026)](../papers/arslan-2026-turkish-skill-extraction.md) settle a
+question §2 could only argue about. Facing a morphologically complex, low-resource language
+with neither a skill taxonomy nor a dataset — Thai's position before the national standard —
+they compare native-language extraction against translate-to-English-first and find
+**native-language wins**. Their best pipeline is embedding retrieval followed by LLM
+re-ranking, and it beats supervised sequence labelling. Iris's bilingual channel is
+therefore a cross-check where an English course description exists, never a substitute for
+the Thai one.
+
+Where Iris departs is the fixed-vocabulary blind spot.
+[Dong et al. (2023)](../papers/dong-2023-out-of-kb-mention-discovery.md) name it: mentions
+with no correct entry in the knowledge base. Their BLINKout models this as an **explicit NIL
+prediction target** rather than a similarity threshold, and beats threshold- and
+feature-based methods across five datasets and three knowledge bases. This settles the
+implementation question in [§9](#9-addendum-realignment-to-the-national-standard-2026-08-27)
+and [q-out-of-vocabulary](../questions/q-out-of-vocabulary.md): a curriculum teaches theory
+of computation, research method, and ethics that no job advertisement describes, and mapping
+those to the nearest labour-market skill would be confidently wrong. Two of their techniques
+transfer at no cost — synonym enhancement, since the standard ships a Thai title, an English
+title and a Thai definition for every skill; and KB Versioning, which generates out-of-KB
+test cases by holding out part of the vocabulary, adding an evaluation to Sprint 4 for the
+price of a script.
+
+### 10.4 A correction to the Thai-PDF conclusion
+
+[§9.5](#95-what-the-literature-does-not-cover-at-all) concluded that no OCR was needed, on
+the grounds that the damage measured in the SWU document is glyph substitution rather than
+deletion. That holds for substitution damage and the repair table remains the right answer
+there — deterministic, auditable, free.
+
+It was wrong as a general rule. The KU document's collapse of every `ำ` into `า` is
+genuinely lossy, and the stated fallback — request a better source file — is not always
+available. [Nonesung et al. (2026)](../papers/nonesung-2026-typhoon-ocr.md) provide the
+alternative: a Thai-tuned open vision-language model that reaches **BLEU 0.93 and Levenshtein
+0.04 on Thai government forms**, against GPT-4o at 0.25 / 0.57 and Gemini 2.5 Flash at
+0.74 / 0.15. It is 3B parameters, self-hostable alongside the adjudication model, and
+consistent with the project's local-inference premise. Notably the 3B matches or beats their
+own 7B on several categories — capability here comes from Thai-specific training data, not
+scale.
+
+The ingestion gate therefore has three outcomes rather than two: *clean* uses the text
+layer, *repairable* applies the glyph repair table, and *lossy or unusable* re-extracts with
+a vision model — with the document flagged as vision-derived, because a model output is not
+a faithful reading and any finding traced to it should say so.
+
+[Nonesung et al. (2025)](../papers/nonesung-2025-thaiocrbench.md) confirm at benchmark scale
+what the two-document study found: across 2,808 samples and 13 tasks, Thai vision-language
+performance is limited by "Thai diacritics, small fonts, headless Thai scripts", with
+**hallucinated or missing diacritics** named as a systematic failure alongside language bias
+and structural mismatch. Two independent routes to the same vulnerability. The practical
+consequence is that the integrity gate must run **after** the vision path too, and that a
+Thai-character-proportion check is needed to catch the language-bias failure that a
+diacritic-rate diagnostic would miss. Their finding of structural mismatch in tables also
+argues for extracting the ● / ○ curriculum-mapping marks from PDF glyph coordinates rather
+than asking a vision model to read the table.
+
+Finally, [Sarthi et al. (2024)](../papers/sarthi-2024-raptor.md) supply the reference point
+for structure-aware retrieval, reporting a 20% absolute accuracy gain on QuALITY by building
+a tree of recursively clustered and summarised chunks. The contrast is what matters for
+Iris: RAPTOR *infers* a hierarchy by clustering, while a มคอ.2 already *declares* one under
+regulation. An inferred hierarchy would be strictly worse and would not carry the page
+ranges Iris uses for provenance — and RAPTOR's own limitation, that summarisation "can
+discard fine-grained details", is disqualifying for a task that must recover every course
+description. The deeper constraint applies to both and was already recorded: these systems
+retrieve the *most relevant* node, whereas Iris needs exhaustive enumeration. Structure
+indexing locates the section; extraction within it stays deterministic.
+
+### 10.5 What was searched for and not found
+
+Three gaps were confirmed rather than closed, and each is a claim the project can make.
+
+**No computational work on Thai TQF documents.** Searching returns TQF policy documents and
+framework descriptions, not NLP. Iris appears to be the first system to parse มคอ.2 at scale.
+
+**No literature on PDF text-layer corruption in Thai.** The vision-side literature documents
+diacritic failure; nothing addresses a text layer that extracts without error and is silently
+wrong. The diagnostic in [thai-pdf-text-integrity](../concepts/thai-pdf-text-integrity.md)
+remains an original contribution.
+
+**No work grading curriculum skill depth against a published competency scale.** Confirmed a
+second time against the 2025–26 literature. Every curriculum-analytics system reviewed —
+including the three added this round — treats a skill as present or absent.
+
+
 ### Non-peer-reviewed sources (added 2026-08-27)
 
 These are government publications and platform documentation, not journal articles. They
@@ -416,24 +604,35 @@ detailed findings live in each `wiki/papers/` note.
 
 1. Ahadi A. et al. (2022). *Skills Taught vs Skills Sought: Using Skills Analytics to Identify the Gaps between Curriculum and Job Markets.* EDM 2022 (poster). — [note](../papers/ahadi-2022-skills-taught-vs-sought.md)
 2. Aljohani N.R. et al. (2022). *Bridging the skill gap between the acquired university curriculum and the requirements of the job market.* Journal of Innovation & Knowledge. https://doi.org/10.1016/j.jik.2022.100190 — [note](../papers/aljohani-2022-curriculum-skill-gap-bibliometric.md)
-3. Chaiaroon P. et al. (2025). *Digital Workforce Matching: A Machine Learning Approach for Skill-Based Job Classification and Recommendation.* J. Current Science and Technology. https://doi.org/10.59796/jcst.V15N4.2025.137 — [note](../papers/chaiaroon-2025-thai-digital-workforce-matching.md)
-4. Dixon N. et al. (2023). *Occupational models from 42 million unstructured job postings.* Patterns. https://doi.org/10.1016/j.patter.2023.100757 — [note](../papers/dixon-2023-occupational-models-42m.md)
-5. Fettach Y. et al. (2025). *Skill Demand Forecasting Using Temporal Knowledge Graph Embeddings.* arXiv:2504.07233. https://arxiv.org/abs/2504.07233 — [note](../papers/fettach-2025-skill-demand-temporal-kg.md)
-6. Hilliger I. et al. (2022). *Lessons learned from designing a curriculum analytics tool for improving student learning and program quality.* Journal of Computing in Higher Education. https://doi.org/10.1007/s12528-021-09284-2 — [note](../papers/hilliger-2022-curriculum-analytics-tool.md)
-7. Januzaj Y. & Luma A. (2022). *Cosine Similarity – A Computing Approach to Match Similarity Between Higher Education Programs and Job Market Demands.* iJET 17(12). https://doi.org/10.3991/ijet.v17i12.30375 — [note](../papers/januzaj-2022-cosine-similarity-he-job-market.md)
-8. Kavargyris D.C. et al. (2025). *ESCOX: A tool for skill and occupation extraction using LLMs from unstructured text.* Software Impacts. https://doi.org/10.1016/j.simpa.2025.100772 — [note](../papers/kavargyris-2025-escox-skill-extraction.md)
-9. Lertmethaphat N.N. et al. (2025). *Exploring the Thai Job Market Through the Lens of Natural Language Processing and Machine Learning.* PIER Discussion Paper 228. https://www.pier.or.th/dp/228/ — [note](../papers/lertmethaphat-2025-thai-job-market-nlp.md)
-10. Lowphansirikul L. et al. (2021). *WangchanBERTa: Pretraining transformer-based Thai Language Models.* arXiv:2101.09635. https://doi.org/10.48550/arXiv.2101.09635 — [note](../papers/lowphansirikul-2021-wangchanberta.md)
-11. Luyen L.N. & Abel M.-H. (2025). *Automated Skill Decomposition Meets Expert Ontologies: Bridging the Granularity Gap with LLMs.* arXiv:2510.11313. https://doi.org/10.48550/arXiv.2510.11313 — [note](../papers/luyen-2025-skill-decomposition-ontology.md)
-12. Macedo M.M.G. de et al. (2022). *Practical Skills Demand Forecasting via Representation Learning of Temporal Dynamics.* arXiv:2205.09508. https://arxiv.org/abs/2205.09508 — [note](../papers/macedo-2022-skills-demand-forecasting-temporal.md)
-13. Phaphuangwittayakul A. et al. (2018). *Analysis of Skill Demand in Thai Labor Market from Online Jobs Recruitment Websites.* JCSSE 2018 (IEEE). https://doi.org/10.1109/JCSSE.2018.8457393 — [note](../papers/phaphuangwittayakul-2018-thai-skill-demand-jobthai.md)
-14. Phatthiyaphaibun W. et al. (2023). *PyThaiNLP: Thai Natural Language Processing in Python.* NLP-OSS @ EMNLP. https://arxiv.org/abs/2312.04649 — [note](../papers/phatthiyaphaibun-2023-pythainlp.md)
-15. Rikala P. et al. (2024). *Understanding and measuring skill gaps in Industry 4.0 — A review.* Technological Forecasting and Social Change. https://doi.org/10.1016/j.techfore.2024.123206 — [note](../papers/rikala-2024-skill-gaps-industry40-review.md)
-16. Sabet A.J. et al. (2024). *Course-Skill Atlas: A national longitudinal dataset of skills taught in U.S. higher education curricula.* Nature Scientific Data. https://doi.org/10.1038/s41597-024-03931-8 — [note](../papers/sabet-2024-course-skill-atlas.md)
-17. Seif A. et al. (2024). *A Dynamic Jobs-Skills Knowledge Graph.* RecSys in HR 2024 (CEUR Vol-3788). — [note](../papers/seif-2024-dynamic-jobs-skills-kg.md)
-18. Senger E. et al. (2024). *Deep Learning-based Computational Job Market Analysis: A Survey on Skill Extraction and Classification from Job Postings.* NLP4HR @ EACL. https://doi.org/10.48550/arXiv.2402.05617 — [note](../papers/senger-2024-dl-skill-extraction-survey.md)
-19. Siddoo V. et al. (2019). *An exploratory study of digital workforce competency in Thailand.* Heliyon. https://doi.org/10.1016/j.heliyon.2019.e01723 — [note](../papers/siddoo-2019-thai-digital-workforce-competency.md)
-20. Tipsena R. et al. (2025). *Predicting Workforce Needs in Thailand's Digital Industry: A Machine Learning Approach (2023-2024).* JISTaP 13(3). https://doi.org/10.1633/JISTaP.2025.13.3.1 — [note](../papers/tipsena-2025-predicting-thai-digital-workforce.md)
-21. Vo N.N.Y. et al. (2022). *Domain-specific NLP system to support learning path and curriculum design at tech universities.* Computers and Education: Artificial Intelligence. https://doi.org/10.1016/j.caeai.2021.100042 — [note](../papers/vo-2022-nlp-curriculum-learning-path.md)
-22. Weerasombat T. & Pumipatyothin P. (2025). *Employers' priority on work skills and the skill gaps: a case of Thailand.* Cogent Education. https://doi.org/10.1080/2331186X.2024.2441656 — [note](../papers/weerasombat-2025-thai-employer-skill-priorities.md)
-23. Xu Z. et al. (2025). *From Course to Skill: Evaluating LLM Performance in Curricular Analytics.* arXiv:2505.02324. https://doi.org/10.48550/arXiv.2505.02324 — [note](../papers/xu-2025-llm-curricular-analytics.md)
+3. Arslan İltüzer E., Özlü Ö.A., Farajijobehdar V. & Eryiğit G. (2026). *Leveraging LLMs For Turkish Skill Extraction.* arXiv:2601.22885. https://arxiv.org/abs/2601.22885 — [note](../papers/arslan-2026-turkish-skill-extraction.md)
+4. Chaiaroon P. et al. (2025). *Digital Workforce Matching: A Machine Learning Approach for Skill-Based Job Classification and Recommendation.* J. Current Science and Technology. https://doi.org/10.59796/jcst.V15N4.2025.137 — [note](../papers/chaiaroon-2025-thai-digital-workforce-matching.md)
+5. Dixon N. et al. (2023). *Occupational models from 42 million unstructured job postings.* Patterns. https://doi.org/10.1016/j.patter.2023.100757 — [note](../papers/dixon-2023-occupational-models-42m.md)
+6. Dong H., Chen J., He Y., Liu Y. & Horrocks I. (2023). *Reveal the Unknown: Out-of-Knowledge-Base Mention Discovery with Entity Linking.* CIKM 2023. https://doi.org/10.1145/3583780.3615036 — [note](../papers/dong-2023-out-of-kb-mention-discovery.md)
+7. Fettach Y. et al. (2025). *Skill Demand Forecasting Using Temporal Knowledge Graph Embeddings.* arXiv:2504.07233. https://arxiv.org/abs/2504.07233 — [note](../papers/fettach-2025-skill-demand-temporal-kg.md)
+8. Herandi A., Li Y., Liu Z., Hu X. & Cai X. (2024). *Skill-LLM: Repurposing General-Purpose LLMs for Skill Extraction.* arXiv:2410.12052. https://arxiv.org/abs/2410.12052 — [note](../papers/herandi-2024-skill-llm.md)
+9. Hilliger I. et al. (2022). *Lessons learned from designing a curriculum analytics tool for improving student learning and program quality.* Journal of Computing in Higher Education. https://doi.org/10.1007/s12528-021-09284-2 — [note](../papers/hilliger-2022-curriculum-analytics-tool.md)
+10. Januzaj Y. & Luma A. (2022). *Cosine Similarity – A Computing Approach to Match Similarity Between Higher Education Programs and Job Market Demands.* iJET 17(12). https://doi.org/10.3991/ijet.v17i12.30375 — [note](../papers/januzaj-2022-cosine-similarity-he-job-market.md)
+11. Kavargyris D.C. et al. (2025). *ESCOX: A tool for skill and occupation extraction using LLMs from unstructured text.* Software Impacts. https://doi.org/10.1016/j.simpa.2025.100772 — [note](../papers/kavargyris-2025-escox-skill-extraction.md)
+12. Kumar R., Gulwani D. & Singh S. (2025). *Automated Analysis of Learning Outcomes and Exam Questions Based on Bloom's Taxonomy.* arXiv:2511.10903. https://arxiv.org/abs/2511.10903 — [note](../papers/kumar-2025-bloom-taxonomy-classification.md)
+13. Le N.L., Abel M.-H. & Laforge B. (2026). *From Learning Resources to Competencies: LLM-Based Tagging with Evidence and Graph Constraints.* arXiv:2605.28483. https://arxiv.org/abs/2605.28483 — [note](../papers/le-2026-competency-tagging-evidence.md)
+14. Lertmethaphat N.N. et al. (2025). *Exploring the Thai Job Market Through the Lens of Natural Language Processing and Machine Learning.* PIER Discussion Paper 228. https://www.pier.or.th/dp/228/ — [note](../papers/lertmethaphat-2025-thai-job-market-nlp.md)
+15. Lowphansirikul L. et al. (2021). *WangchanBERTa: Pretraining transformer-based Thai Language Models.* arXiv:2101.09635. https://doi.org/10.48550/arXiv.2101.09635 — [note](../papers/lowphansirikul-2021-wangchanberta.md)
+16. Luyen L.N. & Abel M.-H. (2025). *Automated Skill Decomposition Meets Expert Ontologies: Bridging the Granularity Gap with LLMs.* arXiv:2510.11313. https://doi.org/10.48550/arXiv.2510.11313 — [note](../papers/luyen-2025-skill-decomposition-ontology.md)
+17. Macedo M.M.G. de et al. (2022). *Practical Skills Demand Forecasting via Representation Learning of Temporal Dynamics.* arXiv:2205.09508. https://arxiv.org/abs/2205.09508 — [note](../papers/macedo-2022-skills-demand-forecasting-temporal.md)
+18. Nonesung S. et al. (2025). *ThaiOCRBench: A Task-Diverse Benchmark for Vision-Language Understanding in Thai.* IJCNLP-AACL 2025. arXiv:2511.04479. https://arxiv.org/abs/2511.04479 — [note](../papers/nonesung-2025-thaiocrbench.md)
+19. Nonesung S., Nitarach N., Jaknamon T., Taveekitworachai P. & Pipatanakul K. (2026). *Typhoon OCR: Open Vision-Language Model For Thai Document Extraction.* arXiv:2601.14722. https://arxiv.org/abs/2601.14722 — [note](../papers/nonesung-2026-typhoon-ocr.md)
+20. Phaphuangwittayakul A. et al. (2018). *Analysis of Skill Demand in Thai Labor Market from Online Jobs Recruitment Websites.* JCSSE 2018 (IEEE). https://doi.org/10.1109/JCSSE.2018.8457393 — [note](../papers/phaphuangwittayakul-2018-thai-skill-demand-jobthai.md)
+21. Phatthiyaphaibun W. et al. (2023). *PyThaiNLP: Thai Natural Language Processing in Python.* NLP-OSS @ EMNLP. https://arxiv.org/abs/2312.04649 — [note](../papers/phatthiyaphaibun-2023-pythainlp.md)
+22. Rikala P. et al. (2024). *Understanding and measuring skill gaps in Industry 4.0 — A review.* Technological Forecasting and Social Change. https://doi.org/10.1016/j.techfore.2024.123206 — [note](../papers/rikala-2024-skill-gaps-industry40-review.md)
+23. Sabet A.J. et al. (2024). *Course-Skill Atlas: A national longitudinal dataset of skills taught in U.S. higher education curricula.* Nature Scientific Data. https://doi.org/10.1038/s41597-024-03931-8 — [note](../papers/sabet-2024-course-skill-atlas.md)
+24. Saroglou S., Diamantaras K., Preta F., Delianidi M., Benisis A. & Meyer C.J. (2025). *Enhancing Job Matching: Occupation, Skill and Qualification Linking with the ESCO and EQF taxonomies.* arXiv:2512.03195. https://arxiv.org/abs/2512.03195 — [note](../papers/saroglou-2025-esco-eqf-linking.md)
+25. Sarthi P., Abdullah S., Tuli A., Khanna S., Goldie A. & Manning C.D. (2024). *RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval.* ICLR 2024. arXiv:2401.18059. https://arxiv.org/abs/2401.18059 — [note](../papers/sarthi-2024-raptor.md)
+26. Seif A. et al. (2024). *A Dynamic Jobs-Skills Knowledge Graph.* RecSys in HR 2024 (CEUR Vol-3788). — [note](../papers/seif-2024-dynamic-jobs-skills-kg.md)
+27. Senger E. et al. (2024). *Deep Learning-based Computational Job Market Analysis: A Survey on Skill Extraction and Classification from Job Postings.* NLP4HR @ EACL. https://doi.org/10.48550/arXiv.2402.05617 — [note](../papers/senger-2024-dl-skill-extraction-survey.md)
+28. Siddoo V. et al. (2019). *An exploratory study of digital workforce competency in Thailand.* Heliyon. https://doi.org/10.1016/j.heliyon.2019.e01723 — [note](../papers/siddoo-2019-thai-digital-workforce-competency.md)
+29. Tipsena R. et al. (2025). *Predicting Workforce Needs in Thailand's Digital Industry: A Machine Learning Approach (2023-2024).* JISTaP 13(3). https://doi.org/10.1633/JISTaP.2025.13.3.1 — [note](../papers/tipsena-2025-predicting-thai-digital-workforce.md)
+30. Vo N.N.Y. et al. (2022). *Domain-specific NLP system to support learning path and curriculum design at tech universities.* Computers and Education: Artificial Intelligence. https://doi.org/10.1016/j.caeai.2021.100042 — [note](../papers/vo-2022-nlp-curriculum-learning-path.md)
+31. Weerasombat T. & Pumipatyothin P. (2025). *Employers' priority on work skills and the skill gaps: a case of Thailand.* Cogent Education. https://doi.org/10.1080/2331186X.2024.2441656 — [note](../papers/weerasombat-2025-thai-employer-skill-priorities.md)
+32. Xu Z. et al. (2025). *From Course to Skill: Evaluating LLM Performance in Curricular Analytics.* arXiv:2505.02324. https://doi.org/10.48550/arXiv.2505.02324 — [note](../papers/xu-2025-llm-curricular-analytics.md)
+33. Zaki N., Turaev S., Shuaib K., Krishnan A. & Mohamed E. (2023). *Automating the mapping of course learning outcomes to program learning outcomes using natural language processing for accurate educational program evaluation.* Education and Information Technologies 28(12), 16723–16742. https://doi.org/10.1007/s10639-023-11877-4 — [note](../papers/zaki-2023-clo-plo-mapping-automation.md)
+34. Zhang M., van der Goot R. & Plank B. (2024). *Entity Linking in the Job Market Domain.* Findings of EACL 2024. arXiv:2401.17979. https://arxiv.org/abs/2401.17979 — [note](../papers/zhang-2024-job-market-entity-linking.md)

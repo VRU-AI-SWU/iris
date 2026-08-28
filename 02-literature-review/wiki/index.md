@@ -10,6 +10,11 @@ measuring level-aware alignment against the skill demand that standard publishes
 > mostly *more* relevant; **question nodes carry status banners** — five are closed or
 > superseded, five revised, three new. Start with [[thailand-skill-mapping]] and
 > [[q-thai-ontology]], whose answer reversed.
+>
+> 🔄 **Second round 2026-08-28.** The review was re-run against the *new* questions.
+> **11 papers added** across four themes the original round never searched: skill entity
+> linking, out-of-KB (NIL) handling, proficiency-level inference, and Thai document
+> extraction. See [Post-Pivot Round](#post-pivot-round-2026-08-28) at the end.
 
 This wiki follows the lab literature-review methodology (`../.claude/instruction.md`).
 Components: **papers/** (per-paper notes), **concepts/** (semantic nodes),
@@ -19,7 +24,7 @@ academic review with citations). Source provenance is in `../raw/manifest.md`.
 
 ---
 
-## Papers (23)
+## Papers (34)
 
 ### Skill Extraction, Taxonomy & Ontology (7)
 
@@ -71,6 +76,39 @@ academic review with citations). Source provenance is in `../raw/manifest.md`.
 
 ---
 
+### Skill Entity Linking (5) 🆕 *added 2026-08-28*
+
+| File | Authors | Year | Venue | Relevance | Summary |
+|------|---------|------|-------|-----------|---------|
+| [zhang-2024-job-market-entity-linking](papers/zhang-2024-job-market-entity-linking.md) | Zhang et al. | 2024 | Findings of EACL | High | First span-level skill EL to ESCO; **BLINK Acc@1 23.55%, Acc@32 48.98%** over 13,890 skills. The field's calibration point. |
+| [arslan-2026-turkish-skill-extraction](papers/arslan-2026-turkish-skill-extraction.md) | Arslan İltüzer et al. | 2026 | arXiv | High | Low-resource, morphologically complex language; **0.56 end-to-end**; native-language extraction beats translation. Closest analogue to Thai. |
+| [saroglou-2025-esco-eqf-linking](papers/saroglou-2025-esco-eqf-linking.md) | Saroglou et al. | 2025 | arXiv | High | Sentence vs Entity Linking to ESCO/EQF; EL Acc@1 **0.2881**; context helps; supervised beats decoder-only on ranking. |
+| [dong-2023-out-of-kb-mention-discovery](papers/dong-2023-out-of-kb-mention-discovery.md) | Dong et al. | 2023 | CIKM | High | BLINKout: explicit NIL target beats thresholding; KB Versioning generates out-of-KB test data free. |
+| [herandi-2024-skill-llm](papers/herandi-2024-skill-llm.md) | Herandi et al. | 2024 | arXiv | Low | Fine-tuned LLM for skill *extraction*; no linking, no accessible numbers. Not adopted. |
+
+### Proficiency Level & Curriculum Mapping (3) 🆕 *added 2026-08-28*
+
+| File | Authors | Year | Venue | Relevance | Summary |
+|------|---------|------|-------|-----------|---------|
+| [kumar-2025-bloom-taxonomy-classification](papers/kumar-2025-bloom-taxonomy-classification.md) | Kumar et al. | 2025 | arXiv | High | ⚠️ **Zero-shot LLMs 0.72–0.73 vs SVM+augmentation 94%** on six-way Bloom classification. Argues against holistic LLM level judgement. |
+| [zaki-2023-clo-plo-mapping-automation](papers/zaki-2023-clo-plo-mapping-automation.md) | Zaki et al. | 2023 | Educ. Inf. Technol. | High | Automating the CLO→PLO matrix: **83.1% / 88.1%** vs domain experts. The ● ○ matrix Iris reads is itself noisy. |
+| [le-2026-competency-tagging-evidence](papers/le-2026-competency-tagging-evidence.md) | Le et al. | 2026 | arXiv | High | LLM as *constrained, evidence-producing tagger*; micro-F1 0.57, MRR 0.82. Closest published system to Iris's architecture. |
+
+### Thai Document Extraction (2) 🆕 *added 2026-08-28*
+
+| File | Authors | Year | Venue | Relevance | Summary |
+|------|---------|------|-------|-----------|---------|
+| [nonesung-2026-typhoon-ocr](papers/nonesung-2026-typhoon-ocr.md) | Nonesung et al. | 2026 | arXiv | High | Thai-tuned 3B VLM: **Levenshtein 0.04 on Thai government forms** (GPT-4o 0.57). The fallback for lossy text layers. |
+| [nonesung-2025-thaiocrbench](papers/nonesung-2025-thaiocrbench.md) | Nonesung et al. | 2025 | IJCNLP-AACL | Medium | 2,808 samples, 13 tasks; names hallucinated/missing diacritics, language bias, structural mismatch as Thai VLM failure modes. |
+
+### Structure-Aware Retrieval (1) 🆕 *added 2026-08-28*
+
+| File | Authors | Year | Venue | Relevance | Summary |
+|------|---------|------|-------|-----------|---------|
+| [sarthi-2024-raptor](papers/sarthi-2024-raptor.md) | Sarthi et al. | 2024 | ICLR | Medium | Recursive clustering + summarisation tree; +20% on QuALITY. *Inferred* hierarchy — the contrast that justifies PageIndex's *declared* one. |
+
+---
+
 ## Questions (16)
 
 Status key: **answered** · **open** (live) · **revised** (answer changed by the pivot) ·
@@ -104,14 +142,16 @@ Status key: **answered** · **open** (live) · **revised** (answer changed by th
 
 ---
 
-## Concepts (12)
+## Concepts (14)
 
 | File | Summary |
 |------|---------|
 | [thailand-skill-mapping](concepts/thailand-skill-mapping.md) 🆕 | ⭐ The national standard — 4,376 skills, 3 graded levels each, 371 careers, open API. The foundation the project now stands on. |
 | [skill-entity-linking](concepts/skill-entity-linking.md) 🆕 | Mapping free text to IDs in a fixed vocabulary. Iris's core research task after the pivot. |
 | [proficiency-levels](concepts/proficiency-levels.md) 🆕 | Graded skill depth; the standard's criteria meet TQF's own ● ○ depth declarations. The novel contribution. |
-| [thai-pdf-text-integrity](concepts/thai-pdf-text-integrity.md) 🆕 | Silent corruption of Thai marks in institutional PDFs, its diagnostic, and its repair. Unaddressed in the literature. |
+| [thai-pdf-text-integrity](concepts/thai-pdf-text-integrity.md) 🆕 | Silent corruption of Thai marks in institutional PDFs, its diagnostic, and its repair. Text-layer corruption still unaddressed in the literature; vision-side diacritic loss now corroborated. |
+| [nil-entity-linking](concepts/nil-entity-linking.md) 🆕 | Mentions with no correct entry in the vocabulary. Explicit NIL target beats thresholding. |
+| [structure-aware-retrieval](concepts/structure-aware-retrieval.md) 🆕 | Indexing a long document by its structure. Inferred (RAPTOR) vs declared (PageIndex) hierarchies. |
 | [curriculum-analytics](concepts/curriculum-analytics.md) | NLP/data analysis on programme documents to extract and compare delivered skills. |
 | [rag-skill-extraction](concepts/rag-skill-extraction.md) | Retrieval-grounded LLM extraction; the standard's definitions now supply the corpus this needs. |
 | [kl-divergence](concepts/kl-divergence.md) | Asymmetric distributional distance; demoted to a secondary metric — see q-prevalence-metrics. |
@@ -153,3 +193,47 @@ review; the rest were replaced by the adoption of the national standard.*
 11. **Method gap for the lab:** 🆕 A literature search did not surface a government
     open-data standard that had existed for nine months. Infrastructure questions need
     ministry and open-data portals searched directly, not only journals.
+12. **Expected linking accuracy:** 🆕 *(2026-08-28)* Three independent studies put strict
+    top-1 skill linking at **0.23–0.29** and end-to-end pipelines near **0.56**. All report
+    ranking far ahead of selection (Acc@32 ≈ 2× Acc@1; MRR 0.82 vs F1 0.57). **The human
+    review screen is required, not optional.**
+13. **Level inference method:** 🆕 *(2026-08-28)* Zero-shot LLM Bloom classification scores
+    0.72–0.73 against 94% for SVM+augmentation — derive level from the document's declared
+    signals, and include a non-LLM verb-feature baseline in the ablation.
+14. **Thai OCR fallback exists:** 🆕 *(2026-08-28)* A self-hostable 3B Thai VLM reaches
+    Levenshtein 0.04 on Thai government forms. The "no OCR needed" conclusion holds only for
+    *substitution* damage; lossy documents get a vision path, flagged in provenance.
+
+---
+
+## Post-Pivot Round (2026-08-28)
+
+The first review round (April 2026) answered the questions of a design that no longer
+exists. This round targeted the questions the pivot created.
+
+**Searched, and new to the corpus:**
+
+| Theme | Why it was never searched before | Papers added |
+|---|---|---|
+| Skill entity linking | The old design had no fixed vocabulary to link *to* | 5 |
+| Proficiency level & curriculum mapping | The old design was binary presence/absence | 3 |
+| Thai document extraction | The old design assumed PDF text extraction just works | 2 |
+| Structure-aware retrieval | The old design used regex over flat text | 1 |
+
+**Deliberately not re-searched:** job-posting sources, sample size, industry segmentation,
+company-registry lookup — all closed by the pivot (see the *Closed by the pivot* table).
+
+**Confirmed gaps — nothing found, and the absence is itself a finding:**
+
+- **No NLP work on Thai TQF (มคอ.) documents.** Searching for it returns TQF policy
+  documents and framework descriptions, not computational work. Iris appears to be first.
+- **No paper on PDF text-layer corruption in Thai.** The vision-side literature documents
+  diacritic loss; nothing addresses a text layer that extracts cleanly and is silently wrong.
+- **No work grading curriculum skill depth against a published competency scale.** Confirmed
+  a second time, now against the 2025–26 literature.
+
+**What changed as a result:** [[q-out-of-vocabulary]] method settled (explicit NIL target,
+not thresholding); [[q-level-inference]] gained a ruled-out approach and a required
+baseline; [[q-thai-nlp]] gained a controlled result on native-language extraction and a
+vision fallback; [[q-implied-skills]] gained the numbers that justify the review screen.
+The `thai-pdf-text-integrity` policy changed from two outcomes to three.

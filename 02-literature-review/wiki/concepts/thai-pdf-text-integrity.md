@@ -41,11 +41,21 @@ clean-document baseline (~171 total), detects both modes cheaply and determinist
 and is the basis of Iris's ingestion gate (`clean` / `repairable` / `unusable`).
 
 ## Papers That Discuss This
-*(none found — this appears to be an unaddressed practical gap in the Thai NLP
-literature, which assumes clean input text)*
+No paper addresses **PDF text-layer corruption** in Thai — that gap stands. Two 2025–26
+papers do document the same vulnerability from the vision side, which is independent
+corroboration that Thai diacritics are where Thai document processing breaks:
+
+- [[nonesung-2025-thaiocrbench]] — 2,808 samples, 13 tasks; names "hallucinated or missing
+  diacritics" as a systematic VLM failure on Thai, alongside language bias and structural
+  mismatch
+- [[nonesung-2026-typhoon-ocr]] — ⭐ a Thai-tuned 3B VLM reaches **Levenshtein 0.04 on Thai
+  government forms** (GPT-4o 0.57, Gemini 2.5 Flash 0.15); the viable fallback for
+  documents whose text layer is lossy rather than merely substituted
+- [[phatthiyaphaibun-2023-pythainlp]] — like the Thai NLP literature generally, assumes
+  correct input text
 
 ## Related Concepts
-[[thai-nlp]] · [[curriculum-analytics]]
+[[thai-nlp]] · [[curriculum-analytics]] · [[structure-aware-retrieval]]
 
 ## Relevance to Iris
 Every downstream stage depends on the input text being correct: a missing karan turns
@@ -57,3 +67,11 @@ The literature offers nothing on this — Thai NLP papers assume clean text, and
 extraction papers do not address Thai mark stacking. **The diagnostic and repair method
 is therefore a small methodological contribution in its own right**, reusable by anyone
 mining Thai institutional PDFs.
+
+**Revised policy after the 2026-08-28 review round.** The original conclusion — "no OCR
+needed" — was right for the SWU document, where damage is substitution and repair is exact.
+It was wrong as a general rule: KU's `ำ` collapse is genuinely lossy, and
+[[nonesung-2026-typhoon-ocr]] shows a self-hostable 3B Thai VLM handles government forms at
+Levenshtein 0.04. The gate therefore has three outcomes, not two — *clean* → text layer,
+*repairable* → deterministic glyph repair, *lossy or unusable* → vision re-extraction, with
+the document flagged as vision-derived in its provenance so downstream findings can say so.
