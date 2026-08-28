@@ -6,7 +6,7 @@ title: "Automated Skill Decomposition Meets Expert Ontologies: Bridging the Gran
 venue: arXiv:2510.11313 (cs.AI)
 doi: 10.48550/arXiv.2510.11313
 relevance: medium
-questions: [q-skill-taxonomy, q-implied-skills]
+questions: [q-implied-skills, q-level-inference, q-out-of-vocabulary, q-skill-taxonomy]
 ---
 
 ## Research Question
@@ -31,7 +31,7 @@ Tested on a curated subset of ROME-ESCO; may not generalise to all ontologies or
 [[skill-ontology]] · [[llm-skill-extraction]] · [[few-shot-prompting]] · [[esco-ontology]] · [[skill-decomposition]]
 
 ## Questions Addressed
-[[q-skill-taxonomy]] · [[q-implied-skills]]
+[[q-implied-skills]] · [[q-level-inference]] · [[q-out-of-vocabulary]] · [[q-skill-taxonomy]]
 
 ## Notes for Iris
 The granularity problem is directly relevant — our emergent vocabulary clustering must decide at what level of granularity to define skills. The finding that few-shot prompting improves consistency is actionable: our LLM ingestion prompts for TQF course descriptions should include exemplars of good skill extractions, not just zero-shot instructions. The hierarchy-aware F1-score metric is worth considering for evaluating our extraction quality in Phase 4.

@@ -6,7 +6,7 @@ title: "Practical Skills Demand Forecasting via Representation Learning of Tempo
 venue: arXiv preprint 2205.09508
 doi:
 relevance: high
-questions: [q-temporal-drift]
+questions: [q-prevalence-metrics, q-temporal-drift]
 ---
 
 ## Research Question
@@ -39,7 +39,7 @@ US-only; computer and mathematical occupations only — generalisability unteste
 [[temporal-drift]] · [[job-posting-analysis]] · [[skill-gap-quantification]]
 
 ## Questions Addressed
-[[q-temporal-drift]]
+[[q-prevalence-metrics]] · [[q-temporal-drift]]
 
 ## Notes for Iris
 **Critical design implication for data collection strategy:** The 12-month credible forecast horizon means job posting data older than approximately 12–18 months should be treated as potentially stale for market signal purposes. For Iris v1 using a static snapshot dataset, we should:

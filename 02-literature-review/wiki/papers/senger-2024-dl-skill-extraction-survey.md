@@ -6,7 +6,7 @@ title: "Deep Learning-based Computational Job Market Analysis: A Survey on Skill
 venue: NLP4HR 2024 @ EACL; arXiv:2402.05617
 doi: 10.48550/arXiv.2402.05617
 relevance: high
-questions: [q-skill-taxonomy, q-implied-skills]
+questions: [q-gap-direction, q-implied-skills, q-out-of-vocabulary, q-skill-taxonomy]
 ---
 
 ## Research Question
@@ -31,7 +31,7 @@ English-centric — no coverage of Thai or other Southeast Asian languages. Surv
 [[skill-extraction]] · [[esco-ontology]] · [[deep-learning-ner]] · [[job-posting-analysis]] · [[skill-normalisation]]
 
 ## Questions Addressed
-[[q-skill-taxonomy]] · [[q-implied-skills]]
+[[q-gap-direction]] · [[q-implied-skills]] · [[q-out-of-vocabulary]] · [[q-skill-taxonomy]]
 
 ## Notes for Iris
 The field's terminology inconsistency is precisely why our emergent vocabulary approach is defensible — there is no universally agreed definition of "skill" even in the literature. ESCO's dominance is worth noting but its English/European focus limits applicability for Thai TQF. The English-centric gap in the literature is a genuine research contribution opportunity for Iris. Skill normalisation (mapping differently-worded skills to the same concept) maps directly to our embedding-based clustering step.

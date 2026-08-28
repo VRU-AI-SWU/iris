@@ -6,7 +6,7 @@ title: "Occupational models from 42 million unstructured job postings"
 venue: Patterns 4 (2023) 100757, Cell Press / Elsevier
 doi: 10.1016/j.patter.2023.100757
 relevance: high
-questions: [q-skill-taxonomy, q-sample-size, q-job-posting-sources]
+questions: [q-job-posting-sources, q-out-of-vocabulary, q-sample-size, q-skill-taxonomy]
 ---
 
 ## Research Question
@@ -39,7 +39,7 @@ US-only dataset; skill vocabulary is English-only; SOC codes apply only to the U
 [[skill-taxonomy]] · [[job-posting-analysis]] · [[skill-gap-quantification]]
 
 ## Questions Addressed
-[[q-skill-taxonomy]] · [[q-sample-size]] · [[q-job-posting-sources]]
+[[q-job-posting-sources]] · [[q-out-of-vocabulary]] · [[q-sample-size]] · [[q-skill-taxonomy]]
 
 ## Notes for Iris
 **Two high-value insights for Iris design:**

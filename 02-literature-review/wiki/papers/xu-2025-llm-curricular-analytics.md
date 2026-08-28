@@ -6,7 +6,7 @@ title: "From Course to Skill: Evaluating LLM Performance in Curricular Analytics
 venue: arXiv:2505.02324 (cs.CY)
 doi: 10.48550/arXiv.2505.02324
 relevance: high
-questions: [q-implied-skills, q-skill-taxonomy, q-thai-nlp]
+questions: [q-implied-skills, q-level-inference, q-skill-taxonomy, q-thai-nlp]
 ---
 
 ## Research Question
@@ -31,7 +31,7 @@ English curriculum documents only. Human-LLM collaborative evaluation introduces
 [[curriculum-analytics]] · [[rag-skill-extraction]] · [[llm-skill-extraction]] · [[zero-shot-prompting]] · [[skill-extraction]]
 
 ## Questions Addressed
-[[q-implied-skills]] · [[q-skill-taxonomy]] · [[q-thai-nlp]]
+[[q-implied-skills]] · [[q-level-inference]] · [[q-skill-taxonomy]] · [[q-thai-nlp]]
 
 ## Notes for Iris
 Critical finding: RAG outperforms zero-shot for curriculum skill extraction. This is a significant challenge for our approach — our current design uses zero-shot LLM extraction from TQF course descriptions. We should consider RAG with a skill knowledge base (even a small one seeded from our emergent vocabulary). The finding that LLMs handle brief, abstract documents well is reassuring given that many TQF course descriptions are short. Zero-shot underperformance is a risk to flag.

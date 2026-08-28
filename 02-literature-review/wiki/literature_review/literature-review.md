@@ -22,7 +22,10 @@
 > standard changes and which papers become *more* load-bearing as a result, then
 > **[§10](#10-second-round-evidence-for-the-new-questions-2026-08-28)** for the eleven
 > papers added in the second review round, which supply the performance expectations the
-> project must plan against.
+> project must plan against, and
+> **[§11](#11-process-audit--evidence-for-the-methods-own-machinery-2026-08-28)** for the
+> audit that traced each design element back to its evidence and found two errors in the
+> project's own evaluation machinery.
 
 ---
 
@@ -573,6 +576,139 @@ second time against the 2025–26 literature. Every curriculum-analytics system 
 including the three added this round — treats a skill as present or absent.
 
 
+---
+
+## 11. Process audit — evidence for the method's own machinery (2026-08-28)
+
+The first two rounds asked what the literature says about the *problem*. This one asked
+whether every element of the *solution* has evidence behind it — tracing each method
+component back to a paper and flagging what had none. Two things turned out to be resting
+on nothing, and both are corrected by literature that already existed.
+
+### 11.1 The agreement statistic was wrong
+
+The Sprint 4 gate commits to two independent annotators over a stratified course sample,
+and — on [Zhang et al.'s (2024)](../papers/zhang-2024-job-market-entity-linking.md) warning
+that single-gold scoring understates performance — to permitting **multiple correct links
+per course**. That decision, taken to make the evaluation fairer, quietly changed the
+annotation task from categorical to **set-valued**: each annotator returns a *set* of
+national skill IDs per course.
+
+Nothing in the plan said which agreement coefficient to use, and the default would have
+been Cohen's or Fleiss' κ. On a set-valued task those compare sets for exact identity, so
+one annotator's `{SQL, Data Modeling}` against another's
+`{SQL, Data Modeling, Database Design}` counts as complete disagreement — indistinguishable
+from `{SQL, Data Modeling}` against `{Ethics, Public Speaking}`. Since a subset relation is
+precisely the disagreement one expects between a strict and a generous annotator, κ would
+have understated agreement systematically, and a low reported reliability would then have
+discredited an evaluation that was in fact sound.
+
+[Passonneau (2006)](../papers/passonneau-2006-masi-set-agreement.md) solved this two
+decades ago. **MASI = J × M** multiplies the Jaccard coefficient by a *monotonicity* term
+that scores identical sets 1, a subset relation **2/3**, a partial overlap with non-null
+differences **1/3**, and disjoint sets 0; used as the distance function δ inside
+Krippendorff's α, it makes partial agreement measurable. On the paper's worked example an
+annotation matrix in a subset relation scores 0.37 against 0.22 for one with symmetric
+differences — a distinction exact-match agreement cannot express.
+
+Iris adopts Krippendorff's α with MASI for both the skill-set annotation and the level
+assignment. The monotonicity term is the load-bearing part: it separates *"one annotator
+was more generous"* from *"the annotators disagree about what this course teaches"*, and
+the annotation guideline should be tuned against exactly that distinction.
+
+One limitation carries through and belongs in the write-up. MASI has no semantic distance,
+so `การสร้างแบบจำลองข้อมูลเชิงสัมพันธ์` and `การสร้างแบบจำลองข้อมูลเชิงตรรกะ` are as far
+apart as any two entries. On a fine-grained vocabulary this measures agreement
+conservatively.
+
+It is worth noting that the two papers closest to Iris's evaluation —
+[Kumar et al. (2025)](../papers/kumar-2025-bloom-taxonomy-classification.md) and
+[Zaki et al. (2023)](../papers/zaki-2023-clo-plo-mapping-automation.md) — both report model
+performance against expert labels **without reporting agreement between the experts**. Zaki
+et al.'s 83–88% precision "against domain experts" cannot be interpreted without knowing
+how far the experts were from each other. Reporting it properly is a small but real
+methodological improvement on the nearest prior work.
+
+### 11.2 The review screen was justified one-sidedly
+
+The design concluded that the skill-link review screen is a *requirement of the method*,
+because measured linking accuracy (Acc@1 0.23–0.29, §10.1) makes an unreviewed mapping
+unusable as evidence. That establishes review is **necessary**. Nothing in the corpus
+established that it **works**.
+
+[Chen et al. (2025)](../papers/chen-2025-interface-design-high-stakes.md) supply the
+missing half, and the finding is uncomfortable: human–AI teams frequently **underperform
+the AI alone**, because reviewers exhibit [automation bias](../concepts/automation-bias.md)
+and accept incorrect recommendations without scrutiny. Across 108 participants on
+high-stakes medical decisions, they compare six decision-support mechanisms and find a
+clear asymmetry. Mechanisms that *inform* the reviewer — AI confidence, text explanations,
+performance visualisations — improved collaborative performance and calibrated trust.
+Mechanisms that *interrogate* the reviewer — feedback prompts, AI-generated questions —
+deepened reflection but **reduced task performance** through cognitive load, and damaged
+trust as a result. Simple visual explanations did nothing.
+
+Read against Iris's specified screen, this validates part of it and puts the rest on
+notice. Per-link confidence, the official skill definition and the highlighted evidence
+span are precisely the informing mechanisms that helped. Confidence-first ordering and the
+level-source disagreement display, however, sit close to the cognitive forcing functions
+that *hurt* — they are retained for a different and stated reason, to direct scarce
+attention and to refuse to hide uncertainty, but they are the first candidates to make
+optional if usability testing shows review completion degrading.
+
+The practical addition is a detector. Automation bias predicts that bulk-accept on
+high-confidence links will be used indiscriminately, and that is the most bias-prone
+affordance on the screen. The instrumented **correction rate** is how it gets caught: a
+correction rate far below the Sprint 4 measured error rate means reviewers are
+rubber-stamping, and the resulting report is not the evidence it claims to be. That check
+belongs in the analysis of every reviewed programme, not only in usability sessions.
+
+### 11.3 An underspecification, measured rather than argued
+
+§4 and §10 both carry RCA weighting forward from
+[Ahadi et al. (2022)](../papers/ahadi-2022-skills-taught-vs-sought.md) without ever stating
+**which denominator**. RCA is a ratio of shares, and on this data the numerator is
+unambiguous — within a career, the share computed from `count` and from `percentage` is
+identical, because the per-career posting total cancels. The global denominator is not: one
+may weight careers by posting volume, or treat each career as a single observation.
+
+The difference is not academic. Measured on the Data Engineer demand vector, the two
+constructions give a median absolute RCA difference of 3.02, a maximum of 23.86, and a
+**top-15 ranking overlap of only 8 out of 15** — on the very list a curriculum committee is
+handed as its priority order.
+
+Iris adopts career-equal weighting, on the grounds that count-weighting inherits the
+unresolved meaning of `N`: per-career posting totals span 203 to 6,291,725, and if that
+range reflects a corpus artefact rather than real demand, count-weighting propagates the
+artefact into every ranked list. The choice is stated in outputs and the alternative
+reported as a sensitivity check.
+
+### 11.4 A fourth confirmed gap
+
+The seniority gradient — comparing a skill's prevalence between paired career rungs to see
+which skills gain prominence with experience — entered the design after both review rounds
+and had never been searched for. Searching found industry guidance on seniority
+classification and one study of how candidates *describe* themselves
+(Azamnouri et al. 2026: *"seniority nearly triples the odds of articulating leadership"*,
+from 300 CVs), but **no empirical work measuring skill-demand shifts across seniority rungs
+from a published occupational taxonomy**.
+
+That makes it a fourth confirmed gap alongside the three recorded in §10.5 — NLP on Thai
+TQF documents, Thai PDF text-layer corruption, and grading curriculum skill depth against a
+competency scale — and it should be presented as a contribution rather than as an
+application of existing method.
+
+### 11.5 What the audit changed about the process
+
+Both errors survived two full review rounds for the same structural reason: only the
+question → paper direction was ever checked. A question node can look thoroughly supported
+while a *design decision derived from it* rests on nothing, because the decision is not a
+node in the graph at all. The audit therefore added a **design element → evidence**
+traceability table to `index.md`, and three rules to the methodology: verify links are
+bidirectional (the audit found 18 one-way edges), audit design against evidence rather than
+only questions against papers, and **search for every new method element before it is
+built** — both errors here entered the design after the reviews had finished.
+
+
 ### Non-peer-reviewed sources (added 2026-08-27)
 
 These are government publications and platform documentation, not journal articles. They
@@ -606,33 +742,35 @@ detailed findings live in each `wiki/papers/` note.
 2. Aljohani N.R. et al. (2022). *Bridging the skill gap between the acquired university curriculum and the requirements of the job market.* Journal of Innovation & Knowledge. https://doi.org/10.1016/j.jik.2022.100190 — [note](../papers/aljohani-2022-curriculum-skill-gap-bibliometric.md)
 3. Arslan İltüzer E., Özlü Ö.A., Farajijobehdar V. & Eryiğit G. (2026). *Leveraging LLMs For Turkish Skill Extraction.* arXiv:2601.22885. https://arxiv.org/abs/2601.22885 — [note](../papers/arslan-2026-turkish-skill-extraction.md)
 4. Chaiaroon P. et al. (2025). *Digital Workforce Matching: A Machine Learning Approach for Skill-Based Job Classification and Recommendation.* J. Current Science and Technology. https://doi.org/10.59796/jcst.V15N4.2025.137 — [note](../papers/chaiaroon-2025-thai-digital-workforce-matching.md)
-5. Dixon N. et al. (2023). *Occupational models from 42 million unstructured job postings.* Patterns. https://doi.org/10.1016/j.patter.2023.100757 — [note](../papers/dixon-2023-occupational-models-42m.md)
-6. Dong H., Chen J., He Y., Liu Y. & Horrocks I. (2023). *Reveal the Unknown: Out-of-Knowledge-Base Mention Discovery with Entity Linking.* CIKM 2023. https://doi.org/10.1145/3583780.3615036 — [note](../papers/dong-2023-out-of-kb-mention-discovery.md)
-7. Fettach Y. et al. (2025). *Skill Demand Forecasting Using Temporal Knowledge Graph Embeddings.* arXiv:2504.07233. https://arxiv.org/abs/2504.07233 — [note](../papers/fettach-2025-skill-demand-temporal-kg.md)
-8. Herandi A., Li Y., Liu Z., Hu X. & Cai X. (2024). *Skill-LLM: Repurposing General-Purpose LLMs for Skill Extraction.* arXiv:2410.12052. https://arxiv.org/abs/2410.12052 — [note](../papers/herandi-2024-skill-llm.md)
-9. Hilliger I. et al. (2022). *Lessons learned from designing a curriculum analytics tool for improving student learning and program quality.* Journal of Computing in Higher Education. https://doi.org/10.1007/s12528-021-09284-2 — [note](../papers/hilliger-2022-curriculum-analytics-tool.md)
-10. Januzaj Y. & Luma A. (2022). *Cosine Similarity – A Computing Approach to Match Similarity Between Higher Education Programs and Job Market Demands.* iJET 17(12). https://doi.org/10.3991/ijet.v17i12.30375 — [note](../papers/januzaj-2022-cosine-similarity-he-job-market.md)
-11. Kavargyris D.C. et al. (2025). *ESCOX: A tool for skill and occupation extraction using LLMs from unstructured text.* Software Impacts. https://doi.org/10.1016/j.simpa.2025.100772 — [note](../papers/kavargyris-2025-escox-skill-extraction.md)
-12. Kumar R., Gulwani D. & Singh S. (2025). *Automated Analysis of Learning Outcomes and Exam Questions Based on Bloom's Taxonomy.* arXiv:2511.10903. https://arxiv.org/abs/2511.10903 — [note](../papers/kumar-2025-bloom-taxonomy-classification.md)
-13. Le N.L., Abel M.-H. & Laforge B. (2026). *From Learning Resources to Competencies: LLM-Based Tagging with Evidence and Graph Constraints.* arXiv:2605.28483. https://arxiv.org/abs/2605.28483 — [note](../papers/le-2026-competency-tagging-evidence.md)
-14. Lertmethaphat N.N. et al. (2025). *Exploring the Thai Job Market Through the Lens of Natural Language Processing and Machine Learning.* PIER Discussion Paper 228. https://www.pier.or.th/dp/228/ — [note](../papers/lertmethaphat-2025-thai-job-market-nlp.md)
-15. Lowphansirikul L. et al. (2021). *WangchanBERTa: Pretraining transformer-based Thai Language Models.* arXiv:2101.09635. https://doi.org/10.48550/arXiv.2101.09635 — [note](../papers/lowphansirikul-2021-wangchanberta.md)
-16. Luyen L.N. & Abel M.-H. (2025). *Automated Skill Decomposition Meets Expert Ontologies: Bridging the Granularity Gap with LLMs.* arXiv:2510.11313. https://doi.org/10.48550/arXiv.2510.11313 — [note](../papers/luyen-2025-skill-decomposition-ontology.md)
-17. Macedo M.M.G. de et al. (2022). *Practical Skills Demand Forecasting via Representation Learning of Temporal Dynamics.* arXiv:2205.09508. https://arxiv.org/abs/2205.09508 — [note](../papers/macedo-2022-skills-demand-forecasting-temporal.md)
-18. Nonesung S. et al. (2025). *ThaiOCRBench: A Task-Diverse Benchmark for Vision-Language Understanding in Thai.* IJCNLP-AACL 2025. arXiv:2511.04479. https://arxiv.org/abs/2511.04479 — [note](../papers/nonesung-2025-thaiocrbench.md)
-19. Nonesung S., Nitarach N., Jaknamon T., Taveekitworachai P. & Pipatanakul K. (2026). *Typhoon OCR: Open Vision-Language Model For Thai Document Extraction.* arXiv:2601.14722. https://arxiv.org/abs/2601.14722 — [note](../papers/nonesung-2026-typhoon-ocr.md)
-20. Phaphuangwittayakul A. et al. (2018). *Analysis of Skill Demand in Thai Labor Market from Online Jobs Recruitment Websites.* JCSSE 2018 (IEEE). https://doi.org/10.1109/JCSSE.2018.8457393 — [note](../papers/phaphuangwittayakul-2018-thai-skill-demand-jobthai.md)
-21. Phatthiyaphaibun W. et al. (2023). *PyThaiNLP: Thai Natural Language Processing in Python.* NLP-OSS @ EMNLP. https://arxiv.org/abs/2312.04649 — [note](../papers/phatthiyaphaibun-2023-pythainlp.md)
-22. Rikala P. et al. (2024). *Understanding and measuring skill gaps in Industry 4.0 — A review.* Technological Forecasting and Social Change. https://doi.org/10.1016/j.techfore.2024.123206 — [note](../papers/rikala-2024-skill-gaps-industry40-review.md)
-23. Sabet A.J. et al. (2024). *Course-Skill Atlas: A national longitudinal dataset of skills taught in U.S. higher education curricula.* Nature Scientific Data. https://doi.org/10.1038/s41597-024-03931-8 — [note](../papers/sabet-2024-course-skill-atlas.md)
-24. Saroglou S., Diamantaras K., Preta F., Delianidi M., Benisis A. & Meyer C.J. (2025). *Enhancing Job Matching: Occupation, Skill and Qualification Linking with the ESCO and EQF taxonomies.* arXiv:2512.03195. https://arxiv.org/abs/2512.03195 — [note](../papers/saroglou-2025-esco-eqf-linking.md)
-25. Sarthi P., Abdullah S., Tuli A., Khanna S., Goldie A. & Manning C.D. (2024). *RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval.* ICLR 2024. arXiv:2401.18059. https://arxiv.org/abs/2401.18059 — [note](../papers/sarthi-2024-raptor.md)
-26. Seif A. et al. (2024). *A Dynamic Jobs-Skills Knowledge Graph.* RecSys in HR 2024 (CEUR Vol-3788). — [note](../papers/seif-2024-dynamic-jobs-skills-kg.md)
-27. Senger E. et al. (2024). *Deep Learning-based Computational Job Market Analysis: A Survey on Skill Extraction and Classification from Job Postings.* NLP4HR @ EACL. https://doi.org/10.48550/arXiv.2402.05617 — [note](../papers/senger-2024-dl-skill-extraction-survey.md)
-28. Siddoo V. et al. (2019). *An exploratory study of digital workforce competency in Thailand.* Heliyon. https://doi.org/10.1016/j.heliyon.2019.e01723 — [note](../papers/siddoo-2019-thai-digital-workforce-competency.md)
-29. Tipsena R. et al. (2025). *Predicting Workforce Needs in Thailand's Digital Industry: A Machine Learning Approach (2023-2024).* JISTaP 13(3). https://doi.org/10.1633/JISTaP.2025.13.3.1 — [note](../papers/tipsena-2025-predicting-thai-digital-workforce.md)
-30. Vo N.N.Y. et al. (2022). *Domain-specific NLP system to support learning path and curriculum design at tech universities.* Computers and Education: Artificial Intelligence. https://doi.org/10.1016/j.caeai.2021.100042 — [note](../papers/vo-2022-nlp-curriculum-learning-path.md)
-31. Weerasombat T. & Pumipatyothin P. (2025). *Employers' priority on work skills and the skill gaps: a case of Thailand.* Cogent Education. https://doi.org/10.1080/2331186X.2024.2441656 — [note](../papers/weerasombat-2025-thai-employer-skill-priorities.md)
-32. Xu Z. et al. (2025). *From Course to Skill: Evaluating LLM Performance in Curricular Analytics.* arXiv:2505.02324. https://doi.org/10.48550/arXiv.2505.02324 — [note](../papers/xu-2025-llm-curricular-analytics.md)
-33. Zaki N., Turaev S., Shuaib K., Krishnan A. & Mohamed E. (2023). *Automating the mapping of course learning outcomes to program learning outcomes using natural language processing for accurate educational program evaluation.* Education and Information Technologies 28(12), 16723–16742. https://doi.org/10.1007/s10639-023-11877-4 — [note](../papers/zaki-2023-clo-plo-mapping-automation.md)
-34. Zhang M., van der Goot R. & Plank B. (2024). *Entity Linking in the Job Market Domain.* Findings of EACL 2024. arXiv:2401.17979. https://arxiv.org/abs/2401.17979 — [note](../papers/zhang-2024-job-market-entity-linking.md)
+5. Chen Z., Luo Y. & Sra M. (2025). *Engaging with AI: How Interface Design Shapes Human-AI Collaboration in High-Stakes Decision-Making.* arXiv:2501.16627. https://arxiv.org/abs/2501.16627 — [note](../papers/chen-2025-interface-design-high-stakes.md)
+6. Dixon N. et al. (2023). *Occupational models from 42 million unstructured job postings.* Patterns. https://doi.org/10.1016/j.patter.2023.100757 — [note](../papers/dixon-2023-occupational-models-42m.md)
+7. Dong H., Chen J., He Y., Liu Y. & Horrocks I. (2023). *Reveal the Unknown: Out-of-Knowledge-Base Mention Discovery with Entity Linking.* CIKM 2023. https://doi.org/10.1145/3583780.3615036 — [note](../papers/dong-2023-out-of-kb-mention-discovery.md)
+8. Fettach Y. et al. (2025). *Skill Demand Forecasting Using Temporal Knowledge Graph Embeddings.* arXiv:2504.07233. https://arxiv.org/abs/2504.07233 — [note](../papers/fettach-2025-skill-demand-temporal-kg.md)
+9. Herandi A., Li Y., Liu Z., Hu X. & Cai X. (2024). *Skill-LLM: Repurposing General-Purpose LLMs for Skill Extraction.* arXiv:2410.12052. https://arxiv.org/abs/2410.12052 — [note](../papers/herandi-2024-skill-llm.md)
+10. Hilliger I. et al. (2022). *Lessons learned from designing a curriculum analytics tool for improving student learning and program quality.* Journal of Computing in Higher Education. https://doi.org/10.1007/s12528-021-09284-2 — [note](../papers/hilliger-2022-curriculum-analytics-tool.md)
+11. Januzaj Y. & Luma A. (2022). *Cosine Similarity – A Computing Approach to Match Similarity Between Higher Education Programs and Job Market Demands.* iJET 17(12). https://doi.org/10.3991/ijet.v17i12.30375 — [note](../papers/januzaj-2022-cosine-similarity-he-job-market.md)
+12. Kavargyris D.C. et al. (2025). *ESCOX: A tool for skill and occupation extraction using LLMs from unstructured text.* Software Impacts. https://doi.org/10.1016/j.simpa.2025.100772 — [note](../papers/kavargyris-2025-escox-skill-extraction.md)
+13. Kumar R., Gulwani D. & Singh S. (2025). *Automated Analysis of Learning Outcomes and Exam Questions Based on Bloom's Taxonomy.* arXiv:2511.10903. https://arxiv.org/abs/2511.10903 — [note](../papers/kumar-2025-bloom-taxonomy-classification.md)
+14. Le N.L., Abel M.-H. & Laforge B. (2026). *From Learning Resources to Competencies: LLM-Based Tagging with Evidence and Graph Constraints.* arXiv:2605.28483. https://arxiv.org/abs/2605.28483 — [note](../papers/le-2026-competency-tagging-evidence.md)
+15. Lertmethaphat N.N. et al. (2025). *Exploring the Thai Job Market Through the Lens of Natural Language Processing and Machine Learning.* PIER Discussion Paper 228. https://www.pier.or.th/dp/228/ — [note](../papers/lertmethaphat-2025-thai-job-market-nlp.md)
+16. Lowphansirikul L. et al. (2021). *WangchanBERTa: Pretraining transformer-based Thai Language Models.* arXiv:2101.09635. https://doi.org/10.48550/arXiv.2101.09635 — [note](../papers/lowphansirikul-2021-wangchanberta.md)
+17. Luyen L.N. & Abel M.-H. (2025). *Automated Skill Decomposition Meets Expert Ontologies: Bridging the Granularity Gap with LLMs.* arXiv:2510.11313. https://doi.org/10.48550/arXiv.2510.11313 — [note](../papers/luyen-2025-skill-decomposition-ontology.md)
+18. Macedo M.M.G. de et al. (2022). *Practical Skills Demand Forecasting via Representation Learning of Temporal Dynamics.* arXiv:2205.09508. https://arxiv.org/abs/2205.09508 — [note](../papers/macedo-2022-skills-demand-forecasting-temporal.md)
+19. Nonesung S. et al. (2025). *ThaiOCRBench: A Task-Diverse Benchmark for Vision-Language Understanding in Thai.* IJCNLP-AACL 2025. arXiv:2511.04479. https://arxiv.org/abs/2511.04479 — [note](../papers/nonesung-2025-thaiocrbench.md)
+20. Nonesung S., Nitarach N., Jaknamon T., Taveekitworachai P. & Pipatanakul K. (2026). *Typhoon OCR: Open Vision-Language Model For Thai Document Extraction.* arXiv:2601.14722. https://arxiv.org/abs/2601.14722 — [note](../papers/nonesung-2026-typhoon-ocr.md)
+21. Passonneau R. (2006). *Measuring Agreement on Set-valued Items (MASI) for Semantic and Pragmatic Annotation.* LREC 2006. https://aclanthology.org/L06-1392/ — [note](../papers/passonneau-2006-masi-set-agreement.md)
+22. Phaphuangwittayakul A. et al. (2018). *Analysis of Skill Demand in Thai Labor Market from Online Jobs Recruitment Websites.* JCSSE 2018 (IEEE). https://doi.org/10.1109/JCSSE.2018.8457393 — [note](../papers/phaphuangwittayakul-2018-thai-skill-demand-jobthai.md)
+23. Phatthiyaphaibun W. et al. (2023). *PyThaiNLP: Thai Natural Language Processing in Python.* NLP-OSS @ EMNLP. https://arxiv.org/abs/2312.04649 — [note](../papers/phatthiyaphaibun-2023-pythainlp.md)
+24. Rikala P. et al. (2024). *Understanding and measuring skill gaps in Industry 4.0 — A review.* Technological Forecasting and Social Change. https://doi.org/10.1016/j.techfore.2024.123206 — [note](../papers/rikala-2024-skill-gaps-industry40-review.md)
+25. Sabet A.J. et al. (2024). *Course-Skill Atlas: A national longitudinal dataset of skills taught in U.S. higher education curricula.* Nature Scientific Data. https://doi.org/10.1038/s41597-024-03931-8 — [note](../papers/sabet-2024-course-skill-atlas.md)
+26. Saroglou S., Diamantaras K., Preta F., Delianidi M., Benisis A. & Meyer C.J. (2025). *Enhancing Job Matching: Occupation, Skill and Qualification Linking with the ESCO and EQF taxonomies.* arXiv:2512.03195. https://arxiv.org/abs/2512.03195 — [note](../papers/saroglou-2025-esco-eqf-linking.md)
+27. Sarthi P., Abdullah S., Tuli A., Khanna S., Goldie A. & Manning C.D. (2024). *RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval.* ICLR 2024. arXiv:2401.18059. https://arxiv.org/abs/2401.18059 — [note](../papers/sarthi-2024-raptor.md)
+28. Seif A. et al. (2024). *A Dynamic Jobs-Skills Knowledge Graph.* RecSys in HR 2024 (CEUR Vol-3788). — [note](../papers/seif-2024-dynamic-jobs-skills-kg.md)
+29. Senger E. et al. (2024). *Deep Learning-based Computational Job Market Analysis: A Survey on Skill Extraction and Classification from Job Postings.* NLP4HR @ EACL. https://doi.org/10.48550/arXiv.2402.05617 — [note](../papers/senger-2024-dl-skill-extraction-survey.md)
+30. Siddoo V. et al. (2019). *An exploratory study of digital workforce competency in Thailand.* Heliyon. https://doi.org/10.1016/j.heliyon.2019.e01723 — [note](../papers/siddoo-2019-thai-digital-workforce-competency.md)
+31. Tipsena R. et al. (2025). *Predicting Workforce Needs in Thailand's Digital Industry: A Machine Learning Approach (2023-2024).* JISTaP 13(3). https://doi.org/10.1633/JISTaP.2025.13.3.1 — [note](../papers/tipsena-2025-predicting-thai-digital-workforce.md)
+32. Vo N.N.Y. et al. (2022). *Domain-specific NLP system to support learning path and curriculum design at tech universities.* Computers and Education: Artificial Intelligence. https://doi.org/10.1016/j.caeai.2021.100042 — [note](../papers/vo-2022-nlp-curriculum-learning-path.md)
+33. Weerasombat T. & Pumipatyothin P. (2025). *Employers' priority on work skills and the skill gaps: a case of Thailand.* Cogent Education. https://doi.org/10.1080/2331186X.2024.2441656 — [note](../papers/weerasombat-2025-thai-employer-skill-priorities.md)
+34. Xu Z. et al. (2025). *From Course to Skill: Evaluating LLM Performance in Curricular Analytics.* arXiv:2505.02324. https://doi.org/10.48550/arXiv.2505.02324 — [note](../papers/xu-2025-llm-curricular-analytics.md)
+35. Zaki N., Turaev S., Shuaib K., Krishnan A. & Mohamed E. (2023). *Automating the mapping of course learning outcomes to program learning outcomes using natural language processing for accurate educational program evaluation.* Education and Information Technologies 28(12), 16723–16742. https://doi.org/10.1007/s10639-023-11877-4 — [note](../papers/zaki-2023-clo-plo-mapping-automation.md)
+36. Zhang M., van der Goot R. & Plank B. (2024). *Entity Linking in the Job Market Domain.* Findings of EACL 2024. arXiv:2401.17979. https://arxiv.org/abs/2401.17979 — [note](../papers/zhang-2024-job-market-entity-linking.md)

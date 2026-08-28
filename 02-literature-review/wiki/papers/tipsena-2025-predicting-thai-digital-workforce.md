@@ -6,7 +6,7 @@ title: "Predicting Workforce Needs in Thailand's Digital Industry: A Machine Lea
 venue: Journal of Information Science Theory and Practice (JISTaP) 13(3):1-16, 2025
 doi: 10.1633/JISTaP.2025.13.3.1
 relevance: high
-questions: [q-job-posting-sources, q-sample-size, q-segment-taxonomy]
+questions: [q-job-posting-sources, q-sample-size, q-segment-taxonomy, q-thai-ontology]
 ---
 
 ## Research Question
@@ -41,7 +41,7 @@ Focus is on segment classification prediction, not skill-level extraction or gap
 [[thai-nlp]] · [[job-posting-analysis]] · [[skill-gap-quantification]]
 
 ## Questions Addressed
-[[q-job-posting-sources]] · [[q-sample-size]] · [[q-segment-taxonomy]]
+[[q-job-posting-sources]] · [[q-sample-size]] · [[q-segment-taxonomy]] · [[q-thai-ontology]]
 
 ## Notes for Iris
 **Three key implications for Iris:**

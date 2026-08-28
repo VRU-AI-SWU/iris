@@ -81,6 +81,38 @@ the market requires.
 Renormalised KL is retained as a secondary aggregate, reported only with its changed
 interpretation stated explicitly.
 
+### ⚠️ RCA is underspecified — and the choice changes the answer (found 2026-08-28)
+
+"RCA weighting" was carried from [[ahadi-2022-skills-taught-vs-sought]] without stating
+**which denominator**. RCA is a ratio of shares:
+
+```
+RCA(skill s, career c) = (s's share within c) / (s's share across all careers)
+```
+
+The numerator is unambiguous — within a career, the share computed from `count` and from
+`percentage` is **identical**, because the per-career posting total `N_c` cancels
+(verified on the snapshot).
+
+The denominator is not. Two defensible constructions:
+
+| Global denominator | Meaning |
+|---|---|
+| **count-weighted** — `Σ_c count / Σ_sc count` | careers contribute in proportion to their posting volume |
+| **career-equal** — `Σ_c percentage / Σ_sc percentage` | each career is one observation |
+
+Measured on Data Engineer, these are **not interchangeable**: median |ΔRCA| = 3.02, max
+23.86, and the **top-15 ranking overlaps by only 8/15**. Since the RCA-ranked list is what
+a curriculum committee is shown, the choice materially changes what they are told to
+prioritise.
+
+**Working decision: career-equal weighting.** Count-weighted inherits the unresolved
+question of what `N` means — it ranges 203 to 6,291,725 per career, and if that reflects a
+corpus artefact rather than real demand, count-weighting propagates the artefact into every
+ranking. Career-equal weighting is robust to an uncertainty the project cannot currently
+quantify. The decision is stated in outputs and the alternative reported as a sensitivity
+check, not silently assumed.
+
 **Hard constraint on every metric and every narrative:** absence from a career's list
 means *below the ~100-skill cut-off*, never *not demanded*. This is enforced in the
 report template rather than left to the writer.

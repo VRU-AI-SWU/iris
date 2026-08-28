@@ -6,7 +6,7 @@ title: "Understanding and measuring skill gaps in Industry 4.0 — A review"
 venue: Technological Forecasting and Social Change 201 (2024) 123206, Elsevier
 doi: 10.1016/j.techfore.2024.123206
 relevance: medium
-questions: [q-gap-direction, q-skill-taxonomy]
+questions: [q-gap-direction, q-prevalence-metrics, q-skill-taxonomy]
 ---
 
 ## Research Question
@@ -37,7 +37,7 @@ Industry 4.0 focus — results may not fully generalise to broader HE contexts. 
 [[skill-gap-quantification]] · [[curriculum-analytics]]
 
 ## Questions Addressed
-[[q-gap-direction]]
+[[q-gap-direction]] · [[q-prevalence-metrics]] · [[q-skill-taxonomy]]
 
 ## Notes for Iris
 **Most useful for framing and limitations discussion.** The multi-method recommendation directly validates our hybrid approach: Iris uses job-posting-derived demand distributions (primary) and optionally employer survey data (future work). The A–B = C formula is the cleanest formal definition of skill gap we've seen in the literature — cite this in our methods section when defining what we measure. The confirmation that surveys have peer positivity bias further justifies why Iris uses job postings (employer-stated requirements) rather than graduate self-assessments as the demand signal.

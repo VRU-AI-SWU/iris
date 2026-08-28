@@ -6,7 +6,7 @@ title: "Digital Workforce Matching: A Machine Learning Approach for Skill-Based 
 venue: Journal of Current Science and Technology (JCST), Vol. 15 No. 4, Oct–Dec 2025, Article 137, Rangsit University
 doi: 10.59796/jcst.V15N4.2025.137
 relevance: high
-questions: [q-job-posting-sources, q-sample-size, q-segment-taxonomy]
+questions: [q-job-posting-sources, q-sample-size, q-segment-taxonomy, q-thai-ontology]
 ---
 
 ## Research Question
@@ -62,7 +62,7 @@ Focused on digital sector only; no non-digital roles. Dataset: 11,365 positions 
 [[thai-job-market]] · [[skill-extraction]] · [[job-posting-analysis]] · [[thai-nlp]] · [[skill-taxonomy]]
 
 ## Questions Addressed
-[[q-job-posting-sources]] · [[q-sample-size]] · [[q-segment-taxonomy]]
+[[q-job-posting-sources]] · [[q-sample-size]] · [[q-segment-taxonomy]] · [[q-thai-ontology]]
 
 ## Notes for Iris
 **Three high-value contributions to Iris design:**

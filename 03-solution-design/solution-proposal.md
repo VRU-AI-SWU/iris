@@ -376,8 +376,19 @@ Every term is measured. No claim is made about a level the market requires.
 #### Career specificity weighting (RCA)
 
 Down-weights skills every career demands, up-weights discriminating ones, so the ranked
-list is actionable rather than dominated by universal soft skills. Redefined on prevalence
-rather than on distribution shares.
+list is actionable rather than dominated by universal soft skills.
+
+⚠️ **The denominator must be stated, because the choice changes the ranking.** RCA is a
+ratio of shares. The numerator — a skill's share within a career — is identical whether
+computed from `count` or `percentage`, since `N_c` cancels. The *global* denominator is
+not: weighting careers by posting volume gives a different answer from treating each
+career as one observation. Measured on Data Engineer, median |ΔRCA| = 3.02, max 23.86, and
+**the top-15 ranking overlaps by only 8/15**.
+
+**Iris uses career-equal weighting.** Count-weighting inherits the unresolved meaning of
+`N` (203 to 6,291,725 per career); if that range is a corpus artefact, count-weighting
+propagates it into every ranked list. The choice is stated in every output, and the
+alternative is reported as a sensitivity check. See [[q-prevalence-metrics]].
 
 #### Seniority gradient — the demand-side depth signal
 
@@ -455,7 +466,7 @@ levels an unreviewed mapping is not evidence.**
 |---|---|---|
 | Text-layer repair | Character-level accuracy on a manually corrected sample | Repair must not introduce errors |
 | Section extraction | Course count and field completeness vs manual reading of both documents | All courses found |
-| Skill linking | Precision / recall / F1 against expert annotation of a stratified sample of ~50 courses, two annotators, inter-annotator agreement reported. **Multiple correct links per course permitted** — single-gold scoring understates performance | Established before any UI work |
+| Skill linking | Precision / recall / F1 and Acc@k against expert annotation of a stratified sample of ~50 courses, two annotators. **Multiple correct links per course permitted** — single-gold scoring understates performance. Agreement reported as **Krippendorff's α with the MASI distance**, *not* Cohen's/Fleiss' κ: the task is set-valued, and exact-match κ would score a strict annotator's `{A,B}` against a generous one's `{A,B,C}` as total disagreement | Established before any UI work |
 | Out-of-vocabulary | Hold out part of the vocabulary and check the linker declines to link courses that develop it (KB Versioning) | No extra annotation needed |
 | Level inference | Agreement with expert-assigned level; per-source agreement analysis | Reported honestly, including disagreement |
 | End-to-end | Runtime on a full 216-page document | Fits an interactive workflow |

@@ -6,7 +6,7 @@ title: "Course-Skill Atlas: A national longitudinal dataset of skills taught in 
 venue: Nature Scientific Data; arXiv:2404.13163
 doi: 10.1038/s41597-024-03931-8
 relevance: high
-questions: [q-skill-taxonomy, q-gap-direction, q-temporal-drift]
+questions: [q-gap-direction, q-level-inference, q-out-of-vocabulary, q-prevalence-metrics, q-sample-size, q-skill-taxonomy, q-temporal-drift]
 ---
 
 ## Research Question
@@ -31,7 +31,7 @@ U.S.-centric — uses O*NET/DOL taxonomy which does not map to Thai TQF context.
 [[curriculum-analytics]] · [[onet-taxonomy]] · [[kl-divergence]] · [[skill-gap-quantification]] · [[temporal-drift]]
 
 ## Questions Addressed
-[[q-skill-taxonomy]] · [[q-gap-direction]] · [[q-temporal-drift]]
+[[q-gap-direction]] · [[q-level-inference]] · [[q-out-of-vocabulary]] · [[q-prevalence-metrics]] · [[q-sample-size]] · [[q-skill-taxonomy]] · [[q-temporal-drift]]
 
 ## Notes for Iris
 The most directly comparable study to Iris at scale. Key takeaway: KL divergence is a validated method for curriculum-market gap and temporal drift — supports our hybrid gap metric approach. The fixed O*NET taxonomy contrasts with our emergent vocabulary decision; the paper's limitation of missing emerging skills is exactly why we chose bottom-up extraction. Thai TQF context requires Thai NLP, which is outside this paper's scope.

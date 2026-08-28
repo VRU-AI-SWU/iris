@@ -6,7 +6,7 @@ title: "Cosine Similarity – A Computing Approach to Match Similarity Between H
 venue: International Journal of Emerging Technologies in Learning (iJET) Vol.17 No.12, 2022
 doi: 10.3991/ijet.v17i12.30375
 relevance: low
-questions: []
+questions: [q-gap-direction, q-prevalence-metrics]
 ---
 
 ## Research Question
@@ -31,7 +31,7 @@ TF-IDF normalisation changes cosine similarity scores compared to raw frequency.
 [[cosine-similarity]]
 
 ## Questions Addressed
-*(none)*
+[[q-gap-direction]] · [[q-prevalence-metrics]]
 
 ## Notes for Iris
 **Low operational value.** This paper confirms cosine similarity + TF-IDF as a method class, but provides no empirical evidence about how well it works for real curriculum-to-job-market matching. Do not cite as evidence for cosine similarity as a gap metric — cite sabet-2024 or senger-2024 instead. May be useful only as a minimal background reference for the cosine similarity method definition.

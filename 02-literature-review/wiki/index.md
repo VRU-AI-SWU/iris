@@ -24,7 +24,7 @@ academic review with citations). Source provenance is in `../raw/manifest.md`.
 
 ---
 
-## Papers (34)
+## Papers (36)
 
 ### Skill Extraction, Taxonomy & Ontology (7)
 
@@ -107,6 +107,13 @@ academic review with citations). Source provenance is in `../raw/manifest.md`.
 |------|---------|------|-------|-----------|---------|
 | [sarthi-2024-raptor](papers/sarthi-2024-raptor.md) | Sarthi et al. | 2024 | ICLR | Medium | Recursive clustering + summarisation tree; +20% on QuALITY. *Inferred* hierarchy — the contrast that justifies PageIndex's *declared* one. |
 
+### Evaluation Method & Human Review (2) 🆕 *added 2026-08-28 by the process audit*
+
+| File | Authors | Year | Venue | Relevance | Summary |
+|------|---------|------|-------|-----------|---------|
+| [passonneau-2006-masi-set-agreement](papers/passonneau-2006-masi-set-agreement.md) | Passonneau | 2006 | LREC | High | ⭐ MASI = Jaccard × monotonicity, as the distance inside Krippendorff's α. **Corrects the Sprint 4 IAA statistic** — the task is set-valued, so κ is wrong. |
+| [chen-2025-interface-design-high-stakes](papers/chen-2025-interface-design-high-stakes.md) | Chen et al. | 2025 | arXiv (cs.HC) | High | 108 participants; **human+AI can underperform AI alone** under automation bias. Confidence/explanations help; forcing functions *hurt* performance. |
+
 ---
 
 ## Questions (16)
@@ -142,7 +149,7 @@ Status key: **answered** · **open** (live) · **revised** (answer changed by th
 
 ---
 
-## Concepts (35)
+## Concepts (37)
 
 | File | Summary |
 |------|---------|
@@ -190,6 +197,13 @@ kept and what it dropped.
 | [thai-tokenization](concepts/thai-tokenization.md) | No spaces between Thai words; segmentation is ambiguous and runs *after* the integrity gate. | **live** |
 | [pythainlp](concepts/pythainlp.md) | The Thai toolkit — used for `ำ` restoration and lexical retrieval, not as stage one. | **live** |
 | [bibliometric-analysis](concepts/bibliometric-analysis.md) | Quantitative mapping of a research field; cannot surface unpublished government standards. | framing |
+
+### Added by the process audit (2 nodes)
+
+| File | Summary | Post-pivot status |
+|------|---------|-------------------|
+| [inter-annotator-agreement](concepts/inter-annotator-agreement.md) 🆕 | The precondition for any gold standard. For set-valued tasks the **distance function**, not the coefficient, is what matters. | **live — corrects Sprint 4** |
+| [automation-bias](concepts/automation-bias.md) 🆕 | Accepting model output without scrutiny; why "add a human" is a design problem, not a solution. | **live — governs the review screen** |
 
 ---
 
@@ -267,3 +281,80 @@ not thresholding); [[q-level-inference]] gained a ruled-out approach and a requi
 baseline; [[q-thai-nlp]] gained a controlled result on native-language extraction and a
 vision fallback; [[q-implied-skills]] gained the numbers that justify the review screen.
 The `thai-pdf-text-integrity` policy changed from two outcomes to three.
+
+
+---
+
+## Traceability Audit (2026-08-28)
+
+The first two rounds asked *"what does the literature say?"*. This one asked
+**"does every design element have evidence behind it?"** — tracing each method component in
+`03-solution-design/` back to a paper, and flagging what has none.
+
+### Design element → evidence
+
+| Design element | Evidence | Status |
+|---|---|---|
+| Fixed national vocabulary as the linking target | dixon-2023 (775 skills suffice), senger-2024 | ✅ supported |
+| Retrieve-then-adjudicate | zhang-2024, arslan-2026, le-2026, xu-2025 | ✅ strong |
+| Evidence spans on every link | le-2026 (also *outperforms* unconstrained prompting) | ✅ supported |
+| Out-of-vocabulary as an explicit target | dong-2023 (BLINKout) | ✅ supported |
+| Level from CLO verbs, not LLM judgement | kumar-2025 (0.72–0.73 vs 94%) | ✅ supported |
+| ● ○ matrix treated as noisy evidence | zaki-2023 (83–88% vs experts) | ✅ supported |
+| Vision fallback for lossy text layers | nonesung-2026, nonesung-2025 | ✅ supported |
+| Declared- over inferred-structure indexing | sarthi-2024 (by contrast) | ✅ supported |
+| No vector database at 4,376 entries | — *(engineering, not a research claim)* | ➖ n/a |
+| **Review screen as a method requirement** | zhang-2024 et al. establish it is *necessary* | ⚠️ **was one-sided** → chen-2025 shows it is not *sufficient* |
+| **IAA on a set-valued annotation task** | none — κ would have been used by default | 🔴 **error** → passonneau-2006 (MASI) |
+| **RCA denominator** | ahadi-2022 uses RCA; never stated which denominator | 🔴 **underspecified** → measured: top-15 overlap 8/15 |
+| **Seniority gradient** | none found | 🆕 **no precedent — a contribution claim** |
+| Thai PDF integrity gate | none found (2nd round) | 🆕 confirmed novelty |
+| Level grading of curricula | none found (2nd round) | 🆕 confirmed novelty |
+| NLP on Thai TQF documents | none found (2nd round) | 🆕 confirmed novelty |
+
+### What the audit found
+
+**Two design errors that the literature corrects.**
+
+1. **The Sprint 4 agreement statistic was wrong.** The plan permits multiple correct links
+   per course, which makes annotation **set-valued**; the default choice would have been
+   Cohen's or Fleiss' κ, which scores `{A,B}` against `{A,B,C}` as total disagreement.
+   Since that subset pattern is the *expected* disagreement between a strict and a generous
+   annotator, κ would have systematically understated agreement and discredited a sound
+   evaluation. → Krippendorff's α with the MASI distance
+   ([[passonneau-2006-masi-set-agreement]]).
+
+2. **The review screen was justified one-sidedly.** Measured linking accuracy establishes
+   that review is *necessary*; nothing established that it *works*.
+   [[chen-2025-interface-design-high-stakes]] shows human+AI pairs can underperform the AI
+   alone under [[automation-bias]], that confidence displays and text explanations help,
+   and that **cognitive forcing functions reduced performance** — which is what
+   confidence-first sorting and disagreement display resemble. Kept, for different stated
+   reasons, and now instrumented.
+
+**One underspecification measured rather than argued.** "RCA weighting" never said which
+global denominator. Career-equal and count-weighted give median |ΔRCA| = 3.02, max 23.86,
+and a **top-15 ranking overlap of 8/15** — on the very list a curriculum committee is shown.
+Career-equal adopted, because count-weighting inherits the unresolved meaning of `N`.
+
+**A fourth confirmed novelty.** Searches for empirical work measuring skill-demand shifts
+across seniority rungs returned industry guidance and CV self-presentation studies
+(Azamnouri et al. 2026: *"seniority nearly triples the odds of articulating leadership"* —
+about candidates describing themselves, not about demand). **No precedent was found for the
+seniority gradient**, which makes it a contribution rather than an application.
+
+**Eighteen broken graph edges.** Papers were added to question nodes without the reverse
+link, so `questions:` frontmatter was wrong for 18 pairs and the graph was unusable from
+the paper side. Repaired; one orphan paper (januzaj-2022) also linked. **0 one-way edges,
+0 orphans, 0 dangling wikilinks.**
+
+### Process rules added to the methodology
+
+- **Verify bidirectional links.** Adding a paper to a question is not done until the paper
+  declares the question (§9 step 4). A one-way edge is a silent graph defect.
+- **Audit design → evidence, not only question → paper.** A question node can look
+  well-supported while a *design decision* derived from it has no evidence at all — which
+  is how both errors above survived two review rounds.
+- **Search for every new method element before building it.** The seniority gradient and
+  the MASI issue both entered the design *after* the review rounds, and neither would have
+  been checked without an explicit pass.

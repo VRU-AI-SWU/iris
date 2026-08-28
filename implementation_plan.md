@@ -134,9 +134,12 @@ cost is spent.
 
 - [ ] Stratified annotation sample: ~50 courses across core / elective / general education
 - [ ] Annotation guideline written from the standard's own skill definitions
-- [ ] **Two annotators**, independently; inter-annotator agreement reported —
-      **multiple correct links per course permitted**, since single-gold scoring understates
-      performance
+- [ ] **Two annotators**, independently; **multiple correct links per course permitted**,
+      since single-gold scoring understates performance
+- [ ] Agreement computed as **Krippendorff's α with the MASI distance** (Jaccard ×
+      monotonicity) — ⚠️ *not* Cohen's or Fleiss' κ. The task is set-valued, so exact-match
+      κ scores `{A,B}` vs `{A,B,C}` as total disagreement, and that subset pattern is the
+      *expected* form of disagreement between a strict and a generous annotator
 - [ ] Precision / recall / F1 **and Acc@k** for linking; error taxonomy (missed, spurious,
       wrong-sense)
 - [ ] **Out-of-vocabulary evaluation via KB Versioning** — hold out part of the vocabulary,
@@ -195,7 +198,9 @@ as a reusable benchmark.
 - [ ] **Seniority gradient** — Δ prevalence between paired career rungs (13 pairs;
       `data-scientist` has four). Cross with curriculum level to produce the report's
       strongest finding. Mark clearly in output when a target career has no pair
-- [ ] RCA career-specificity weighting
+- [ ] RCA career-specificity weighting — **career-equal global denominator**, stated in
+      output; count-weighted reported as a sensitivity check (top-15 overlap is only 8/15
+      between the two, so this is not a free choice)
 - [ ] Growth-adjusted view from `skillsGrowth`
 - [ ] KL divergence as a secondary metric, with explicit renormalisation from prevalence
       and a stated interpretation

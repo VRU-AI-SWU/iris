@@ -232,6 +232,22 @@ These extend — do not replace — the lab standard above.
 - **Record concrete performance numbers.** Where a paper reports accuracy, F1, Acc@k or
   agreement, the note carries the figure and the conditions it was measured under. These
   are what calibrate the project's own evaluation targets, and vague summaries cannot.
+- **Verify links are bidirectional.** Adding a paper to a question note is not complete
+  until the paper note declares that question, in both its `questions:` frontmatter and its
+  *Questions Addressed* section (§9 step 4). A one-way edge is a silent graph defect: the
+  question looks supported while the paper is unreachable from it. Check with a script, not
+  by memory — an audit on 2026-08-28 found **18** of them.
+- **Audit design → evidence, not only question → paper.** A question node can look
+  well-supported while a *design decision derived from it* rests on nothing. Maintain a
+  traceability table in `index.md` mapping each design element to its evidence, and mark
+  the unsupported ones explicitly. Two design errors survived two full review rounds
+  because only the question-to-paper direction was ever checked.
+- **Search for every new method element before it is built.** When the design gains a
+  component after the review rounds — a new metric, a new evaluation statistic, a new
+  interface requirement — run a search for it. The two errors found in the 2026-08-28 audit
+  (an inter-annotator agreement measure invalid for set-valued tasks, and an
+  underspecified RCA denominator that changed a ranked list by 7 of 15 positions) both
+  entered the design *after* the reviews and would not have been caught otherwise.
 
 ### LLM Ingestion Prompt
 

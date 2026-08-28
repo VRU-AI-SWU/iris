@@ -6,7 +6,7 @@ title: "Entity Linking in the Job Market Domain"
 venue: Findings of EACL 2024
 doi: 10.48550/arXiv.2401.17979
 relevance: high
-questions: [q-skill-taxonomy, q-implied-skills, q-out-of-vocabulary]
+questions: [q-implied-skills, q-out-of-vocabulary, q-prevalence-metrics, q-skill-taxonomy]
 ---
 
 ## Research Question
@@ -56,7 +56,7 @@ underestimates performance when several links are legitimately valid.
 [[skill-entity-linking]] · [[esco-ontology]] · [[rag-skill-extraction]] · [[skill-gap-quantification]]
 
 ## Questions Addressed
-[[q-skill-taxonomy]] · [[q-implied-skills]] · [[q-out-of-vocabulary]]
+[[q-implied-skills]] · [[q-out-of-vocabulary]] · [[q-prevalence-metrics]] · [[q-skill-taxonomy]]
 
 ## Notes for the Project
 The most direct precedent for Iris's core task, and the single most important calibration

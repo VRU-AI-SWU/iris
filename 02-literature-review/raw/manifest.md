@@ -4,7 +4,7 @@ Provenance ledger for the literature review. One row per `wiki/papers/` note.
 `PDF in raw/` is the archived filename (`<paper-note-slug>.pdf`), or **—** with
 the reason it is not yet stored.
 
-34 paper notes · 27 PDFs archived · 7 to source.
+36 paper notes · 29 PDFs archived · 7 to source.
 
 > **Updated 2026-08-28** — 11 papers added in the post-pivot review round
 > (see the *Post-pivot round* section below). 10 of the 11 are arXiv-hosted and
@@ -97,6 +97,13 @@ document extraction, and structure-aware retrieval.
 |---|---|---|---|
 | nonesung-2026-typhoon-ocr | Nonesung et al. 2026 | nonesung-2026-typhoon-ocr.pdf | 10.48550/arXiv.2601.14722 |
 | nonesung-2025-thaiocrbench | Nonesung et al. 2025 | nonesung-2025-thaiocrbench.pdf | 10.48550/arXiv.2511.04479 |
+
+### Evaluation Method & Human Review *(process audit, 2026-08-28)*
+
+| Paper note | Authors, Year | PDF in `raw/` | DOI / link |
+|---|---|---|---|
+| passonneau-2006-masi-set-agreement | Passonneau 2006 | passonneau-2006-masi-set-agreement.pdf | LREC 2006 · https://aclanthology.org/L06-1392/ |
+| chen-2025-interface-design-high-stakes | Chen et al. 2025 | chen-2025-interface-design-high-stakes.pdf | 10.48550/arXiv.2501.16627 |
 
 ### Structure-Aware Retrieval
 

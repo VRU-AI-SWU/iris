@@ -6,7 +6,7 @@ title: "Lessons learned from designing a curriculum analytics tool for improving
 venue: Journal of Computing in Higher Education 34 (2022), Springer
 doi: 10.1007/s12528-021-09284-2
 relevance: high
-questions: [q-visualisation]
+questions: [q-level-inference, q-visualisation]
 ---
 
 ## Research Question
@@ -38,7 +38,7 @@ Single-institution study in Chile; generalisability to Thai university context u
 [[curriculum-analytics]]
 
 ## Questions Addressed
-[[q-visualisation]]
+[[q-level-inference]] · [[q-visualisation]]
 
 ## Notes for Iris
 **Three UX/UI design principles for Iris gap reports, validated by this study:**
