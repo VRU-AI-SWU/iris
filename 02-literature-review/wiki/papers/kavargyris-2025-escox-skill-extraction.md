@@ -6,7 +6,7 @@ title: "ESCOX: A tool for skill and occupation extraction using LLMs from unstru
 venue: Software Impacts 25 (2025) 100772, Elsevier
 doi: 10.1016/j.simpa.2025.100772
 relevance: high
-questions: [q-skill-taxonomy, q-skill-extraction]
+questions: [q-skill-taxonomy, q-implied-skills]
 ---
 
 ## Research Question
@@ -41,7 +41,7 @@ ESCOX is fully dependent on ESCO taxonomy — non-ESCO skills (emerging, domain-
 [[esco-ontology]] · [[rag-skill-extraction]] · [[skill-taxonomy]]
 
 ## Questions Addressed
-[[q-skill-taxonomy]] · [[q-skill-extraction]]
+[[q-skill-taxonomy]] · [[q-implied-skills]]
 
 ## Notes for Iris
 **Architecture reference for our AI Engineer.** The LLM + embedding + taxonomy pipeline in ESCOX is structurally similar to what Iris needs, but ESCO is not viable for Thai context. Key insight: the separation of (1) span detection via LLM and (2) taxonomy alignment via embedding similarity is a clean two-stage design we should adopt — using our emergent Thai skill vocabulary rather than ESCO for the alignment stage. The ESCOX case study top skills (Java, SQL, Python, Agile) provide a cross-check: if our Thai CS job postings don't surface similar skills in the top-N, something is wrong with our extraction. The open-source MIT license means we can inspect and adapt the pipeline code directly.

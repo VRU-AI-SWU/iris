@@ -6,7 +6,7 @@ title: "Domain-specific NLP system to support learning path and curriculum desig
 venue: Computers and Education: Artificial Intelligence 3 (2022) 100042, Elsevier
 doi: 10.1016/j.caeai.2021.100042
 relevance: high
-questions: [q-skill-taxonomy, q-skill-extraction, q-curriculum-analytics]
+questions: [q-skill-taxonomy, q-implied-skills]
 ---
 
 ## Research Question
@@ -37,7 +37,7 @@ Training corpus (StackOverflow + GitHub) is entirely English; model performance 
 [[skill-extraction]] · [[curriculum-analytics]] · [[rag-skill-extraction]]
 
 ## Questions Addressed
-[[q-skill-taxonomy]] · [[q-skill-extraction]] · [[q-curriculum-analytics]]
+[[q-skill-taxonomy]] · [[q-implied-skills]]
 
 ## Notes for Iris
 **Two direct design implications for Iris:**

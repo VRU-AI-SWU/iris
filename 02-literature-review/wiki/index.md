@@ -142,7 +142,7 @@ Status key: **answered** · **open** (live) · **revised** (answer changed by th
 
 ---
 
-## Concepts (14)
+## Concepts (35)
 
 | File | Summary |
 |------|---------|
@@ -160,6 +160,36 @@ Status key: **answered** · **open** (live) · **revised** (answer changed by th
 | [esco-ontology](concepts/esco-ontology.md) | EU multilingual taxonomy (~13.9k skills); the field's reference, no Thai. Post-hoc mapping dropped. |
 | [tpqi-framework](concepts/tpqi-framework.md) | Thailand's occupational-standards system; coarser than a skill ontology. |
 | [wangchanberta](concepts/wangchanberta.md) | SOTA Thai RoBERTa; conflates closely related fine-grained terms. |
+
+### Backlog cleared 2026-08-28 (21 nodes)
+
+Concepts that papers referenced but which had never been created — 65 dangling wikilinks.
+Each is written with its post-pivot status stated, so the graph records what the design
+kept and what it dropped.
+
+| File | Summary | Post-pivot status |
+|------|---------|-------------------|
+| [skill-taxonomy](concepts/skill-taxonomy.md) | Enumerated skill sets with stable IDs; ESCO 13,890 · O*NET ~2,000 · Thai standard 4,376. Dixon: 775 suffices at national scale. | **live** |
+| [skill-ontology](concepts/skill-ontology.md) | A taxonomy plus relations. ⚠️ The Thai standard is flat — no parent/child, so graph constraints have no analogue. | **live (gap)** |
+| [onet-taxonomy](concepts/onet-taxonomy.md) | US Detailed Work Activities; the taxonomy behind sabet-2024's 3M-syllabus atlas. | considered, not used |
+| [skill-normalisation](concepts/skill-normalisation.md) | Collapsing surface forms to a canonical entry — what linking makes unnecessary. | subsumed |
+| [skill-decomposition](concepts/skill-decomposition.md) | Resolving granularity mismatch between text and taxonomy. | handled by retrieval breadth |
+| [skill-extraction](concepts/skill-extraction.md) | Open-vocabulary skill strings from text. | ⛔ **was the core task; replaced by linking** |
+| [llm-skill-extraction](concepts/llm-skill-extraction.md) | Prompted LLMs for skill work; the more constrained, the better it performs. | **live** |
+| [zero-shot-prompting](concepts/zero-shot-prompting.md) | ⚠️ Loses every controlled comparison in the corpus. Bloom: 0.72–0.73 vs SVM 94%. | ⛔ **reversed; ablation baseline only** |
+| [few-shot-prompting](concepts/few-shot-prompting.md) | Dynamic few-shot is the best Turkish configuration; needs a labelled pool. | post-gate option |
+| [deep-learning-ner](concepts/deep-learning-ner.md) | Supervised sequence labelling; needs thousands of Thai labels that do not exist. | not viable |
+| [job-posting-analysis](concepts/job-posting-analysis.md) | Postings as a demand corpus. ⚠️ Iris now inherits these biases second-hand without controlling them. | ⛔ **closed; biases still apply** |
+| [thai-job-market](concepts/thai-job-market.md) | Thai role taxonomies, platforms, and the confirmed skill mismatch. | motivates; superseded as data |
+| [temporal-drift](concepts/temporal-drift.md) | Demand decay; 12-month horizon, technical skills volatile. | **threat → signal** (`growth`) |
+| [cosine-similarity](concepts/cosine-similarity.md) | Angle between vectors; retrieval scoring. | retrieval only, **not** a gap metric |
+| [sentence-embedding](concepts/sentence-embedding.md) | Dense text vectors; discrimination matters more than benchmark rank. | **live** |
+| [thai-bert](concepts/thai-bert.md) | ⚠️ 97.21% similarity Physician/Dentist — cannot separate near-identical Thai terms. | ⛔ **excluded from retrieval** |
+| [roberta-architecture](concepts/roberta-architecture.md) | The pretraining recipe behind WangchanBERTa; overfits on small sets. | background |
+| [sentence-piece-tokenization](concepts/sentence-piece-tokenization.md) | Subword vocabulary without word boundaries; suggests a second corruption diagnostic. | inherited |
+| [thai-tokenization](concepts/thai-tokenization.md) | No spaces between Thai words; segmentation is ambiguous and runs *after* the integrity gate. | **live** |
+| [pythainlp](concepts/pythainlp.md) | The Thai toolkit — used for `ำ` restoration and lexical retrieval, not as stage one. | **live** |
+| [bibliometric-analysis](concepts/bibliometric-analysis.md) | Quantitative mapping of a research field; cannot surface unpublished government standards. | framing |
 
 ---
 
