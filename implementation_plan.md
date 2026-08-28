@@ -171,9 +171,12 @@ right path. 36 tests pass; ruff clean.
 - [x] **Prose-aware deduplication** — a course appears in the structure tables, the study
       plan and the description section; the entry whose body reads as prose wins
 - [x] `iris courses <pdf>`
-- [ ] Parse the curriculum mapping table into `(course, outcome, ● | ○)` triples
+- [x] **Parse the curriculum-responsibility matrix into `(course, outcome, ● | ○)`** —
+      positionally, since the marks are Wingdings glyphs invisible to text extraction
+- [x] `iris map <pdf>`
 - [ ] Parse per-course CLOs (SWU `ชุดรายวิชา` format)
 - [ ] Recover the ~30% of PSU courses whose descriptions are not being found
+- [ ] Extend matrix extraction to CMU and PSU (row labels are not course codes there)
 
 **Measured across the corpus — 350 courses with real Thai descriptions:**
 
@@ -193,6 +196,28 @@ literal `3.1.5 คำอธิบายรายวิชา`. PSU numbers it `4
 **CMU calls courses `กระบวนวิชา` rather than `รายวิชา`**. The regulated thing is the
 credit specification, not the heading — so that is what the extractor anchors on, and
 PageIndex is not needed for this step.
+
+**Curriculum-responsibility matrix — the level-inference input:**
+
+| University | Marks assigned | Courses × outcomes | Notes |
+|---|---|---|---|
+| **SWU** | **646 / 700 (92%)** | 50 × 18 | outcomes labelled `1.1`–`5.2`; **412 ● / 234 ○** |
+| SU | 313 / 582 (54%) | 82 × 10 | outcome header not found, columns unlabelled; all marks read as primary |
+| CMU, PSU | — | — | matrix pages found, but row labels are not course codes |
+| KU | — | — | 28-page excerpt, no matrix — reported as absent, not guessed |
+
+Two things are measured rather than assumed, because both vary by producer:
+
+- **Which glyph means which.** SWU draws ● as Wingdings2 `\x01` and ○ as Wingdings
+  `\uf0a1`; SU uses `\uf098`; CMU `\uf050`. Instead of carrying a font table, each glyph
+  is **rendered and its ink coverage measured** — a filled circle covers roughly twice the
+  area of a hollow one (SWU: 0.108 vs 0.076).
+- **Page rotation.** SWU prints the matrix sideways, so reading order and coordinate axes
+  do not coincide.
+
+Outcome columns come from clustering the *marks* by position, not from the header labels —
+producers pack the whole header row (`1.1 1.2 … 5.2`) into a single text span, so per-column
+positions cannot be read from it.
 
 **Open.**
 

@@ -6,6 +6,12 @@ from iris.ingest.courses import (
     extract_courses,
     learn_code_shape,
 )
+from iris.ingest.curriculum_map import (
+    CurriculumMapReport,
+    CurriculumMark,
+    Responsibility,
+    extract_curriculum_map,
+)
 from iris.ingest.integrity import (
     CLEAN_BASELINE,
     IntegrityReport,
@@ -20,16 +26,20 @@ from iris.ingest.repair import RepairResult, Rule, find_intrusions, learn_and_re
 __all__ = [
     "CLEAN_BASELINE",
     "CourseEntry",
+    "CurriculumMapReport",
+    "CurriculumMark",
     "ExtractedText",
     "ExtractionReport",
     "IntegrityReport",
     "NormaliseResult",
     "RepairResult",
+    "Responsibility",
     "Rule",
     "Verdict",
     "diagnose",
     "extract",
     "extract_courses",
+    "extract_curriculum_map",
     "find_intrusions",
     "is_thai",
     "learn_and_repair",

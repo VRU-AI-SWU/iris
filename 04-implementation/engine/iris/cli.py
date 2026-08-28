@@ -114,6 +114,29 @@ def _cmd_courses(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_map(args: argparse.Namespace) -> int:
+    """Read the curriculum-responsibility matrix (● หลัก / ○ รอง)."""
+    from collections import Counter
+
+    from iris.ingest import extract_curriculum_map
+
+    marks, report = extract_curriculum_map(args.pdf)
+    print(f"{args.pdf}\n{report.summary()}")
+    if not marks:
+        return 1
+    counts = Counter(m.responsibility for m in marks)
+    print(f"\n{counts['primary']} primary (●), {counts['secondary']} secondary (○)")
+    if args.verbose:
+        by_course: dict[str, list] = {}
+        for mark in marks:
+            by_course.setdefault(mark.course_code, []).append(mark)
+        for code, entries in list(by_course.items())[: args.limit]:
+            primary = sorted(m.outcome for m in entries if m.is_primary)
+            secondary = sorted(m.outcome for m in entries if not m.is_primary)
+            print(f"  {code:12} ● {','.join(primary) or '—':28} ○ {','.join(secondary) or '—'}")
+    return 0
+
+
 def _cmd_db_init(_: argparse.Namespace) -> int:
     from iris.db import create_all
 
@@ -145,6 +168,12 @@ def main(argv: list[str] | None = None) -> int:
     p_courses.add_argument("-n", "--limit", type=int, default=15)
     p_courses.add_argument("-v", "--verbose", action="store_true", help="show descriptions")
     p_courses.set_defaults(func=_cmd_courses)
+
+    p_map = sub.add_parser("map", help="read the curriculum-responsibility matrix")
+    p_map.add_argument("pdf")
+    p_map.add_argument("-v", "--verbose", action="store_true")
+    p_map.add_argument("-n", "--limit", type=int, default=12)
+    p_map.set_defaults(func=_cmd_map)
 
     p_db = sub.add_parser("db", help="database operations")
     db_sub = p_db.add_subparsers(dest="db_command", required=True)
