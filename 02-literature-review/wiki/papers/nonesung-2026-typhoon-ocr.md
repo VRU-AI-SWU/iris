@@ -80,7 +80,7 @@ text layer distinguishes them, so repair is genuinely lossy and needs a lexicon 
 Iris's stated fallback was "request a better source file", which is not always possible.
 **Typhoon OCR is the better fallback**, and the evidence is directly on point: Thai
 government forms at Levenshtein 0.04 from a 3B model that fits alongside the adjudication
-model on `linux-gpu-server`, self-hosted, no API cost, consistent with the project's
+model on `gpu-linux-server`, self-hosted, no API cost, consistent with the project's
 local-inference premise.
 
 Revised ingestion policy for the integrity gate:

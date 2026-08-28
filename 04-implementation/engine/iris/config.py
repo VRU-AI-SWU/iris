@@ -31,7 +31,7 @@ class Settings(BaseSettings):
 
     # ── Database ────────────────────────────────────────────────────────────
     # SQLite by default so ingestion and evaluation need no database server.
-    # Production on linux-gpu-server sets DATABASE_URL to PostgreSQL.
+    # Production on gpu-linux-server sets DATABASE_URL to PostgreSQL.
     database_url: str = f"sqlite:///{_repo_root() / 'data' / 'iris.db'}"
 
     # ── Model server (OpenAI-compatible); unused until Sprint 3 ─────────────

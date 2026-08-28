@@ -174,7 +174,7 @@ and tens of minutes per run; the public web tier must stay up regardless.
 └───────────────────────────────────────────────────┼────────────────────┘
                                                     │ Cloudflare Tunnel
                                                     │ (outbound only)
-┌─ linux-gpu-server — department office, 24/7 ──────▼────────────────────┐
+┌─ gpu-linux-server — department office, 24/7 ──────▼────────────────────┐
 │                                                                        │
 │  FastAPI ── job table ──► worker process                               │
 │                             │                                          │

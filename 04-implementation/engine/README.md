@@ -4,7 +4,7 @@ Reads a Thai TQF (มคอ.2) document, links each course to the **national Tha
 Skill Mapping vocabulary** at an inferred proficiency level, and measures the
 result against the demand that standard publishes for a career.
 
-Runs on `linux-gpu-server`. See [`../../tech_stack.md`](../../tech_stack.md) and
+Runs on `gpu-linux-server`. See [`../../tech_stack.md`](../../tech_stack.md) and
 [`../../implementation_plan.md`](../../implementation_plan.md).
 
 ## Quick start
@@ -63,6 +63,6 @@ analysis under a published number.
 
 **Sprint 0 complete.** Sprint 1 is the text-layer integrity gate and glyph repair.
 
-Still open: the VRAM check on `linux-gpu-server` that selects the adjudication
+Still open: the VRAM check on `gpu-linux-server` that selects the adjudication
 and embedding models. `EXTRACTION_MODEL` and `EMBEDDING_MODEL` are deliberately
 empty until then, and `/health` reports them as `null`.

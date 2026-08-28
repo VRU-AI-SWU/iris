@@ -49,7 +49,7 @@ grounded in measurement.
 ```
 Cloudflare · vru-ai.com/iris
   ├─ public   Astro static · published results · no backend
-  └─ /app     Cloudflare Access → Tunnel → linux-gpu-server (office, 24/7)
+  └─ /app     Cloudflare Access → Tunnel → gpu-linux-server (office, 24/7)
                                             FastAPI · PostgreSQL · local LLM
 ```
 
@@ -118,7 +118,7 @@ commit. Finding evidence is not applying it — that lesson cost a full review r
 
 ## Environment
 
-- Engine runs on **`linux-gpu-server`** — the project's own machine, department office,
+- Engine runs on **`gpu-linux-server`** — the project's own machine, department office,
   24/7. **Not CSML** (shared, contended GPU)
 - Models served over an OpenAI-compatible endpoint; dev and production differ only by
   `MODEL_SERVER_URL`

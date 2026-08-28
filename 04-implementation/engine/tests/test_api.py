@@ -38,7 +38,7 @@ def test_health_reports_database_reachability(client):
 
 
 def test_model_selection_is_still_pending(client):
-    """Sprint 0 leaves these empty; a VRAM check on linux-gpu-server decides them."""
+    """Sprint 0 leaves these empty; a VRAM check on gpu-linux-server decides them."""
     models = client.get("/health").json()["models"]
     assert models["extraction"] is None
     assert models["embedding"] is None

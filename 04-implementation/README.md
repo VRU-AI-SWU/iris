@@ -5,7 +5,7 @@ Two deployables. See [`../tech_stack.md`](../tech_stack.md) for the full stack a
 
 ```
 engine/    Python — ingestion, skill linking, alignment, FastAPI
-           runs on linux-gpu-server (department office, 24/7)
+           runs on gpu-linux-server (department office, 24/7)
 
 web/       Astro — public results site + gated analysis app
            deploys to Cloudflare Workers at vru-ai.com/iris

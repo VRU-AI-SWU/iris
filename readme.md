@@ -88,7 +88,7 @@ Internet ──► Cloudflare · vru-ai.com/iris
               └─ /app     Cloudflare Access (department faculty)
                             │ Cloudflare Tunnel (outbound only)
                             ▼
-                          linux-gpu-server · department office · 24/7
+                          gpu-linux-server · department office · 24/7
                             FastAPI · PostgreSQL · local LLM
                             ingest → link → level → align → report → publish
 ```

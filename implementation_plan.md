@@ -51,7 +51,7 @@ the method — not to proceed and hope the UI distracts from it.
 - [x] Load the snapshot into the engine as read-only reference data, with the design's
       data-quality filters applied on load and **reported, never silent**
 - [x] 23 tests, all passing; ruff clean
-- [ ] Confirm available VRAM on `linux-gpu-server`; select candidate adjudication and
+- [ ] Confirm available VRAM on `gpu-linux-server`; select candidate adjudication and
       embedding models ⚠️ **blocked — needs the machine**
 
 **Deliverable:** ✅ `GET /health` returns 200 and reports snapshot provenance; the snapshot
@@ -297,7 +297,7 @@ with the engine switched off.
 
 **Goal:** department faculty can ingest and analyse a programme themselves.
 
-- [ ] Cloudflare Tunnel from `linux-gpu-server`; verify it survives a reboot
+- [ ] Cloudflare Tunnel from `gpu-linux-server`; verify it survives a reboot
 - [ ] Cloudflare Access policy — department faculty allowlist
 - [ ] Upload → job → progress → result flow
 - [ ] Skill-link review screen: accept / reject / adjust level, with the evidence span shown
@@ -341,7 +341,7 @@ from Sprint 5 onward begins before the Sprint 4 gate passes.**
 | Provenance of the demand corpus — Thai or international, window, whether `N` is cumulative | สป.อว. / KMITL | Methods section wording |
 | Whether the ~100-skill cap is a display or data limit | สป.อว. / KMITL | Strength of gap claims |
 | A third TQF from a different PDF producer | any Thai university | Generality of the glyph repair table |
-| VRAM available on `linux-gpu-server` | — | Model selection in Sprint 0 |
+| VRAM available on `gpu-linux-server` | — | Model selection in Sprint 0 |
 | Second annotator | department | Sprint 4 gate |
 
 ---

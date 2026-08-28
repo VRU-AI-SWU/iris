@@ -29,7 +29,7 @@ figure exists.
 | **Route** | `vru-ai.com/iris` | `vru-ai.com/iris/app` |
 | **Who** | Anyone — colleagues, reviewers, other departments, prospective students | Department faculty only, via Cloudflare Access |
 | **Can** | Read published analyses, understand the method and its limits | Upload มคอ.2, run analyses, review and correct links, publish |
-| **Depends on the engine** | No — build-time JSON | Yes — Cloudflare Tunnel to `linux-gpu-server` |
+| **Depends on the engine** | No — build-time JSON | Yes — Cloudflare Tunnel to `gpu-linux-server` |
 
 The public surface is a **research showcase**: it must be readable, citable, and honest
 about what the data does and does not support. The gated surface is a **working tool**

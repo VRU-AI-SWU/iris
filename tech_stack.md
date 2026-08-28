@@ -13,7 +13,7 @@ Two deployables with one contract between them.
 
 | | Engine | Web |
 |---|---|---|
-| **Runs on** | `linux-gpu-server` — department office, 24/7 | Cloudflare Workers |
+| **Runs on** | `gpu-linux-server` — department office, 24/7 | Cloudflare Workers |
 | **Language** | Python 3.12 | TypeScript |
 | **Why there** | Needs a GPU, native libraries, and tens of minutes per run | Must stay up regardless of the engine |
 | **Reached by** | Cloudflare Tunnel, behind Cloudflare Access | `vru-ai.com/iris` |
@@ -67,9 +67,9 @@ Served over an OpenAI-compatible endpoint so dev and production differ only by
 |---|---|
 | Adjudication | Follows a constrained multiple-choice instruction and returns valid JSON. RAG reduces this from open generation to selection among ~30 candidates, so a model sized to the available VRAM is viable — to be confirmed at the evaluation gate, not assumed |
 | Embedding | Multilingual, handles Thai and English skill terms |
-| Serving | LM Studio (dev) / Ollama (production), both on `linux-gpu-server` |
+| Serving | LM Studio (dev) / Ollama (production), both on `gpu-linux-server` |
 
-> ⚠️ Model choice is **pending a VRAM check** on `linux-gpu-server`. A previous commit
+> ⚠️ Model choice is **pending a VRAM check** on `gpu-linux-server`. A previous commit
 > recorded dropping from `gemma-4-31b-it` to `gemma-4-e4b` to fit 19 GB. Decide against
 > measured linking quality, not model size.
 
@@ -166,7 +166,7 @@ PAGEINDEX_MODE=local
 | Extraction engine choice is not a lever | poppler, PyMuPDF and xberg return byte-identical damage on the SWU document (134.5 marks/1k Thai chars each). The defect is the PDF's missing `ToUnicode` mapping, so no reader can recover it — repair and vision fallback are the only routes |
 | Deterministic glyph repair **first**, vision fallback second | Where damage is substitution, repair is exact, auditable and free. Where the text layer has genuinely lost information (KU's `ำ` collapse), no table can recover it — a self-hostable Thai-tuned 3B VLM is the fallback, with provenance flagged |
 | Two deployables | The public site must not depend on a GPU server's availability |
-| Own `linux-gpu-server`, not CSML | CSML's GPU is contended across the department; this machine is dedicated and always on |
+| Own `gpu-linux-server`, not CSML | CSML's GPU is contended across the department; this machine is dedicated and always on |
 | Cloudflare Tunnel + Access | Reaches a machine behind university NAT with no inbound exposure, and provides auth without application code |
 | Astro, not Next.js | Data-display workload; matches the lab site's existing deployment; better static/SEO fit for a project page |
 | Build-time JSON, not D1/R2, in v1 | Small result set, versioned in git, one fewer moving part |
