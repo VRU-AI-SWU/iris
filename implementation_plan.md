@@ -130,7 +130,15 @@ cost is spent.
 
 ## Sprint 4 — 🚧 EVALUATION GATE 🚧
 
-**Goal:** know how good the linking is. **Nothing downstream starts until this passes.**
+**Goal:** know how good the linking is **and whether reviewing it helps**. Nothing
+downstream starts until this passes.
+
+The gate has two halves. Iris's deliverable is *reviewed* links, so measuring the model
+alone would pass the gate on a number that is not the product's quality — and would leave
+the review premise untested until Sprint 9, after everything has been built on it. The
+second half is nearly free: the annotators are already performing the reviewer's task.
+
+### 4a — Model quality
 
 - [ ] Stratified annotation sample: ~50 courses across core / elective / general education
 - [ ] Annotation guideline written from the standard's own skill definitions
@@ -147,9 +155,32 @@ cost is spent.
 - [ ] Ablations: dense-only vs hybrid retrieval; Thai-only vs bilingual; `k` sensitivity;
       model size; **supervised ranker vs LLM adjudicator**
 - [ ] Prompt revision driven by the error taxonomy, re-measured on a held-out split
+- [ ] Level agreement as **Krippendorff's α with an *ordinal* distance** — ⚠️ not MASI:
+      level is ordinal (`พื้นฐาน < ปานกลาง < สูง`), so adjacent-level disagreement must
+      count as partial agreement
 
-**Gate:** linking quality is documented, reproducible, and adequate for the claims the
-paper intends to make. If it is not, iterate here — do not proceed.
+### 4b — System quality *(minimal interface, not the Sprint 9 screen)*
+
+- [ ] Minimal review surface — a spreadsheet or CLI listing proposed links with skill
+      definition, evidence span, level and confidence. **Deliberately not the real screen**:
+      the point is to test the premise before designing the interface
+- [ ] **Review-assisted quality** — annotators review raw model output; the reviewed result
+      is scored against the gold standard
+- [ ] **Throughput** — decisions per hour, extrapolated to a 78-course programme
+      (624–1,092 decisions; 104–182 min at 10 s each if every link is inspected)
+- [ ] **Confidence calibration** — are high-confidence links right at close to their stated
+      confidence? Load-bearing, because hitting the 90-minute target requires bulk-accepting
+      ~70 % of links on that score
+- [ ] Record which confidence components carry the signal — retrieval rank, Thai/English
+      channel agreement, level-source agreement
+
+**Gate — both halves:**
+1. Linking quality is documented, reproducible, and adequate for the intended claims
+2. **Reviewed output beats raw model output.** If it does not, the review premise is wrong
+   and the *design* changes, not the interface
+3. Throughput is sustainable, or the interface plan changes before Sprint 9 builds it
+
+If any fails, iterate here — do not proceed.
 
 **Reference points from the literature** (Acc@1 0.23–0.29, end-to-end ≈0.56, and ranking
 consistently far ahead of selection). Iris has grounds to expect better — a 3× smaller
@@ -157,8 +188,9 @@ vocabulary and a whole course description as input — but its numbers are not d
 comparable and must not be reported as such. The same evidence is why the review screen in
 Sprint 9 is a requirement rather than a convenience.
 
-**Deliverable:** an evaluation report in `05-reports/`, and the annotated set committed
-as a reusable benchmark.
+**Deliverable:** an evaluation report in `05-reports/` covering both halves, and the
+annotated set committed as a reusable benchmark. The Sprint 9 review screen is then built
+against a measured throughput baseline rather than a guess.
 
 ---
 

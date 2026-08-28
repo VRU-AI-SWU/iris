@@ -308,6 +308,10 @@ The first two rounds asked *"what does the literature say?"*. This one asked
 | **IAA on a set-valued annotation task** | none — κ would have been used by default | 🔴 **error** → passonneau-2006 (MASI) |
 | **RCA denominator** | ahadi-2022 uses RCA; never stated which denominator | 🔴 **underspecified** → measured: top-15 overlap 8/15 |
 | **Seniority gradient** | none found | 🆕 **no precedent — a contribution claim** |
+| **Level agreement statistic** | passonneau-2006 read too broadly | 🔴 **error (round 2)** → level is *ordinal*, so α with an ordinal δ, not MASI |
+| **Evaluation gate scope** | chen-2025 implies the model alone is not the system | 🔴 **gap (round 2)** → gate split into model quality + review-assisted quality |
+| **Review throughput is achievable** | none — was assumed | 🔴 **assumption (round 2)** → derived: 104–182 min if every link is inspected, vs a 90-min target |
+| **Confidence score is calibrated** | none — was assumed | 🔴 **assumption (round 2)** → ~70 % of links are bulk-accepted on it; calibration now a gate measurement |
 | Thai PDF integrity gate | none found (2nd round) | 🆕 confirmed novelty |
 | Level grading of curricula | none found (2nd round) | 🆕 confirmed novelty |
 | NLP on Thai TQF documents | none found (2nd round) | 🆕 confirmed novelty |
@@ -358,3 +362,12 @@ the paper side. Repaired; one orphan paper (januzaj-2022) also linked. **0 one-w
 - **Search for every new method element before building it.** The seniority gradient and
   the MASI issue both entered the design *after* the review rounds, and neither would have
   been checked without an explicit pass.
+- **Finding evidence is not the same as applying it.** Round 2 of the design review found
+  that [[chen-2025-interface-design-high-stakes]] had reached the wiki and the audit table
+  but **never reached `03-solution-design/`** — the review-screen specification was
+  unchanged. An audit entry is not a design change. Close the loop explicitly: after adding
+  a paper that bears on a decision, edit the design document, or record why none was needed.
+- **Check the statistic against the data type, every time.** Level was about to be measured
+  with MASI, a *set* distance, when a level is *ordinal*. This is the third error of the
+  same shape — after the missing demand-side level and the unstated RCA denominator — and
+  all three came from carrying a method forward without re-reading what the data is.

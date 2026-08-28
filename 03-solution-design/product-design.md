@@ -165,8 +165,39 @@ Each row shows:
 - actions: accept · reject · change level
 
 Default ordering is **lowest confidence first**, so limited attention goes where it
-changes outcomes. Bulk-accept high-confidence links so review is finishable in one
-sitting.
+changes outcomes. Bulk-accept high-confidence links so review is finishable in one sitting.
+
+#### ⚠️ The screen's central tension, stated plainly
+
+Reviewing **every** proposed link is not achievable in one sitting. At 78 courses and
+roughly 8–14 proposed links each, that is 624–1,092 decisions: **104–182 minutes** even at
+10 seconds per decision. The 90-minute target is only reachable by bulk-accepting around
+70 % of links on confidence — which is precisely the affordance most likely to produce
+rubber-stamping.
+
+That is not a reason to remove it. It is a reason to design around it, following
+[[chen-2025-interface-design-high-stakes]], where human–AI pairs underperformed the AI
+alone under [[automation-bias]]:
+
+| Element | Chen et al. finding | Decision |
+|---|---|---|
+| Per-link confidence | ✅ improved performance and trust calibration | keep |
+| Skill definition, evidence span | ✅ text explanations helped | keep |
+| Level-source agreement display | ➖ resembles a *forcing function*, which **hurt** performance | keep, but **make optional** if usability testing shows review completion degrading |
+| Confidence-first ordering | ➖ same family | same |
+| Reflection prompts, AI-asked questions | ❌ **reduced task performance** | **never add** |
+
+**Two consequences that are not optional.**
+
+1. **Confidence must be calibrated, and calibration must be measured.** If ~70 % of links
+   are accepted on a confidence score without individual inspection, an uncalibrated score
+   is not a convenience — it is a route for high-confidence wrong links to reach a
+   published report unchallenged. Calibration is measured at the Sprint 4 gate, not
+   assumed.
+2. **The correction rate is a monitored statistic, not a usability metric.** If a
+   reviewer's correction rate falls far below the error rate measured in Sprint 4, they
+   are rubber-stamping and the analysis is not the evidence it claims to be. This is
+   checked for **every reviewed programme** before publication.
 
 ---
 
@@ -240,8 +271,10 @@ feasibility study is a lesson in what happens when Thai text handling is an afte
 
 | Measure | Target | How |
 |---|---|---|
-| Review completion | A committee member finishes reviewing a 78-course programme in one sitting (< 90 min) | Timed session with two faculty |
-| Correction rate | Proportion of links edited during review — tracks against the Sprint 4 evaluation figures | Instrumented |
+| Review completion | A committee member finishes reviewing a 78-course programme in one sitting (< 90 min) — **achievable only with bulk-accept; see the tension above** | Timed session with two faculty |
+| **Confidence calibration** | High-confidence links are right at close to their stated confidence | Measured at the Sprint 4 gate, before the screen is built |
+| Correction rate | Proportion of links edited during review, per reviewer, per programme. **Far below the Sprint 4 error rate ⇒ rubber-stamping** | Instrumented; checked before every publication |
+| **Review-assisted quality** | Reviewed output is measurably better than raw model output — the pair beats the model alone | Sprint 4, with annotators as proxy reviewers |
 | Provenance use | Committee members follow a link back to the source page at least once per session | Instrumented |
 | Report comprehension | ≥ 4 of 5 faculty correctly identify the top three prevalence-weighted gaps unaided, **and none reads the seniority panel as a required proficiency level** | Usability session |
 | Meeting adoption | The report is cited in an actual curriculum revision meeting | Observation |

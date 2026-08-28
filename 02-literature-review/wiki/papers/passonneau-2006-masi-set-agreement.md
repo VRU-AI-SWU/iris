@@ -88,11 +88,19 @@ disagreement between a strict and a generous annotator, κ would systematically 
 agreement — and a low reported IAA would then discredit an evaluation that is actually
 sound.
 
-**Adopted:** Krippendorff's α with the MASI distance, for both the skill-set annotation
-and the level assignment. The monotonicity term is the property that matters — it
-distinguishes *"one annotator was more generous"* (M = 2/3) from *"the annotators
-disagree about what this course teaches"* (M = 1/3 or 0), which is exactly the distinction
-the annotation guideline must be tuned against.
+**Adopted for the skill-set annotation:** Krippendorff's α with the MASI distance. The
+monotonicity term is the property that matters — it distinguishes *"one annotator was more
+generous"* (M = 2/3) from *"the annotators disagree about what this course teaches"*
+(M = 1/3 or 0), which is exactly the distinction the annotation guideline must be tuned
+against.
+
+⚠️ **Not for the level assignment.** Level is a single **ordinal** value per
+(course, skill) pair — `พื้นฐาน < ปานกลาง < สูง` — not a set. MASI would score
+*foundational vs intermediate* as exactly as distant as *foundational vs advanced*,
+discarding the ordering that is the whole content of a level. Level agreement uses
+Krippendorff's α with an **ordinal** distance, so adjacent-level disagreement counts as
+partial agreement. Choosing δ by data type is the general lesson; MASI is the right answer
+only for the set-valued half.
 
 The stated limitation is live for Iris and should be reported: MASI treats
 `การสร้างแบบจำลองข้อมูลเชิงสัมพันธ์` and `การสร้างแบบจำลองข้อมูลเชิงตรรกะ` as fully

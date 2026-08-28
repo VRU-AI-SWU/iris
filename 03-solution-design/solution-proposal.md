@@ -125,6 +125,11 @@ taxonomy — rather than a loose parallel.
 - **Constraint:** an unreviewed programme may not enter a comparison. Comparing one
   reviewed profile against one raw model output would present linking error as curricular
   difference. Both sides must carry the same review status, and the report states it
+- ⚠️ **Not deliverable in v1 as things stand.** UC2 needs *two* complete, reviewed
+  programmes. Only the SWU document is complete; the KU file is an excerpt. Each review is
+  a substantial block of a faculty member's time, so this is limited by reviewer availability, not
+  by compute. UC2 is built in Sprint 8 but cannot be *demonstrated* until a second full
+  มคอ.2 is obtained and reviewed — the highest-value external dependency the project has
 
 ### UC3 — Curriculum Revision Scenario
 - **Actor:** Curriculum designer, during a มคอ.2 revision cycle
@@ -453,6 +458,38 @@ The evaluation gate governs the project: **no user-facing feature is built until
 linking quality is measured.** This is the discipline the previous phase stated and
 then did not follow, and it is why that phase stalled.
 
+**⚠️ The gate must measure the system that produces the output, not the model alone.**
+Iris's deliverable is a set of **reviewed** links, not raw model output — that is the whole
+justification for the review screen. But an evaluation of model precision and recall says
+nothing about the quality of what a reviewer actually produces, and the evidence is that
+this cannot be assumed: human–AI pairs frequently underperform the AI alone under
+automation bias. A gate that passes on model F1 would license building everything
+downstream on an untested assumption, and the screen itself would not be validated until
+Sprint 9 — after the entire design has been committed to it.
+
+The gate therefore has two halves. The second costs almost nothing, because the Sprint 4
+annotators are performing the reviewer's task already:
+
+| Half | Measures | Why |
+|---|---|---|
+| **Model** | precision / recall / F1 / Acc@k against expert annotation | Is retrieval-plus-adjudication good enough to be worth reviewing? |
+| **System** | review-assisted quality · throughput · confidence calibration | Does review *improve* the output, at a rate a committee member can sustain? |
+
+The system half runs on a **minimal interface** — a spreadsheet or CLI, not the Sprint 9
+screen — because the point is to test the *premise* before the screen is designed, not the
+screen itself. Three numbers come out of it:
+
+- **Review-assisted quality** — reviewed output measured against the gold standard. If it
+  is not better than raw model output, the review premise is wrong and the design must
+  change, not the interface.
+- **Throughput** — decisions per hour, extrapolated to a 78-course programme. Reviewing
+  every proposed link is 624–1,092 decisions, or 104–182 minutes at 10 s each; the
+  90-minute target is reachable only by bulk-accepting on confidence, which makes the next
+  number load-bearing.
+- **Confidence calibration** — are high-confidence links right at close to their stated
+  confidence? If ~70 % of links are accepted without individual inspection, an
+  uncalibrated score is a route for confident errors into a published report.
+
 **What "adequate" means.** Four independent studies put strict top-1 skill linking against
 a large occupational vocabulary at **0.23–0.29**, and end-to-end pipeline scores near
 **0.56** — and all of them report that ranking is far better than selection (Acc@32 roughly
@@ -468,7 +505,10 @@ levels an unreviewed mapping is not evidence.**
 | Section extraction | Course count and field completeness vs manual reading of both documents | All courses found |
 | Skill linking | Precision / recall / F1 and Acc@k against expert annotation of a stratified sample of ~50 courses, two annotators. **Multiple correct links per course permitted** — single-gold scoring understates performance. Agreement reported as **Krippendorff's α with the MASI distance**, *not* Cohen's/Fleiss' κ: the task is set-valued, and exact-match κ would score a strict annotator's `{A,B}` against a generous one's `{A,B,C}` as total disagreement | Established before any UI work |
 | Out-of-vocabulary | Hold out part of the vocabulary and check the linker declines to link courses that develop it (KB Versioning) | No extra annotation needed |
-| Level inference | Agreement with expert-assigned level; per-source agreement analysis | Reported honestly, including disagreement |
+| Level inference | Agreement with expert-assigned level, as **Krippendorff's α with an *ordinal* distance** — level is `พื้นฐาน < ปานกลาง < สูง`, not a set, so adjacent-level disagreement must count as partial agreement (MASI would discard the ordering). Per-source agreement analysis | Reported honestly, including disagreement |
+| **Review-assisted quality** | Annotators act as proxy reviewers over raw model output on a minimal interface; reviewed output scored against the gold standard | **Must beat raw model output**, or the review premise fails |
+| **Review throughput** | Decisions per hour, extrapolated to 78 courses | Sustainable in one sitting, or the interface plan changes |
+| **Confidence calibration** | Reliability of the confidence score used for bulk-accept | Calibrated before a screen relies on it |
 | End-to-end | Runtime on a full 216-page document | Fits an interactive workflow |
 
 ⚠️ **The evaluation is single-programme in practice.** Only the SWU document is complete;
@@ -503,7 +543,9 @@ Programme analyses are published only with the owning department's consent.
 | Demand vector truncated at ~100 skills per career | Certain | Medium | Stated as a limitation; no "not demanded" claims; ask whether full vectors are available for research |
 | Glyph repair table does not generalise to other producers | Medium | Medium | Validate on a third document from a different producer; the integrity gate fails safe by rejecting rather than silently corrupting |
 | `ำ` collapse (KU) is genuinely lossy | Certain for that document | Medium | Lexicon-based restoration; report residual error rate; prefer a better source file |
-| Full KU มคอ.2 unavailable — current file is an excerpt without the curriculum map | High | Medium | Request the full document; until then level inference is evaluable on one programme only |
+| Full KU มคอ.2 unavailable — current file is an excerpt without the curriculum map | High | **High** | Request the full document. It blocks three things at once: level inference is evaluable on one programme only, cross-institution generality cannot be claimed, and **UC2 (comparison) — the department's stated motivation for the project — cannot be demonstrated at all** |
+| Review does not improve the output, or is too slow to sustain | Medium | **High** | Measured at the Sprint 4 gate on a minimal interface, before the screen is built. If reviewed output does not beat raw output, the design changes rather than the interface |
+| Confidence score is uncalibrated while ~70 % of links are bulk-accepted on it | Medium | High | Calibration is a Sprint 4 gate measurement; correction rate monitored per programme before publication |
 | Local model too weak for reliable linking | Medium | High | RAG turns the task into constrained selection; if quality is insufficient, escalate model size before changing method — measured at the evaluation gate, not assumed |
 | API is beta (0.8.1) and may change | Medium | Low | Snapshots are pinned and versioned; the engine never calls the live API during analysis |
 | Single self-hosted server is a single point of failure | Medium | Low | Public site is fully static and unaffected; engine downtime delays new analyses only |
