@@ -37,7 +37,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 # This project's prose is bilingual Thai/English and uses typographic characters
 # meaningfully: "career × skill", en dashes in ranges, arrows for ladder steps.
 # Rewriting them as ASCII would damage the documentation, not improve it.
-allowed-confusables = ["×", "–", "—", "→", "’"]
+allowed-confusables = ["×", "–", "—", "→", "’", "\u00a0"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

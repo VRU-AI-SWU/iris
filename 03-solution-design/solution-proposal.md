@@ -243,10 +243,17 @@ its preceding character — rather than an OCR or LLM guess, so wherever it appl
 pipeline stays reproducible and every restored character can be justified. It is preferred
 for that reason.
 
-It does not always apply. Where the text layer has *lost* information rather than
-mis-rendered it — KU's collapse of every `ำ` into `า` — no repair table can recover it. The
-fallback is a Thai-tuned open vision model: Typhoon OCR reaches **Levenshtein 0.04 on Thai
-government forms** at 3B parameters, self-hostable alongside the adjudication model. The
+A **normalisation** pass runs first and reverses structural breaks that need no learned
+table, because Thai orthography determines the answer: `ำ` written as `ํ` + `า` (Adobe), or
+as consonant + space + `า` (MS Word). `า` is a dependent vowel and cannot begin a syllable,
+so a space before it is always an artefact.
+
+Across five universities and five PDF producers, **every document reaches a usable text
+layer without a vision model** (see `data-feasibility.md`). The vision fallback therefore
+remains for a document that genuinely needs one — a scan, or deletion rather than
+substitution — but it is no longer on the critical path, and **ingestion has no GPU
+dependency**. Typhoon OCR reaches Levenshtein 0.04 on Thai government forms at 3B
+parameters, self-hostable alongside the adjudication model. The
 provenance flag matters, because a vision extraction is a model output rather than a
 faithful reading, and any finding traced back to it must say so. The integrity gate runs on
 the vision output too — Thai diacritic loss is a documented failure mode of vision models

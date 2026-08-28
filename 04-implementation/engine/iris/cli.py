@@ -30,12 +30,16 @@ def _cmd_snapshot(args: argparse.Namespace) -> int:
 
 def _cmd_check(args: argparse.Namespace) -> int:
     """Run the integrity gate on a PDF, and the repair if it is repairable."""
-    from iris.ingest import Verdict, diagnose, extract, learn_and_repair
+    from iris.ingest import Verdict, diagnose, extract, learn_and_repair, normalise_chars
 
     doc = extract(args.pdf)
     print(f"{args.pdf}  ·  {doc.page_count} pages, {len(doc.chars):,} characters\n")
 
-    report = diagnose(doc.text)
+    chars, fonts, norm = normalise_chars(doc.chars, doc.fonts)
+    if norm.total:
+        print(f"── normalise ──\n{norm.summary()}\n")
+
+    report = diagnose("".join(chars))
     print(report.summary())
 
     if report.verdict is not Verdict.REPAIRABLE:
@@ -51,7 +55,7 @@ def _cmd_check(args: argparse.Namespace) -> int:
         return 0 if report.usable else 1
 
     print("\n── repair ──")
-    result = learn_and_repair(doc.chars, doc.fonts)
+    result = learn_and_repair(chars, fonts)
     print(result.summary())
     if args.verbose:
         for rule in result.rules:

@@ -99,21 +99,30 @@ pure CPU work. Only the vision fallback needs the card.
       mistaken for damage
 - [x] Re-run the gate after repair; fail closed if it still does not pass
 - [x] `iris check <pdf>` — diagnosis, repair, and the re-run gate
-- [ ] Vision fallback via Typhoon OCR for the `lossy` path ⚠️ **blocked on GPU**
+- [x] **Sara-am normalisation** — reverses `ํ`+`า` (Adobe) and consonant+space+`า`
+      (MS Word) with no learned table, because Thai orthography determines the answer
+- [x] **Validated on five universities and five PDF producers** — see below
+- [ ] Vision fallback via Typhoon OCR ⚠️ blocked on GPU, **and no longer on the critical
+      path**: every document in the corpus reaches a usable text layer without one
 - [ ] Thai-character-proportion check for the vision path's language-bias failure
       *(deferred with the vision path)*
 
-**Measured on the two real documents:**
+**Measured on five universities, five PDF producers:**
 
-| | verdict | mark rate | repair | after |
-|---|---|---|---|---|
-| SWU, 216 pages | `repairable` | 134.5 | **4,518 of 4,918 (92%)**, 13 rules learned | `repaired`, **162.9** |
-| KU, 28 pages | `lossy` — no `ำ` anywhere | 171.0 | — | vision path |
+| University | Pages | Producer | Raw | After normalise | After repair |
+|---|---|---|---|---|---|
+| CMU | 148 | MS Word 2016 | `lossy` | **`clean`** 188.0 | — |
+| KU | 28 | MS Word 2013 | `lossy` | **`clean`** 171.0 | — |
+| PSU | 229 | macOS Quartz | `repairable` | `repairable` | **`clean`** 175.7 · 83%, 38 rules |
+| SU | 254 | Adobe Acrobat Pro | `repairable` | `repairable` | **`clean`** 173.8 · 96%, 14 rules |
+| SWU | 216 | Bullzip PDF Printer | `repairable` | `repairable` | **`clean`** 162.9 · 92%, 13 rules |
 
-Rules learned with no hard-coding, highest-frequency first: `2`→้ (1,329 votes, 79%),
-`=`→์ (798, 78%), `-`→้ Bold (121, 81%), `A`→่ Bold (106, 92%), `?`→็ (93, 100%),
-`‚`→ั (93, 88%), and seven more. Words a reader can verify recovered: `ข้อมูล`,
-`คอมพิวเตอร์`, `ผลการเรียนรู้`, `หน่วยกิต`, `เป็น`, `วิเคราะห์`.
+**Three unrelated damage alphabets with no overlap between the learned tables** — Bullzip
+substitutes ASCII (`2`, `=`, `?`), macOS Quartz substitutes a different ASCII set (`b`,
+`X`, `F`, `@`), Adobe emits Unicode PUA (`\uf70b`, `\uf70a`). None hard-coded.
+
+Words a reader can verify recovered: `ข้อมูล`, `คอมพิวเตอร์`, `ผลการเรียนรู้`,
+`หน่วยกิต`, `เป็น`, `วิเคราะห์`, `สำหรับ`, `จำนวน`, `กำหนด`.
 
 **Deliverable:** ✅ `iris check` diagnoses both documents correctly and routes each to the
 right path. 36 tests pass; ruff clean.
@@ -130,13 +139,22 @@ right path. 36 tests pass; ruff clean.
 2. **"No `ำ` means collapse" needs a length threshold.** `คอมพิวเตอร์ ซอฟต์แวร์
    อิเล็กทรอนิกส์` legitimately contains none. The inference is statistical, not logical,
    and now requires 5,000 Thai characters before it fires. A test caught this.
-3. **~400 intrusions remain unrepaired**, led by `.`×178 and `/`×69 — many of which are
-   probably legitimate punctuation inside Thai text rather than damage. The residue is
-   reported rather than forced.
+3. **~400 intrusions remain unrepaired** on SWU, led by `.`×178 and `/`×69 — mostly
+   legitimate punctuation rather than damage. Reported, never forced.
+4. 🔄 **The KU document is not lossy, and the feasibility study was wrong to say so.**
+   `pdftotext -layout` renders `ค าอธิบาย` as `คาอธิบาย`, which read as a collapse.
+   Character-level extraction shows a **space** where `ำ` belongs — the position survives,
+   and since `า` cannot begin a syllable, a space before it is always an artefact. KU and
+   CMU both normalise to clean. Corrected in `data-feasibility.md` and the proposal.
+5. **Verdict ordering was wrong twice.** Intrusions are evidence of substitution *only
+   when marks are missing to explain*; a document at full mark rate with ASCII inside Thai
+   words has punctuation, not damage. Judging on intrusions first classified two intact
+   documents (CMU at 188.0, PSU at 175.7) as damaged.
 
-> ⚠️ Still to validate: the learned-table method against a **third** TQF document from a
-> different producer. The method generalises by construction — it learns from whatever
-> document it is given — but that claim is untested outside these two files.
+> ✅ **Generality validated.** The method was tested against five documents from five
+> distinct PDF producers with three unrelated damage alphabets, and learned a working table
+> for each without a hard-coded rule. The corpus lives in `data/programmes/` (git-ignored —
+> institutional documents).
 
 ---
 

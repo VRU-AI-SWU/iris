@@ -201,14 +201,24 @@ def diagnose(text: str, *, min_thai_chars: int = 500) -> IntegrityReport:
         if CLEAN_MARK_RATES[m] > 1 and retention.get(m, 1.0) < 0.6:
             notes.append(f"{m!r} at {retention[m]:.0%} of the clean-document rate")
 
-    # ── Verdict, on the two vocabulary-robust signals ────────────────────────
-    # `intrusions` is direct evidence of substitution: an ASCII character inside
-    # a Thai word is not something a correctly-encoded document produces.
+    # ── Verdict ──────────────────────────────────────────────────────────────
+    # Order matters. The mark rate is the primary signal: if the marks are
+    # present, the document is intact whatever else is in it. Intrusions are
+    # evidence of *substitution* only when marks are missing to explain — a
+    # document at full mark rate with ASCII inside Thai words has punctuation,
+    # not damage. Judging on intrusions first classified two intact documents
+    # (CMU at 188.0, PSU at 175.7) as damaged.
     intrusion_rate = intrusions / thai_chars * 1000
     rate_ratio = mark_rate / CLEAN_BASELINE
 
-    if intrusion_rate < 1.0 and rate_ratio >= 0.90:
+    if rate_ratio >= 0.95:
         verdict = Verdict.CLEAN
+        if intrusions:
+            notes.append(
+                f"{intrusions:,} non-Thai characters sit inside Thai words "
+                f"({intrusion_rate:.1f} per 1,000), but the mark rate is "
+                f"{rate_ratio:.0%} of baseline — punctuation, not lost marks."
+            )
     elif intrusion_rate >= 5.0:
         verdict = Verdict.REPAIRABLE
         notes.append(

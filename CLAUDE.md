@@ -113,7 +113,12 @@ commit. Finding evidence is not applying it — that lesson cost a full review r
 - **Level inference** — assigning a proficiency level from CLOs, the curriculum mapping
   table (● ความรับผิดชอบหลัก / ○ ความรับผิดชอบรอง), and curriculum position
 - **Text-layer integrity gate** — Thai combining-mark rate per 1,000 Thai characters,
-  used to classify a PDF `clean` / `repairable` / `unusable` before ingestion
+  classifying a PDF `clean` / `repairable` / `lossy` / `unusable` before ingestion.
+  Validated on five universities and five PDF producers; all reach a usable text layer
+  without a vision model, so **ingestion has no GPU dependency**
+- **Normalisation vs repair** — normalisation reverses *structural* breaks that Thai
+  orthography alone determines (`ำ` split by a space, or decomposed into `ํ`+`า`); repair
+  reverses *substitutions* and needs a table learned from the document. Normalisation first
 - **Prevalence** — share of a career's postings mentioning a skill; not a probability
 
 ## Environment

@@ -163,6 +163,27 @@ Two documents tested, both CS bachelor programmes, both revised 2565/2022.
 | Course descriptions | ✅ Thai | ✅ Thai **+ English** |
 | Distinct course codes found | 78 | 67 |
 
+### Corpus — five universities, five PDF producers *(extended 2026-08-28)*
+
+The two documents below were the starting point. Three more were added during Sprint 1,
+giving the producer diversity the generality claim needs:
+
+| University | Pages | Producer | Damage pattern | Outcome |
+|---|---|---|---|---|
+| **SWU** | 216 | Bullzip PDF Printer | ASCII substitution (`2`, `=`, `?`, `‚`) | repaired 92%, 13 rules → **clean** |
+| **KU** | 28 | MS Word 2013 | `ำ` split as consonant + space + `า` | normalised → **clean** |
+| **CMU** | 148 | MS Word 2016 | same split, 728 sites | normalised → **clean** |
+| **PSU** | 229 | macOS Quartz | ASCII substitution, a different alphabet (`b`, `X`, `F`, `@`, `0`) | repaired 83%, 38 rules → **clean** |
+| **SU** | 254 | Adobe Acrobat Pro | Unicode PUA (`\uf70b`, `\uf70a`, `\uf70e`) plus `ํ`+`า` | repaired 96%, 14 rules → **clean** |
+
+**Three unrelated damage alphabets, no overlap between the learned tables, no
+hard-coding.** This is the evidence for learning the repair table from each document
+rather than shipping one.
+
+**Every document reaches a usable text layer without a vision model.** The vision fallback
+stays in the design for a document that genuinely needs one, but nothing in this corpus
+does — which removes the GPU from the ingestion path entirely.
+
 ### Finding A — both text layers are damaged, in different ways
 
 Thai is set in TH SarabunPSK under **WinAnsi encoding**, which has no Thai codepoints.
@@ -224,11 +245,20 @@ the wrong glyph. A deterministic repair table keyed on `(substitute, preceding c
 should recover the text; the residual gap needs verification on a larger sample
 before this is claimed as complete.
 
-**KU has a different defect:** `ำ` (sara am, U+0E33) appears **zero times** in 22,177
-Thai characters — every one has collapsed to `า` (`คำอธิบาย` → `คาอธิบาย`, `การทำให้`
-→ `การทาให้`). Unlike the SWU case this *is* lossy: nothing distinguishes an original
-`า` from a collapsed `ำ` without a lexicon. Restoration needs a Thai dictionary or LM
-pass and will not be perfect.
+**KU has a different defect, and the first reading of it was wrong.** `ำ` (sara am,
+U+0E33) appears **zero times** in 22,177 Thai characters. This was recorded here as a
+collapse to `า` — `คำอธิบาย` → `คาอธิบาย` — and therefore lossy, needing a vision model.
+
+⚠️ **Corrected 2026-08-28 during Sprint 1.** The text actually reads `ค าอธิบาย`: a
+**space** sits where `ำ` belongs. The mark's *position* survives, and the recovery is safe
+on orthography rather than statistics — `า` is a dependent vowel that cannot begin a
+syllable, so it can never legitimately follow a word boundary. A space before `า` is always
+an artefact. **KU needs no vision fallback**; it normalises to a clean text layer.
+
+The original reading came from `pdftotext -layout`, whose column padding made `ค าอธิบาย`
+read as `คาอธิบาย`. Character-level extraction shows the space. Adobe Acrobat breaks the
+same character differently again, writing it as `ํ` + `า` (SU: 1,467 sites) — also
+recoverable, by composition.
 
 **Implication:** an automated **text-layer integrity gate** is mandatory before any
 document enters the pipeline. The mark-rate-per-1,000-Thai-characters statistic used

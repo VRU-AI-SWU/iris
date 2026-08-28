@@ -7,6 +7,7 @@ from iris.ingest.integrity import (
     diagnose,
     is_thai,
 )
+from iris.ingest.normalise import NormaliseResult, normalise, normalise_chars
 from iris.ingest.pdf import ExtractedText, extract
 from iris.ingest.repair import RepairResult, Rule, find_intrusions, learn_and_repair
 
@@ -14,6 +15,7 @@ __all__ = [
     "CLEAN_BASELINE",
     "ExtractedText",
     "IntegrityReport",
+    "NormaliseResult",
     "RepairResult",
     "Rule",
     "Verdict",
@@ -22,4 +24,6 @@ __all__ = [
     "find_intrusions",
     "is_thai",
     "learn_and_repair",
+    "normalise",
+    "normalise_chars",
 ]
