@@ -55,9 +55,30 @@ biased by construction.
 ## Current Working Answer
 status: open
 
-Primary metric: **level-aware coverage gap on prevalence, RCA-weighted** — no
-distributional assumption, and it says something a curriculum committee can act on.
-Renormalised KL retained as a secondary aggregate score, reported only with its changed
+⚠️ **Corrected 2026-08-28.** An earlier working answer here named a *level-aware coverage
+gap* as the primary metric — the shortfall between the level a career demands and the level
+a programme develops. **That metric is uncomputable.** A career × skill entry carries only
+`count` and `percentage`; the three graded levels belong to the skill entity, not to any
+career's requirement. There is no demanded level to take a shortfall against.
+
+Primary metric: **prevalence-weighted coverage gap, RCA-weighted** — which skills a career
+demands that the programme does not develop, ranked by prevalence and by career
+specificity. No distributional assumption, every term measured.
+
+Depth enters from two directions, kept separate and separately labelled:
+
+- **Curriculum side** — the inferred proficiency level ([[q-level-inference]]), a property
+  of the programme
+- **Demand side** — the **seniority gradient**: Δ prevalence between paired career rungs.
+  13 of 138 digital careers are paired (`data-scientist` has four rungs). Data Scientist →
+  Senior shows predictive modelling +12.67 pp, applied ML +12.02 pp, multivariate
+  statistics +10.49 pp, against Java +2.24 pp and analytical skills −0.58 pp
+
+Crossing the two gives the strongest defensible finding — *"the skills that rise most with
+seniority are developed only at foundational level here"* — without ever asserting a level
+the market requires.
+
+Renormalised KL is retained as a secondary aggregate, reported only with its changed
 interpretation stated explicitly.
 
 **Hard constraint on every metric and every narrative:** absence from a career's list

@@ -66,8 +66,19 @@ That profile is then compared against the published demand profile of any of the
 digital-industry careers, producing a prioritised, level-aware alignment report with
 per-course traceability and page-level provenance back into the source document.
 
-**Core research contribution:** level-aware skill entity linking from Thai TQF course
-descriptions to a national controlled vocabulary, evaluated against expert annotation.
+**Core research contribution:** skill entity linking from Thai TQF course descriptions to
+a national controlled vocabulary **with an inferred proficiency level on the curriculum
+side**, evaluated against expert annotation — and alignment measured against the
+standard's published demand, including a **seniority gradient** derived from its
+paired junior/senior careers.
+
+> ⚠️ **Precision about what "level-aware" means here.** The standard grades every *skill*
+> into three levels with criteria, but it does **not** publish a required level per
+> career × skill — a career's demand entry carries only `count` and `percentage`. Levels
+> therefore exist on the **curriculum side only**. Iris can state *"this programme
+> develops SQL to foundational level"*; it cannot state *"the market requires SQL at
+> intermediate level"*, and no output may imply otherwise. The demand-side depth signal
+> is the seniority gradient described in §5, which is derived from data that exists.
 
 ---
 
@@ -105,16 +116,27 @@ taxonomy — rather than a loose parallel.
 
 ### UC2 — Programme-to-Programme Comparison
 - **Actor:** Curriculum committee, accreditation reviewer
-- **Flow:** two ingested programmes are expressed in the same national vocabulary and
-  decomposed into shared skills, A-only, B-only, and skills taught at different levels
-- **Outcome:** an objective differentiation profile — the department's stated motivation
-  for this project is comparing its own curriculum against peer institutions'
+- **Precondition:** both programmes ingested and their links reviewed
+- **Flow:** both profiles are expressed in the same national vocabulary and decomposed
+  into four sets — shared at the same level, shared at *different* levels, A-only, B-only
+- **Outcome:** an objective differentiation profile. This is the department's stated
+  motivation for the project: comparing its own curriculum against peers'
+- **Constraint:** an unreviewed programme may not enter a comparison. Comparing one
+  reviewed profile against one raw model output would present linking error as curricular
+  difference. Both sides must carry the same review status, and the report states it
 
 ### UC3 — Curriculum Revision Scenario
 - **Actor:** Curriculum designer, during a มคอ.2 revision cycle
-- **Flow:** include/exclude courses, or edit a course's skill assignments, and recompute
-  the programme profile and alignment scores
+- **Precondition:** a reviewed baseline profile exists
+- **Flow:** three edit types, all recomputing the profile and alignment without
+  re-running the LLM —
+  1. **include / exclude a course** (electives in or out, a course retired)
+  2. **adjust a link** (accept, reject, or change level) inherited from the review screen
+  3. **add a hypothetical course** by pasting a draft description, which *does* invoke
+     linking for that course alone
 - **Outcome:** the skill consequence of a proposed change, before it is committed
+- **Constraint:** scenarios are never published. A scenario is a hypothetical curriculum,
+  and publishing one would put a programme that does not exist on the public site
 
 ### UC4 — Public Programme Profile
 - **Actor:** Anyone visiting vru-ai.com
@@ -249,10 +271,15 @@ adjudicated by a local LLM against the candidates' definitions.
 - **Retrieval** combines dense similarity (embeddings of skill title + definition,
   held as a 13 MB in-memory matrix — exact cosine, no ANN index, no vector database)
   with lexical matching, which is essential for tool names and English terms.
-- **Bilingual channel.** The vocabulary is fully bilingual and some TQF documents give
-  every course an English description. Where both languages are available, linking runs
-  on both and agreement is recorded as a confidence signal — and it bypasses Thai text
-  damage entirely.
+- **Bilingual channel, where the document provides one.** The vocabulary is fully
+  bilingual, and some TQF documents give every course an English description. Where both
+  exist, linking runs on each independently and agreement is recorded as a confidence
+  signal.
+  ⚠️ **It is a cross-check, not a safety net, and the two documents show why.** KU gives
+  every course a full English description but is the *milder* damage case; SWU is
+  Thai-only in its course descriptions (English appears in titles) and is the *severe*
+  case. The channel is therefore absent from the document that would benefit most from
+  it. Coverage must be reported per document, and no design decision may assume it.
 - **Adjudication is multiple-choice, not open generation** — "which of these 30
   candidate skills does this course develop?" — which is materially easier for a small
   local model than free-form extraction, and produces output that is constrained to
@@ -266,6 +293,27 @@ adjudicated by a local LLM against the candidates' definitions.
 - **An LLM adjudicator is not assumed to be the best ranker.** A supervised ranking
   baseline is included in the evaluation, because at least one comparable study found
   supervised models beating decoder-only LLMs at this step.
+- **A course may legitimately link to nothing.** General-education courses — Thai
+  language, physical education, ethics — develop capabilities a labour-market vocabulary
+  does not name. Zero links is a valid, recorded outcome, distinguished in the data from
+  *not yet processed* and from *processed and failed*. The proportion of zero-link courses
+  per category is a reportable statistic and a coverage signal about the standard itself,
+  not an error to be suppressed.
+
+#### Cost and runtime
+
+Derived rather than asserted, from the pinned snapshot: skill definitions have a median
+length of 149 characters, so at `k = 30` candidates a prompt carries roughly 3,400 tokens
+of candidate context plus ~270 for the course description and ~300 of instruction —
+**≈ 3,970 input tokens per course**, and **≈ 310 k input tokens per programme** of 78
+courses in one language, doubling where a bilingual channel exists. Output is a short
+structured object.
+
+That is a modest load for a locally served model and is not the bottleneck. The
+document-side stages — PageIndex tree construction over 216 pages, and vision
+re-extraction where the gate demands it — dominate wall-clock. A full run is expected in
+minutes rather than tens of minutes; the figure is measured in Sprint 10 rather than
+promised here, and the interface is designed for a wait regardless.
 
 ### 4. Level inference
 
@@ -294,26 +342,96 @@ cross-institution comparison.
 ### 5. Alignment measurement
 
 The published demand figure is **prevalence** — the share of postings for a career that
-mention a skill — not a probability distribution; percentages across a career sum to
-far more than 100. Metrics are therefore defined on prevalence directly:
+mention a skill — not a probability distribution; percentages across a career sum to far
+more than 100. And, as noted above, **it carries no level**. Metrics are defined on what
+the data actually contains.
 
-- **Level-aware coverage gap** (primary): for each skill the career demands, the
-  shortfall between the level demanded and the highest level the programme develops,
-  weighted by prevalence. Directly interpretable: *"62 % of postings ask for SQL at
-  intermediate level; the programme develops it only at foundational."*
-- **Career specificity weighting** (RCA): down-weights skills demanded by every career,
-  up-weights discriminating ones, so the ranked gap list is actionable rather than
-  dominated by universal skills.
-- **Growth-adjusted view**: the standard publishes a per-skill growth rate per career,
-  supporting a second question — is the curriculum keeping pace with skills that are
-  growing, not merely with the current stock?
-- **Distributional divergence** (secondary): KL divergence remains available, but only
-  after explicit renormalisation of prevalence into a share distribution, and its
-  changed interpretation must be stated wherever it is reported.
+#### Programme profile
 
-**Truncation constraint.** The published demand vector is capped at roughly 100 skills
-per career. Absence from that list means *below the cut-off*, not *not demanded*. No
-metric or narrative may assert that a career does not require a skill.
+Aggregating course-level links into a programme profile. For each skill *s*:
+
+| Component | Definition |
+|---|---|
+| `covered` | at least one course links to *s* after review |
+| `level` | **max** over linking courses — a programme develops a skill to the deepest level any course reaches |
+| `depth` | number of linking courses, and total credits of those courses |
+| `sources` | the courses themselves, for traceability |
+
+`max` rather than a weighted mean for level, because a curriculum's capability is set by
+its most advanced treatment, not by an average diluted by introductory mentions. Credit
+weighting enters `depth`, not `level` — how much of the programme is devoted to a skill is
+a different question from how deeply it is taught. See [[q-credit-weighting]].
+
+#### Primary metric — prevalence-weighted coverage gap
+
+For a target career, rank the skills it demands that the programme does not develop,
+weighted by prevalence:
+
+> *"65 % of Data Engineer postings mention SQL — the programme develops it (advanced, CP242).
+> 58 % mention Data Warehousing — no course develops it."*
+
+Every term is measured. No claim is made about a level the market requires.
+
+#### Career specificity weighting (RCA)
+
+Down-weights skills every career demands, up-weights discriminating ones, so the ranked
+list is actionable rather than dominated by universal soft skills. Redefined on prevalence
+rather than on distribution shares.
+
+#### Seniority gradient — the demand-side depth signal
+
+The standard contains **13 seniority-paired careers** in the digital industry:
+`data-scientist` has four rungs (base → senior → lead → chief); `data-engineer`,
+`web-developer`, `developer`, `application-developer` and `sound-designer` have
+base → senior; `project-manager` and `animator` have base → lead; `software-engineer` has
+junior → base.
+
+For a paired career, the change in a skill's prevalence between rungs is a measured signal
+of which skills become more central with experience. For Data Scientist → Senior Data
+Scientist:
+
+| Δ prevalence | Skill |
+|---|---|
+| **+12.67 pp** | การสร้างแบบจำลองทำนาย (predictive modelling) |
+| **+12.02 pp** | การประยุกต์ใช้การเรียนรู้ของเครื่อง (applied ML) |
+| **+10.49 pp** | สถิติเชิงพหุ (multivariate statistics) |
+| +2.24 pp | จาวา (Java) |
+| −0.58 pp | ทักษะการวิเคราะห์ (analytical skills) |
+
+Crossing this with the curriculum's own levels gives the report's strongest finding:
+
+> *"The skills that rise most from Data Scientist to Senior Data Scientist — predictive
+> modelling, applied ML, multivariate statistics — are developed by this programme only
+> at foundational level."*
+
+This is **not** a proficiency requirement and must never be presented as one. It is a
+statement about which skills gain prominence with seniority, which is the question a
+curriculum committee can act on: *are we preparing graduates for the entry-level role, or
+for the career?*
+
+Availability is the constraint — 13 of 138 digital careers are paired, so this axis is
+present for some target careers and absent for others. Reports state which.
+
+#### Growth-adjusted view
+
+The standard publishes a per-skill `growth` rate per career, supporting a second temporal
+question: is the curriculum keeping pace with skills that are rising, not merely with the
+current stock? Read with [[q-temporal-drift]]'s finding that technical skills are volatile
+and soft skills stable.
+
+#### Distributional divergence (secondary)
+
+KL divergence remains available, but only after explicit renormalisation of prevalence into
+a share distribution, and the changed interpretation — "share of all skill mentions" —
+must be stated wherever it is reported.
+
+#### Hard constraints on every metric and narrative
+
+1. **Truncation.** The demand vector is capped at roughly 100 skills per career. Absence
+   means *below the cut-off*, never *not demanded*.
+2. **No demand-side level.** No output may state or imply a level the market requires.
+3. **Degenerate data.** The 168 career × skill pairs with `count = 0` and the three
+   near-empty careers are filtered before any computation.
 
 ---
 
@@ -340,6 +458,14 @@ levels an unreviewed mapping is not evidence.**
 | Out-of-vocabulary | Hold out part of the vocabulary and check the linker declines to link courses that develop it (KB Versioning) | No extra annotation needed |
 | Level inference | Agreement with expert-assigned level; per-source agreement analysis | Reported honestly, including disagreement |
 | End-to-end | Runtime on a full 216-page document | Fits an interactive workflow |
+
+⚠️ **The evaluation is single-programme in practice.** Only the SWU document is complete;
+the KU file is an excerpt without a curriculum mapping table. A ~50-course stratified
+sample drawn from one programme at one university supports claims about *the method*, not
+about cross-institution generality — and [[zaki-2023-clo-plo-mapping-automation]] found
+5 points of precision variation between two programmes at a *single* institution, purely
+from how outcomes are written. Every result carries this limitation until a second
+complete document is obtained.
 
 ---
 
@@ -379,7 +505,9 @@ Programme analyses are published only with the owning department's consent.
 | Continue with an emergent, self-clustered vocabulary | Unstable across runs, no ground truth, and now incompatible with the national standard the sector is adopting |
 | Keep scraping job postings | Duplicates published state data, exposes the project to ToS risk, and produces results nobody can reproduce |
 | Vector database (pgvector, Qdrant) for skill retrieval | 4,376 fixed vectors fit in 13 MB of RAM; exact search is microseconds. A vector DB solves a scaling problem this design does not have |
-| OCR or a vision model for damaged Thai PDFs | Measurement shows the damage is glyph substitution, not deletion — deterministic repair is cheaper, auditable, and reproducible |
+| Vision extraction as the *default* path for Thai PDFs | Where damage is glyph substitution, deterministic repair recovers the text exactly, costs nothing and is auditable — properties a model output cannot offer. Vision is the **fallback** for lossy or unusable text layers, not the default (§1) |
+| A different extraction engine | poppler, PyMuPDF and xberg return byte-identical damage on the SWU document (134.5 marks per 1,000 Thai chars each). The defect is the PDF's missing `ToUnicode` mapping; no reader can recover what is not there |
+| Delegating the integrity decision to a document engine's own quality score | xberg reports `quality_score: 1.0` on a document whose karan is 99 % destroyed. Generic quality metrics do not model Thai diacritic integrity, so an automatic low-quality fallback would never fire |
 | Keep the Rust backend | Its concurrency advantage existed for scraping. The remaining work is PDF parsing, Thai NLP, numerics, and evaluation tooling — all Python — and a Rust core would need a Python sidecar anyway |
 | Run the engine on CSML | Shared departmental resource with contended GPU. The project's own server is dedicated and always on |
 | Expose the analysis API publicly | Unauthenticated GPU access is abuse-prone; the department's faculty are the only intended users at this stage |

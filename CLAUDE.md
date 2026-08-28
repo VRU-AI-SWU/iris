@@ -7,8 +7,9 @@ Thailand Skill Mapping standard** (สป.อว. / KMITL), so it can be compare
 skill demand that standard publishes for each career.
 
 It reads a TQF (มคอ.2) document, links each course to the national skill vocabulary
-**at a stated proficiency level**, and reports where the curriculum falls short of a
-target career's demand — in coverage and in depth.
+**at an inferred proficiency level**, and reports which skills a target career demands
+that the curriculum does not develop — plus, for the 13 seniority-paired careers, which
+skills gain prominence with experience and how deeply the curriculum develops those.
 
 ## Current Phase
 
@@ -65,10 +66,15 @@ The engine publishes versioned result documents; the web tier only reads them.
    in the narrative template, not left to judgement.
 4. **`percentage` is prevalence, not a distribution share.** Any distributional metric
    requires explicit renormalisation and a stated change of interpretation.
-5. **Provenance end to end.** Every linked skill traces to a course, a page, and a text
+5. **Levels exist on the curriculum side only.** The demand side carries `count` and
+   `percentage` and nothing else — no required level per career × skill. Never state or
+   imply a proficiency level the market requires. The demand-side depth signal is the
+   **seniority gradient** across the 13 paired careers, which measures which skills gain
+   prominence with experience, not how deeply they are required.
+6. **Provenance end to end.** Every linked skill traces to a course, a page, and a text
    span. Committee members will challenge specific assignments.
-6. **Show disagreement.** Where level-inference sources conflict, surface the conflict.
-7. **No vector database.** 4,376 fixed entries is a 13 MB in-memory matrix.
+7. **Show disagreement.** Where level-inference sources conflict, surface the conflict.
+8. **No vector database.** 4,376 fixed entries is a 13 MB in-memory matrix.
 
 ## Key concepts
 
@@ -113,7 +119,7 @@ The engine publishes versioned result documents; the web tier only reads them.
 | Test Engineer | Metric unit tests; reproducibility checks |
 | Domain Expert | Annotation, level validation, curriculum-committee fit |
 
-## Status (last updated 2026-08-27)
+## Status (last updated 2026-08-28)
 
 Phase 3 rewritten. National standard snapshot pinned
 (`data/skillmapping/2026-08-27/` — 138 digital careers, 4,376 skills, 2,043 with full
@@ -121,3 +127,10 @@ level detail). Feasibility measured on real SWU and KU documents: both text laye
 damaged, the damage is characterised and repairable, and the SWU document carries the
 curriculum mapping table that level inference depends on. Old implementation removed;
 `engine/` and `web/` are created in Sprint 0.
+
+**Design review 2026-08-28**, before Sprint 0. Caught that the primary metric as written
+was uncomputable — the demand side carries no required level — and replaced it with a
+prevalence-weighted coverage gap plus a seniority gradient derived from the standard's 13
+paired careers. Also reconciled the Alternatives table with the vision-fallback decision,
+corrected an overstated bilingual-channel claim, and specified the profile aggregation,
+zero-link handling, and cost model that were missing.

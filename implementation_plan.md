@@ -186,16 +186,22 @@ as a reusable benchmark.
 
 **Goal:** a programme profile compared against a career's published demand.
 
-- [ ] Programme profile aggregation — credit-weighted, level-aware, category-aware
+- [ ] Programme profile aggregation — `level` = **max** over linking courses;
+      `depth` = course count and total credits; both recorded per skill
 - [ ] Load career demand from the snapshot; **filter the 168 `count = 0` pairs and the
       three degenerate careers**
-- [ ] Level-aware coverage gap (primary metric), prevalence-weighted
+- [ ] **Prevalence-weighted coverage gap (primary metric)** — ⚠️ *not* a level shortfall:
+      the demand side carries no required level (see `data-feasibility.md`)
+- [ ] **Seniority gradient** — Δ prevalence between paired career rungs (13 pairs;
+      `data-scientist` has four). Cross with curriculum level to produce the report's
+      strongest finding. Mark clearly in output when a target career has no pair
 - [ ] RCA career-specificity weighting
 - [ ] Growth-adjusted view from `skillsGrowth`
 - [ ] KL divergence as a secondary metric, with explicit renormalisation from prevalence
       and a stated interpretation
 - [ ] Programme-to-programme comparison — shared / A-only / B-only / different-level
 - [ ] **Truncation guard**: no output may assert that a career does not demand a skill
+- [ ] **Level guard**: no output may state or imply a level the market requires
 
 **Evaluation:** unit tests with known distributions and hand-computed expected values.
 

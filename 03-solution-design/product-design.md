@@ -9,9 +9,16 @@
 ## Product Vision
 
 Give a Thai curriculum committee an evidence-based answer, in the state's own skill
-vocabulary, to the question they currently answer from opinion: **which skills that our
-graduates' target careers demand does this curriculum not develop — and where it does,
-is it deep enough?**
+vocabulary, to two questions they currently answer from opinion:
+
+1. **Which skills that our graduates' target careers demand does this curriculum not
+   develop?**
+2. **For the skills that become more central as that career progresses — how deeply does
+   this curriculum develop them?**
+
+The second question is answerable because the standard pairs 13 digital careers by
+seniority. It is *not* a question about a proficiency level the market requires; no such
+figure exists.
 
 ---
 
@@ -87,7 +94,9 @@ did not have, and it is the one that makes the tool trustworthy.
                  he works down the low-confidence links: accept, reject, adjust level
                  disagreements between level sources are surfaced, not hidden
 
-5. ANALYSE       he picks a career (e.g. วิศวกรข้อมูล) and gets a ranked, level-aware gap
+5. ANALYSE       he picks a career (e.g. วิศวกรข้อมูล) and gets a prevalence-ranked gap,
+                 plus — since that career is seniority-paired — which skills matter more
+                 at senior level and how deeply the curriculum develops them
 
 6. PUBLISH       Malee reviews and promotes it to the public site
 ```
@@ -102,7 +111,7 @@ did not have, and it is the one that makes the tool trustworthy.
 | F2 | Course list with source-page provenance | Gated | 9 | Must |
 | F3 | **Skill-link review — accept / reject / adjust level** | Gated | 9 | **Must** |
 | F4 | Career selector across 138 digital careers | Both | 8/9 | Must |
-| F5 | Level-aware alignment report — ranked gaps | Both | 8 | Must |
+| F5 | Alignment report — prevalence-weighted ranked gaps | Both | 8 | Must |
 | F6 | Courses × skills heatmap, level-shaded | Both | 8 | Must |
 | F7 | Narrative summary | Both | 8 | Must |
 | F8 | PDF export | Both | 8 | Must |
@@ -110,6 +119,7 @@ did not have, and it is the one that makes the tool trustworthy.
 | F10 | Method and limitations page | Public | 8 | Must |
 | F11 | Curriculum revision scenario | Gated | 9 | Should |
 | F12 | Growth-adjusted view (`skillsGrowth`) | Both | 8 | Should |
+| F12b | Seniority-gradient panel (13 paired careers) | Both | 8 | Should |
 | F13 | Publish / unpublish an analysis | Gated | 9 | Should |
 | F14 | Skills found that the standard lacks | Gated | 9 | Could |
 
@@ -123,7 +133,7 @@ did not have, and it is the one that makes the tool trustworthy.
 |---|---|
 | **Project overview** | What Iris does, why the national standard matters, method summary, **limitations stated up front** — not buried |
 | **Published analyses** | Cards: programme, career, date, snapshot version |
-| **Alignment report** | Heatmap · ranked gap table · narrative · PDF download · snapshot and model provenance footer |
+| **Alignment report** | Heatmap · ranked gap table (prevalence-weighted) · **seniority-gradient panel** where the career is paired · narrative · PDF download · snapshot and model provenance footer |
 | **Programme comparison** | Two profiles side by side: shared, A-only, B-only, different-level |
 | **Method** | Ingestion, linking, level inference, metrics; annotation protocol and agreement figures |
 
@@ -181,10 +191,17 @@ vru-ai.com/iris                        overview
 
 ## Interface principles
 
-**1. Never overstate truncated data.** The demand vector is capped at ~100 skills per
-career. The interface may say *"this skill is not in the top-100 demanded for this
-career"*; it may never say *"the market does not demand this."* This constraint is
-enforced in the narrative template, not left to the writer.
+**1. Never overstate what the data contains.** Two hard limits, both enforced in the
+narrative template rather than left to the writer:
+
+- **Truncation.** The demand vector is capped at ~100 skills per career. The interface may
+  say *"not in the top-100 demanded for this career"*; never *"the market does not demand
+  this."*
+- **No demand-side level.** The standard publishes no required proficiency level per
+  career × skill. Level is a property of the *curriculum* — "this programme develops SQL
+  to advanced level" is sayable; "the market requires intermediate SQL" is not. Where the
+  interface shows depth against demand, it shows the **seniority gradient** (which skills
+  gain prominence from Data Scientist to Senior Data Scientist), labelled as such.
 
 **2. Provenance is always one click away.** Every skill traces to a course; every course
 traces to a page in the source PDF. Committee members will challenge specific

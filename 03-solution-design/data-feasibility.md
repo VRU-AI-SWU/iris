@@ -63,6 +63,60 @@ explicitly. Prevalence is the more directly interpretable signal for a curriculu
 committee: *"65 % of Data Engineer postings ask for SQL"* means something to an
 administrator; *"SQL is 3.2 % of skill mentions"* does not.
 
+### ⚠️ The demand side carries no proficiency level
+
+Re-checked 2026-08-28. A career × skill entry contains exactly three fields:
+
+```json
+{ "skill": { "id": "...", "title": "ทักษะการวิเคราะห์", "type": "soft-skill", ... },
+  "count": 49415, "percentage": 15.48 }
+```
+
+There is **no level, no seniority, no proficiency field** anywhere on the demand side. The
+three graded levels belong to the *skill entity* — a general scale defining what
+foundational / intermediate / advanced mean for that skill — not to what any career
+requires.
+
+**Consequence:** levels exist on the **curriculum side only**. Iris can report *"this
+programme develops SQL to advanced level"*. It cannot report *"the market requires SQL at
+intermediate level"*, because no such figure exists. Any metric defined as a shortfall
+between a demanded level and a delivered level is uncomputable, and any sentence implying
+one would be fabricated.
+
+### Seniority-paired careers — the demand-side depth signal that does exist
+
+The digital industry contains **13 careers paired by seniority**, which supports a derived
+depth measure:
+
+| Ladder | Careers |
+|---|---|
+| base → senior → lead → chief | `data-scientist` (four rungs) |
+| base → senior | `data-engineer`, `web-developer`, `developer`, `application-developer`, `sound-designer`, `frontend-developer`* |
+| base → lead | `project-manager`, `animator` |
+| junior → base | `software-engineer` |
+
+\* `senior-frontend-developer` has only 5 skills — one of the degenerate careers; exclude.
+
+The prevalence change between rungs is interpretable. Data Scientist → Senior Data
+Scientist, over the 76 skills common to both:
+
+| Δ prevalence | Skill |
+|---|---|
+| +12.67 pp | การสร้างแบบจำลองทำนาย (predictive modelling) |
+| +12.02 pp | การประยุกต์ใช้การเรียนรู้ของเครื่อง (applied ML) |
+| +10.56 pp | การวิเคราะห์เชิงทำนาย (predictive analytics) |
+| +10.50 pp | การสร้างแบบจำลองทางคณิตศาสตร์ (mathematical modelling) |
+| +10.49 pp | สถิติเชิงพหุ (multivariate statistics) |
+| +2.24 pp | จาวา (Java) |
+| +1.45 pp | การสร้างภาพข้อมูล (data visualisation) |
+| −0.58 pp | ทักษะการวิเคราะห์ (analytical skills) |
+
+The skills that gain are uniformly the deeper, more specialised ones; the skills that stay
+flat are the general or tooling ones. This is a measured signal about **which skills gain
+prominence with experience** — not a proficiency requirement, and it must not be reported
+as one. Only 13 of 138 digital careers are paired, so the axis is available for some
+targets and absent for others.
+
 ### Data-quality limits that must be disclosed
 
 1. **The demand vector is truncated at ~100 skills per career.** Distribution peaks
