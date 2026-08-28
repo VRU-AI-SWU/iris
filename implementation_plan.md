@@ -42,16 +42,30 @@ the method — not to proceed and hope the UI distracts from it.
 - [x] Strip 3,942 committed Rust build artefacts from history (`.git` 289 MB → 27 MB)
 - [x] Pin the national standard snapshot (`data/skillmapping/2026-08-27/`)
 - [x] Record what the data actually supports (`03-solution-design/data-feasibility.md`)
-- [ ] Delete `04-implementation/backend-rust/`, `backend/`, `worker/`, `cluster-sidecar/`,
+- [x] Delete `04-implementation/backend-rust/`, `backend/`, `worker/`, `cluster-sidecar/`,
       `frontend/`, `nginx/`, and the docker-compose files — all belong to the old design
-- [ ] Create `04-implementation/engine/` — Python package, ruff, pytest, FastAPI health route
-- [ ] PostgreSQL schema + Alembic baseline: `programme`, `course`, `course_skill_link`,
-      `analysis_run`, `job`
-- [ ] Load the snapshot into the engine as read-only reference data
+- [x] Create `04-implementation/engine/` — Python 3.13 package, ruff, pytest, FastAPI
+      `/health`, and an `iris` CLI (the pipeline is CLI-driven through Sprint 7)
+- [x] Schema + Alembic baseline: `programme`, `course`, `course_skill_link`,
+      `out_of_vocabulary_skill`, `analysis_run`, `job`
+- [x] Load the snapshot into the engine as read-only reference data, with the design's
+      data-quality filters applied on load and **reported, never silent**
+- [x] 23 tests, all passing; ruff clean
 - [ ] Confirm available VRAM on `linux-gpu-server`; select candidate adjudication and
-      embedding models
+      embedding models ⚠️ **blocked — needs the machine**
 
-**Deliverable:** `GET /health` returns 200; the snapshot loads; 4,376 skills queryable.
+**Deliverable:** ✅ `GET /health` returns 200 and reports snapshot provenance; the snapshot
+loads; 4,376 skills queryable; 12 seniority ladders computed.
+
+**Decision taken during the sprint.** Models use generic SQLAlchemy types and run on
+**SQLite in development, PostgreSQL in production**. Sprints 1–7 are ingestion and
+evaluation work that should not require a database server to be running; `DATABASE_URL`
+points at PostgreSQL on the deployment host. No PostgreSQL-specific column type is used.
+
+**Feedback to the design.** The loader found that **13 seniority pairs exist but only 12
+are analysable** — `senior-frontend-developer` has 5 skills and is caught by the
+degenerate-career filter. The solution proposal, product design, `CLAUDE.md` and
+`q-prevalence-metrics` were corrected in the same commit, per the feedback-loop rule.
 
 ---
 

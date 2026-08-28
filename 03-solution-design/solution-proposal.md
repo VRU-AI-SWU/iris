@@ -397,7 +397,9 @@ alternative is reported as a sensitivity check. See [[q-prevalence-metrics]].
 
 #### Seniority gradient — the demand-side depth signal
 
-The standard contains **13 seniority-paired careers** in the digital industry:
+The standard contains **13 seniority-paired careers** in the digital industry, of which
+**12 are analysable** — `senior-frontend-developer` has only 5 skills and is excluded by the
+degenerate-career filter (verified in code, Sprint 0):
 `data-scientist` has four rungs (base → senior → lead → chief); `data-engineer`,
 `web-developer`, `developer`, `application-developer` and `sound-designer` have
 base → senior; `project-manager` and `animator` have base → lead; `software-engineer` has
@@ -426,8 +428,23 @@ statement about which skills gain prominence with seniority, which is the questi
 curriculum committee can act on: *are we preparing graduates for the entry-level role, or
 for the career?*
 
-Availability is the constraint — 13 of 138 digital careers are paired, so this axis is
-present for some target careers and absent for others. Reports state which.
+Availability is the constraint — 12 analysable ladder steps across 138 digital careers, so
+this axis is present for some target careers and absent for others. Reports state which.
+
+The ladders, with the top riser measured on the pinned snapshot:
+
+| Ladder | shared skills | top rise |
+|---|---|---|
+| `data-engineer → senior-data-engineer` | 86 | Data Architecture **+17.9 pp** |
+| `developer → senior-developer` | 77 | SQL **+17.7 pp** |
+| `data-scientist → lead-data-scientist` | 80 | Predictive Modeling **+15.2 pp** |
+| `data-scientist → senior-data-scientist` | 76 | Predictive Modeling **+12.7 pp** |
+| `web-developer → senior-web-developer` | 75 | Mobile Web Design **+23.6 pp** |
+| `junior-software-engineer → software-engineer` | 74 | RESTful WebServices **+5.9 pp** |
+
+⚠️ **Direction is not uniform.** `senior-`, `lead-`, `principal-` and `chief-` sit *above*
+the unprefixed career; `junior-` sits *below* it. The engine resolves this once, in
+`SeniorityPair.from_rung`, rather than at each call site.
 
 #### Growth-adjusted view
 

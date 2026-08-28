@@ -70,7 +70,7 @@ Depth enters from two directions, kept separate and separately labelled:
 - **Curriculum side** — the inferred proficiency level ([[q-level-inference]]), a property
   of the programme
 - **Demand side** — the **seniority gradient**: Δ prevalence between paired career rungs.
-  13 of 138 digital careers are paired (`data-scientist` has four rungs). Data Scientist →
+  13 of 138 digital careers are paired, **12 analysable** (`data-scientist` has four rungs). Data Scientist →
   Senior shows predictive modelling +12.67 pp, applied ML +12.02 pp, multivariate
   statistics +10.49 pp, against Java +2.24 pp and analytical skills −0.58 pp
 

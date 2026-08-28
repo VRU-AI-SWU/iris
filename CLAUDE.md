@@ -8,8 +8,9 @@ skill demand that standard publishes for each career.
 
 It reads a TQF (มคอ.2) document, links each course to the national skill vocabulary
 **at an inferred proficiency level**, and reports which skills a target career demands
-that the curriculum does not develop — plus, for the 13 seniority-paired careers, which
-skills gain prominence with experience and how deeply the curriculum develops those.
+that the curriculum does not develop — plus, for the 12 analysable seniority
+ladders, which skills gain prominence with experience and how deeply the curriculum
+develops those.
 
 ## Current Phase
 
@@ -69,12 +70,39 @@ The engine publishes versioned result documents; the web tier only reads them.
 5. **Levels exist on the curriculum side only.** The demand side carries `count` and
    `percentage` and nothing else — no required level per career × skill. Never state or
    imply a proficiency level the market requires. The demand-side depth signal is the
-   **seniority gradient** across the 13 paired careers, which measures which skills gain
-   prominence with experience, not how deeply they are required.
+   **seniority gradient** across the paired careers (13 in the raw data, **12 analysable**),
+   which measures which skills gain prominence with experience, not how deeply they are
+   required.
 6. **Provenance end to end.** Every linked skill traces to a course, a page, and a text
    span. Committee members will challenge specific assignments.
 7. **Show disagreement.** Where level-inference sources conflict, surface the conflict.
 8. **No vector database.** 4,376 fixed entries is a 13 MB in-memory matrix.
+9. **Implementation feeds back into Phase 2 and Phase 3.** The phases are not a one-way
+   pipeline. When building changes what we know — a measurement contradicts an assumption,
+   a method element is added or dropped, a paper turns out to be misapplied — **go back and
+   update the literature review and the solution design in the same change**, not later.
+   Three review rounds found errors that had already been written into design documents;
+   the cost of fixing them was small only because they were caught before code depended on
+   them. See *The feedback loop* below.
+
+## The feedback loop
+
+Sprint work is allowed — expected — to invalidate earlier decisions. What is not allowed is
+letting a document go stale while the code moves on.
+
+**Trigger it when any of these happens during implementation:**
+
+| Trigger | Update |
+|---|---|
+| A measurement contradicts something a design document asserts | `03-solution-design/` + the relevant `q-*` note |
+| A new method element enters the design (a metric, a statistic, an interface requirement) | **Search for it first**, then add a paper note, then edit the design |
+| A statistic or method turns out not to fit the data | The `q-*` working answer, the paper note's *Notes for the Project*, and the design |
+| An external dependency resolves (KU document, สป.อว. answering on corpus provenance) | Risks table, open questions, and any claim that was hedged on it |
+| A sprint's evaluation produces numbers | The evaluation section of the proposal, and `05-reports/` |
+
+**The rule that keeps it honest:** a commit that changes what the system does and
+contradicts a design document is **incomplete** until the document is changed in the same
+commit. Finding evidence is not applying it — that lesson cost a full review round.
 
 ## Key concepts
 

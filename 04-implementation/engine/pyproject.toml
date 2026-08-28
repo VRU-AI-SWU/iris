@@ -1,0 +1,42 @@
+[project]
+name = "iris-engine"
+version = "0.1.0"
+description = "Curriculum skill alignment engine — links Thai TQF courses to the national skill vocabulary"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "sqlalchemy>=2.0",
+    "alembic>=1.14",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.2"]
+dev = ["pytest>=8.3", "pytest-cov>=6.0", "httpx>=0.28", "ruff>=0.8"]
+
+[project.scripts]
+iris = "iris.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["iris"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+# This project's prose is bilingual Thai/English and uses typographic characters
+# meaningfully: "career × skill", en dashes in ranges, arrows for ladder steps.
+# Rewriting them as ASCII would damage the documentation, not improve it.
+allowed-confusables = ["×", "–", "—", "→", "’"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"

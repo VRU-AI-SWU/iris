@@ -16,8 +16,8 @@ vocabulary, to two questions they currently answer from opinion:
 2. **For the skills that become more central as that career progresses — how deeply does
    this curriculum develop them?**
 
-The second question is answerable because the standard pairs 13 digital careers by
-seniority. It is *not* a question about a proficiency level the market requires; no such
+The second question is answerable because the standard pairs digital careers by seniority —
+13 pairs, 12 of them analysable once degenerate careers are excluded. It is *not* a question about a proficiency level the market requires; no such
 figure exists.
 
 ---
@@ -119,7 +119,7 @@ did not have, and it is the one that makes the tool trustworthy.
 | F10 | Method and limitations page | Public | 8 | Must |
 | F11 | Curriculum revision scenario | Gated | 9 | Should |
 | F12 | Growth-adjusted view (`skillsGrowth`) | Both | 8 | Should |
-| F12b | Seniority-gradient panel (13 paired careers) | Both | 8 | Should |
+| F12b | Seniority-gradient panel (12 analysable ladders) | Both | 8 | Should |
 | F13 | Publish / unpublish an analysis | Gated | 9 | Should |
 | F14 | Skills found that the standard lacks | Gated | 9 | Could |
 
