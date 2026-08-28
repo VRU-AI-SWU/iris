@@ -243,7 +243,7 @@ feasibility study is a lesson in what happens when Thai text handling is an afte
 | Review completion | A committee member finishes reviewing a 78-course programme in one sitting (< 90 min) | Timed session with two faculty |
 | Correction rate | Proportion of links edited during review — tracks against the Sprint 4 evaluation figures | Instrumented |
 | Provenance use | Committee members follow a link back to the source page at least once per session | Instrumented |
-| Report comprehension | ≥ 4 of 5 faculty correctly identify the top three level-aware gaps unaided | Usability session |
+| Report comprehension | ≥ 4 of 5 faculty correctly identify the top three prevalence-weighted gaps unaided, **and none reads the seniority panel as a required proficiency level** | Usability session |
 | Meeting adoption | The report is cited in an actual curriculum revision meeting | Observation |
 | Public legibility | A reader outside the department can state one correct limitation after reading the overview | Informal review |
 

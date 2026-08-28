@@ -110,9 +110,10 @@ taxonomy — rather than a loose parallel.
 - **Flow:** select programme → select career → system compares the programme's
   level-aware skill profile against the career's published demand → produces a ranked
   alignment report
-- **Outcome:** a prioritised list of *demanded skills the curriculum does not develop*
-  and *skills developed below the required level*, each traceable to specific courses
-  and to a page in the source มคอ.2
+- **Outcome:** a prevalence-ranked list of *demanded skills the curriculum does not
+  develop*; where the career is seniority-paired, a second panel showing *skills that gain
+  prominence at the senior rung and the level the curriculum develops them to*. Every entry
+  traceable to specific courses and to a page in the source มคอ.2
 
 ### UC2 — Programme-to-Programme Comparison
 - **Actor:** Curriculum committee, accreditation reviewer
