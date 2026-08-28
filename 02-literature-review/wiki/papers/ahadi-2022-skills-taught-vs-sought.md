@@ -6,7 +6,7 @@ title: "Skills Taught vs Skills Sought: Using Skills Analytics to Identify the G
 venue: 15th International Conference on Educational Data Mining (EDM 2022), poster
 doi:
 relevance: high
-questions: [q-visualisation, q-skill-gap-direction, q-skill-taxonomy]
+questions: [q-visualisation, q-gap-direction, q-skill-taxonomy]
 ---
 
 ## Research Question
@@ -39,7 +39,7 @@ Poster-length — full experimental detail not provided. Relies on EMSI commerci
 [[skill-gap-quantification]] · [[curriculum-analytics]] · [[skill-taxonomy]]
 
 ## Questions Addressed
-[[q-visualisation]] · [[q-skill-gap-direction]]
+[[q-visualisation]] · [[q-gap-direction]]
 
 ## Notes for Iris
 **Two direct contributions to Iris design:**

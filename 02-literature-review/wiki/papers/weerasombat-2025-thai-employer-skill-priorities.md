@@ -6,7 +6,7 @@ title: "Employers' priority on work skills and the skill gaps: a case of Thailan
 venue: Cogent Education 12(1) 2441656, Taylor & Francis (Open Access)
 doi: 10.1080/2331186X.2024.2441656
 relevance: medium
-questions: [q-skill-gap-direction, q-segment-taxonomy]
+questions: [q-gap-direction, q-segment-taxonomy]
 ---
 
 ## Research Question
@@ -45,7 +45,7 @@ Survey-based (employer self-report) — may not reflect actual skill requirement
 [[skill-gap-quantification]] · [[thai-job-market]]
 
 ## Questions Addressed
-[[q-skill-gap-direction]]
+[[q-gap-direction]]
 
 ## Notes for Iris
 **Two relevant implications:**

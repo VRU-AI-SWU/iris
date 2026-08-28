@@ -6,7 +6,7 @@ title: "An exploratory study of digital workforce competency in Thailand"
 venue: Heliyon 5 (2019) e01723, Elsevier
 doi: 10.1016/j.heliyon.2019.e01723
 relevance: high
-questions: [q-thai-ontology, q-segment-taxonomy, q-skill-gap-direction]
+questions: [q-thai-ontology, q-segment-taxonomy, q-gap-direction]
 ---
 
 ## Research Question
@@ -38,7 +38,7 @@ Expert-validated competency list (24 items) is broad and not a granular skill ta
 [[thai-nlp]] · [[skill-gap-quantification]] · [[tpqi-framework]]
 
 ## Questions Addressed
-[[q-thai-ontology]] · [[q-segment-taxonomy]] · [[q-skill-gap-direction]]
+[[q-thai-ontology]] · [[q-segment-taxonomy]] · [[q-gap-direction]]
 
 ## Notes for Iris
 **High relevance for domain context and validation.** The 3-category competency structure (Professional/Technical/Management) could serve as a coarse validation layer for our segment taxonomy design. The confirmed gap between Thai IT graduates and industry demands is direct motivation for Iris. The 24-competency list provides a human-readable reference point against which our extracted skill clusters can be sanity-checked. Note: this is supply-demand gap evidence from the employer perspective; our approach extracts from job postings rather than surveys, so this paper provides convergent validity rather than direct method input.

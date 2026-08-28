@@ -6,7 +6,7 @@ title: "Bridging the skill gap between the acquired university curriculum and th
 venue: Journal of Innovation & Knowledge 7 (2022) 100190, Elsevier
 doi: 10.1016/j.jik.2022.100190
 relevance: medium
-questions: [q-skill-gap-direction, q-curriculum-analytics]
+questions: [q-gap-direction, q-curriculum-analytics]
 ---
 
 ## Research Question
@@ -36,7 +36,7 @@ Bibliometric analysis describes the literature structure, not the quality or val
 [[curriculum-analytics]] · [[skill-gap-quantification]] · [[bibliometric-analysis]]
 
 ## Questions Addressed
-[[q-skill-gap-direction]]
+[[q-gap-direction]]
 
 ## Notes for Iris
 Useful as background context: confirms that the curriculum-to-market gap field is mature in Western literature but has a methodological blind spot for Southeast Asia / non-English markets. The dominance of ontology-based and NLP approaches validates our design choices. The identified shift from surveys to job-posting-based analysis (post-2015) is the same shift our work continues. Low operational relevance to Iris design decisions — treat as field map, not methodological input.
