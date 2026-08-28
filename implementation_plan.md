@@ -158,22 +158,53 @@ right path. 36 tests pass; ruff clean.
 
 ---
 
-## Sprint 2 — Document navigation and course extraction
+## Sprint 2 — Course extraction 🔄
 
 **Goal:** a TQF PDF becomes a complete, provenance-carrying list of courses.
 
-- [ ] PageIndex tree build over a มคอ.2; verify node titles and page ranges
-- [ ] Locate `3.1.5 คำอธิบายรายวิชา`, the curriculum mapping table, and the programme ELO list
-- [ ] Exhaustive section parsing — course code, Thai title, English title, credits
-      `x(y-z-w)`, category, Thai description, English description where present
+- [x] **Anchor on the TQF credit specification** `x(y-z-w)` rather than on a section
+      heading. Every course in every document carries one, it is language-independent, and
+      PSU's `3((2)-2-5)` is the only formatting variant in the corpus
+- [x] **Learn each document's course-code shape** by scoring six candidates against the
+      anchors — same principle as the repair table
+- [x] Extract code, Thai title, English title, credits, description, source page
+- [x] **Prose-aware deduplication** — a course appears in the structure tables, the study
+      plan and the description section; the entry whose body reads as prose wins
+- [x] `iris courses <pdf>`
 - [ ] Parse the curriculum mapping table into `(course, outcome, ● | ○)` triples
-- [ ] Parse per-course CLOs where the document provides them (SWU ชุดรายวิชา format)
-- [ ] Every extracted field records its source page
+- [ ] Parse per-course CLOs (SWU `ชุดรายวิชา` format)
+- [ ] Recover the ~30% of PSU courses whose descriptions are not being found
 
-**Evaluation:** course count and field completeness against manual reading of both
-documents — SWU (78 codes seen) and KU (67). Every course must be found.
+**Measured across the corpus — 350 courses with real Thai descriptions:**
 
-**Deliverable:** `iris ingest <pdf>` writes a complete programme to the database.
+| University | Code shape learned | Courses | With English title | With Thai prose |
+|---|---|---|---|---|
+| CMU | `digits-6` | 91 | 89 | 86 |
+| KU | `digits-8` | 64 | 63 | 64 |
+| PSU | `hyphen-3-3` | 150 | 77 | **36** ⚠️ |
+| SU | `spaced-3-3` | 93 | 93 | 92 |
+| SWU | `thai-prefix` | 73 | 70 | 72 |
+
+**Deliverable:** 🔄 `iris courses` extracts a provenance-carrying course list from all
+five documents. 72 tests pass; ruff clean.
+
+**Why heading-based location was abandoned.** Only two of five documents contain the
+literal `3.1.5 คำอธิบายรายวิชา`. PSU numbers it `4.`, SU omits the number entirely, and
+**CMU calls courses `กระบวนวิชา` rather than `รายวิชา`**. The regulated thing is the
+credit specification, not the heading — so that is what the extractor anchors on, and
+PageIndex is not needed for this step.
+
+**Open.**
+
+1. ⚠️ **PSU finds only 36 usable descriptions from 150 codes.** Its layout puts curriculum-
+   map rows adjacent to credit specs, and its code list includes service courses from other
+   faculties. The other four documents are at 86–100%.
+2. **Marks lost as whitespace are not recovered.** SWU drops some mai ek into a space —
+   `ไม่น้อยกว่า` extracts as `ไม น้อยกว า`. Unlike the sara-am case, **no orthographic
+   constraint makes recovery safe**: Thai uses spaces as phrase separators, and `ไม` (silk)
+   is as real a word as `ไม่` (not), so a wrong repair changes meaning. Measurement found
+   the candidate detections to be almost entirely false positives. Deliberately not
+   attempted; whether the residue affects linking is a Sprint 4 measurement, not a guess.
 
 ---
 

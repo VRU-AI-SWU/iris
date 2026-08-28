@@ -72,6 +72,48 @@ def _cmd_check(args: argparse.Namespace) -> int:
     return 0 if after.usable else 1
 
 
+def _cmd_courses(args: argparse.Namespace) -> int:
+    """Extract courses from a TQF PDF: gate, normalise, repair, then parse."""
+    from iris.ingest import (
+        Verdict,
+        diagnose,
+        extract,
+        extract_courses,
+        learn_and_repair,
+        normalise_chars,
+    )
+
+    doc = extract(args.pdf)
+    chars, fonts, _ = normalise_chars(doc.chars, doc.fonts)
+    report = diagnose("".join(chars))
+    if report.verdict is Verdict.REPAIRABLE:
+        chars = list(learn_and_repair(chars, fonts).text)
+        report = diagnose("".join(chars))
+    if not report.usable:
+        print(f"text layer is {report.verdict.value} — cannot extract courses")
+        print(report.summary())
+        return 1
+
+    courses, extraction = extract_courses("".join(chars), doc.page_of)
+    print(f"{args.pdf}  ·  {doc.page_count} pages")
+    print(extraction.summary())
+
+    def thai_chars(course) -> int:
+        return sum(1 for x in (course.description_th or "") if "฀" <= x <= "๿")
+
+    prose = [c for c in courses if thai_chars(c) > 60]
+    print(f"{len(prose)} of them have a Thai description long enough to link from\n")
+
+    for course in courses if args.all else prose[: args.limit]:
+        title = course.title_th or ""
+        print(f"  p.{course.page:>3}  {course.code:12} {course.credit_spec:12} {title}")
+        if course.title_en:
+            print(f"        {'':12} {'':12} {course.title_en}")
+        if args.verbose and course.description_th:
+            print(f"        {course.description_th[:150]}")
+    return 0
+
+
 def _cmd_db_init(_: argparse.Namespace) -> int:
     from iris.db import create_all
 
@@ -94,6 +136,15 @@ def main(argv: list[str] | None = None) -> int:
     p_check.add_argument("-v", "--verbose", action="store_true", help="show repair examples")
     p_check.add_argument("-o", "--out", help="write the repaired text to a file")
     p_check.set_defaults(func=_cmd_check)
+
+    p_courses = sub.add_parser("courses", help="extract courses from a TQF PDF")
+    p_courses.add_argument("pdf")
+    p_courses.add_argument(
+        "-a", "--all", action="store_true", help="include courses with no description"
+    )
+    p_courses.add_argument("-n", "--limit", type=int, default=15)
+    p_courses.add_argument("-v", "--verbose", action="store_true", help="show descriptions")
+    p_courses.set_defaults(func=_cmd_courses)
 
     p_db = sub.add_parser("db", help="database operations")
     db_sub = p_db.add_subparsers(dest="db_command", required=True)

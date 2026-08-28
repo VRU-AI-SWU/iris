@@ -25,9 +25,20 @@ Concretely, iterating until nothing new is learned:
    remaining ones easier to read. Repeat, relaxing the ambiguity tolerance as the
    density falls.
 
-Measured on the SWU มคอ.2 (216 pages, 4,918 intrusions): six rules learned, no
-hard-coding, and the mark rate rises from 134.5 to 161.2 per 1,000 Thai
-characters against a clean-document baseline of 171.0.
+Measured across five universities and five PDF producers, with three unrelated
+substitution alphabets and no overlap between the learned tables: Bullzip
+substitutes ASCII (`2`, `=`, `?`), macOS Quartz a different ASCII set (`b`, `X`,
+`F`, `@`), Adobe emits Unicode PUA (`\uf70b`, `\uf70a`). Every document reaches a
+usable text layer.
+
+⚠️ **Known limitation: marks lost as whitespace are not recovered.** SWU also drops
+some mai ek into a space — `ไม่น้อยกว่า` extracts as `ไม น้อยกว า`. Unlike the
+sara-am case in `normalise.py`, no orthographic constraint makes recovery safe
+here: Thai uses spaces as phrase separators, so a space between two Thai letters
+is ordinary, and `ไม` (silk) is as real a word as `ไม่` (not). A wrong repair
+would change meaning, which is worse than leaving the text slightly damaged.
+Whether the residue affects skill linking is measured at the Sprint 4 gate rather
+than guessed at here.
 """
 
 from __future__ import annotations
