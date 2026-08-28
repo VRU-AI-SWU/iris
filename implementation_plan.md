@@ -51,8 +51,11 @@ the method — not to proceed and hope the UI distracts from it.
 - [x] Load the snapshot into the engine as read-only reference data, with the design's
       data-quality filters applied on load and **reported, never silent**
 - [x] 23 tests, all passing; ruff clean
-- [ ] Confirm available VRAM on `gpu-linux-server`; select candidate adjudication and
-      embedding models ⚠️ **blocked — needs the machine**
+- [x] Confirm host capability on `gpu-linux-server`: RTX 3090 24 GB (driver 580.173.02),
+      **15.4 GB free**, Ollama running with no models pulled, 193 GB disk, Python 3.12.3
+- [x] Verify the engine runs on the host's Python 3.12 — 23 tests pass on 3.12.13
+- [ ] Account for the ~9 GB of VRAM held by a non-Ollama process — it sets the ceiling
+- [ ] Pull and smoke-test candidate models (decision itself belongs to the Sprint 4 gate)
 
 **Deliverable:** ✅ `GET /health` returns 200 and reports snapshot provenance; the snapshot
 loads; 4,376 skills queryable; 12 seniority ladders computed.

@@ -45,8 +45,9 @@ results. Nothing on the public site touches the GPU server at request time.
 
 ### Why not a vector database
 
-The skill vocabulary is **fixed national reference data**: 4,376 entries. At 768
-dimensions that is a 13 MB `float32` matrix. Exact cosine similarity over it is a
+The skill vocabulary is **fixed national reference data**: 4,376 entries. That is a
+`float32` matrix of **13–18 MB** depending on the embedding model's dimension (13 MB at
+768, 18 MB at 1,024). Exact cosine similarity over it is a
 single `numpy` matrix multiply — microseconds, no index to build, no extra service to
 run, no approximation to tune.
 
@@ -69,9 +70,22 @@ Served over an OpenAI-compatible endpoint so dev and production differ only by
 | Embedding | Multilingual, handles Thai and English skill terms |
 | Serving | LM Studio (dev) / Ollama (production), both on `gpu-linux-server` |
 
-> ⚠️ Model choice is **pending a VRAM check** on `gpu-linux-server`. A previous commit
-> recorded dropping from `gemma-4-31b-it` to `gemma-4-e4b` to fit 19 GB. Decide against
-> measured linking quality, not model size.
+### Host — measured 2026-08-28
+
+| | |
+|---|---|
+| GPU | **NVIDIA GeForce RTX 3090, 24 GB** · driver 580.173.02 |
+| VRAM free at measurement | **15.4 GB** — ~9 GB held by something other than Ollama |
+| Ollama | running as a service, **no models pulled** |
+| Disk free | 193 GB |
+| Python | 3.12.3 — engine verified against it (23 tests pass) |
+
+⚠️ **The usable ceiling is 15 GB, not 24 GB, until the 9 GB is accounted for.** A previous
+commit recorded 19 GB available, so the figure has moved. Candidate models are sized to
+15 GB; if the 9 GB is reclaimable, larger candidates come back into range.
+
+> Model choice is decided at the **Sprint 4 gate on measured linking quality**, not here.
+> Sprint 0's job is to select *candidates that fit* and confirm they can be served.
 
 ---
 
