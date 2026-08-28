@@ -113,8 +113,28 @@ Two documents tested, both CS bachelor programmes, both revised 2565/2022.
 
 Thai is set in TH SarabunPSK under **WinAnsi encoding**, which has no Thai codepoints.
 Marks that stack at the second level above a consonant fall into font-private glyph
-slots with no `ToUnicode` entry, and extract as ASCII junk. **PyMuPDF and poppler
-produce byte-identical damage** — this is in the PDF, not the extractor.
+slots with no `ToUnicode` entry, and extract as ASCII junk.
+
+**Three independent extraction engines produce identical damage** — this is in the PDF,
+not the extractor:
+
+| Engine | Implementation | Thai marks per 1,000 Thai chars |
+|---|---|---|
+| poppler `pdftotext` | C++ | 134.5 |
+| PyMuPDF / MuPDF | C | 134.5 |
+| [xberg](https://github.com/xberg-io/xberg) 1.0.14 | Rust | 134.5 |
+| *(KU, clean baseline)* | — | *171.0* |
+
+All three return `ข-อมูลทั่วไป`, `ผลการเรียนรู2`, `ระบบฐานข2อมูล`. Since no reader can
+recover a mapping the PDF does not contain, this closes the question of whether a better
+extractor would help.
+
+⚠️ **A finding with direct design consequences.** xberg reports `quality_score: 1.0` and
+`extraction_method: native` on this document — a perfect score on text whose karan is 99 %
+destroyed. Generic document-quality metrics do not model Thai diacritic integrity, so
+xberg's own `VlmFallbackPolicy.on_low_quality` would **never fire** here and the damaged
+text would pass silently into the pipeline. Any automatic OCR-fallback policy Iris uses
+must be driven by the Thai-specific diagnostic below, not by a general quality score.
 
 Damage rate per mark, measured against KU as a clean baseline (marks per 1,000 Thai
 characters):
@@ -201,16 +221,24 @@ should use both channels where available and agree between them as a confidence 
    clean / repairable / lossy-or-unusable → vision re-extraction, flagged as vision-derived.
 2. **A text-layer integrity gate is a first-class pipeline stage,** not an afterthought.
    Documents must be classified `clean / repairable / unusable` before ingestion.
-3. **PageIndex is the right tool for locating sections** across universities that
+3. **No general-purpose extraction engine solves this.** Evaluating a third engine
+   (xberg — Rust core, 106 formats, seven OCR backends including a VLM one) returned
+   byte-identical damage and a perfect quality score. It remains interesting as an *OCR
+   orchestration layer* for the vision fallback — it has fallback chains, confidence
+   thresholds, and layout/table models — but its table extraction inherits the same
+   corruption on the native path (the page-58 curriculum map came back as a header
+   fragment with the ● ○ marks absent, since they are Wingdings glyphs with no
+   `ToUnicode`). Evaluate in Sprint 1; do not delegate the gate to it.
+4. **PageIndex is the right tool for locating sections** across universities that
    paginate and format differently, and its page-range nodes give the per-fact
    provenance an academic report needs. It must be used to *locate* `3.1.5
    คำอธิบายรายวิชา` and the Curriculum Mapping table, after which the section is
    extracted **exhaustively** — Iris needs all ~78 courses, not the top-k most relevant.
-4. **No vector database is needed.** The skill vocabulary is fixed at 4,376 entries;
+5. **No vector database is needed.** The skill vocabulary is fixed at 4,376 entries;
    at 768 dimensions that is a 13 MB in-memory matrix and exact cosine similarity is
    microseconds. `pgvector` solved a problem — unbounded emergent skill clusters — that
    the pivot deleted.
-5. **The gap metric needs re-derivation** from prevalence rather than assumed
+6. **The gap metric needs re-derivation** from prevalence rather than assumed
    distributions, and every claim must respect the ~100-skill truncation.
 
 ## Open items requiring external input

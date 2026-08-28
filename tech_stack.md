@@ -36,6 +36,7 @@ results. Nothing on the public site touches the GPU server at request time.
 | Document index | [PageIndex](https://github.com/VectifyAI/PageIndex) | Locates มคอ.2 sections across universities; nodes carry page ranges, giving provenance |
 | Thai NLP | PyThaiNLP | Tokenisation, and lexicon-based restoration of collapsed `ำ` |
 | Vision fallback | Typhoon OCR (3B) | For text layers that are lossy rather than merely substituted. Thai government forms at Levenshtein 0.04, self-hosted; output flagged as vision-derived |
+| OCR orchestration *(evaluate)* | [xberg](https://github.com/xberg-io/xberg) | Rust core, MIT, Python binding. Seven OCR backends incl. a generic `vlm` one, fallback chains, confidence thresholds, TATR/SLANet table models. ⚠️ Its own `quality_score` is blind to Thai diacritic damage — Iris's diagnostic stays the gate |
 | Numerics | NumPy, SciPy | Retrieval matrix, alignment metrics |
 | Report | Jinja2 + WeasyPrint | HTML report, PDF export |
 | Structured LLM output | Pydantic v2 | Linking output constrained to valid skill IDs |
@@ -162,6 +163,7 @@ PAGEINDEX_MODE=local
 | No vector database | Fixed 4,376-entry vocabulary fits in RAM; exact search beats approximate search at this size |
 | No Celery/Redis | Few, long, low-concurrency jobs. A job table and a worker process are less to operate and easier to reproduce |
 | PageIndex for document navigation | มคอ.2 structure is regulated but formatting is not; page-range provenance is a research requirement |
+| Extraction engine choice is not a lever | poppler, PyMuPDF and xberg return byte-identical damage on the SWU document (134.5 marks/1k Thai chars each). The defect is the PDF's missing `ToUnicode` mapping, so no reader can recover it — repair and vision fallback are the only routes |
 | Deterministic glyph repair **first**, vision fallback second | Where damage is substitution, repair is exact, auditable and free. Where the text layer has genuinely lost information (KU's `ำ` collapse), no table can recover it — a self-hostable Thai-tuned 3B VLM is the fallback, with provenance flagged |
 | Two deployables | The public site must not depend on a GPU server's availability |
 | Own `linux-gpu-server`, not CSML | CSML's GPU is contended across the department; this machine is dedicated and always on |

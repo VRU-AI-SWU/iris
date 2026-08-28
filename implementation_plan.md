@@ -67,6 +67,10 @@ the method — not to proceed and hope the UI distracts from it.
 - [ ] `ำ`-collapse restoration via PyThaiNLP lexicon, with a reported residual error rate
 - [ ] **Vision fallback** — Typhoon OCR (3B) for documents whose text layer is lossy or
       unusable; flag the document as vision-derived in provenance
+- [ ] Evaluate [xberg](https://github.com/xberg-io/xberg) as the OCR orchestration layer
+      (fallback chains, confidence thresholds, `vlm` backend for Typhoon, TATR/SLANet
+      tables). ⚠️ **Do not use its `quality_score` as the trigger** — it returns 1.0 on the
+      SWU document. Iris's diacritic diagnostic drives the fallback
 - [ ] Thai-character-proportion check to catch vision language-bias (drift into English)
 - [ ] Re-run the gate after repair **and after vision extraction**; fail closed if it still
       does not pass
