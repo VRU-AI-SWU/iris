@@ -10,6 +10,7 @@ from iris.db.models import (
     Job,
     JobState,
     LinkStatus,
+    ModelProvider,
     OutOfVocabularySkill,
     Programme,
 )
@@ -25,6 +26,7 @@ __all__ = [
     "Job",
     "JobState",
     "LinkStatus",
+    "ModelProvider",
     "OutOfVocabularySkill",
     "Programme",
     "create_all",

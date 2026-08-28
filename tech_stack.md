@@ -64,6 +64,33 @@ semantically.
 Served over an OpenAI-compatible endpoint so dev and production differ only by
 `MODEL_SERVER_URL`.
 
+### Providers
+
+Embedding and adjudication sit behind **one provider-blind interface** with two backends —
+the pattern the lab's Argus project already runs in production (`server/llm.ts`).
+
+| | Local | Cloudflare Workers AI |
+|---|---|---|
+| Endpoint | OpenAI-compatible, Ollama on `gpu-linux-server` | `@cf/…` model catalogue |
+| Cost | free, but competes with the lab's other GPU work | **10,000 neurons/day free** ≈ $0.11 |
+| Iris's cost | — | **≈ $0.036 per programme** ⇒ ~3 programmes/day free |
+| Availability | ~15 GB VRAM when another project is training | unaffected by GPU contention |
+
+Iris analyses a handful of programmes in total, so the free tier is comfortable — the
+opposite of Argus, whose interactive demo needs ~32 cases/day and has exhausted the
+allowance. TQF documents are public records, so unlike Argus there is no
+data-residency reason to prefer local.
+
+**Reuse Argus's `server/llm.ts` rather than reimplementing it.** It already separates a
+quota-exhausted 429 (`"code":4006`, never retryable) from a capacity 429 (retry with
+backoff honouring `Retry-After`), behind a single provider-blind `chat()`.
+
+🔴 **Provider is pinned per analysis run; no mid-run fallback.** A programme linked by two
+models is not a reproducible analysis. Quota exhaustion fails the run and requeues on the
+other provider from the start. `analysis_run` records provider, model and snapshot date.
+
+**Ingestion never moves.** PyMuPDF, PageIndex and Typhoon OCR have no Workers equivalent.
+
 | Role | Requirement |
 |---|---|
 | Adjudication | Follows a constrained multiple-choice instruction and returns valid JSON. RAG reduces this from open generation to selection among ~30 candidates, so a model sized to the available VRAM is viable — to be confirmed at the evaluation gate, not assumed |

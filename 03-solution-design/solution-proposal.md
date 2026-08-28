@@ -296,6 +296,42 @@ adjudicated by a local LLM against the candidates' definitions.
   theory, research method and ethics that no job advertisement describes; mapping those to
   the nearest labour-market skill would be confidently wrong. Modelling "none of these"
   as a first-class output beats similarity thresholding.
+- **The model provider is a seam, not a hard-coded choice.** Embedding and adjudication
+  run behind one provider-blind interface with two implementations: a local
+  OpenAI-compatible endpoint on `gpu-linux-server`, and **Cloudflare Workers AI**. The
+  pattern is taken from the lab's Argus project, which already runs it in production.
+
+  Three reasons it fits Iris better than it fits Argus:
+
+  | | Argus | Iris |
+  |---|---|---|
+  | Data sensitivity | health claims — **must not leave the machine**, so local is the default | TQF documents are **public institutional records**, so no such constraint |
+  | Usage shape | interactive demo, needs ~32 cases/day | batch, a handful of programmes **per year** |
+  | Free-tier fit | exhausted the 10,000 neurons/day allowance once in development | ≈ **$0.036 per programme** — about a third of one day's free allowance |
+
+  Derived from the measured token cost (§3, ~310 k input tokens per programme) at the
+  rates Argus recorded for `@cf/google/gemma-4-26b-a4b-it`: roughly **three programmes per
+  day within the free tier**, against a project that will analyse a handful in total.
+
+  It also mitigates a risk recorded below: when the lab's other projects are training,
+  `gpu-linux-server` has ~15 GB free rather than 23 GB, and linking can run on Workers AI
+  instead of queueing behind them.
+
+  **Ingestion cannot move.** PDF text extraction, PageIndex navigation and the Typhoon OCR
+  fallback are native or Python work with no Workers equivalent. The seam sits at *linking*,
+  not at the pipeline boundary.
+
+- 🔴 **The provider is pinned per analysis run. There is no mid-run fallback.** Argus
+  switches provider mid-case and records which model read each page; that is right for a
+  demo and wrong here. A programme whose 78 courses were linked by two different models is
+  not a reproducible analysis and cannot be compared with another programme. If a quota is
+  exhausted mid-run, **the run fails and requeues on the other provider from the start**.
+  `analysis_run` records the provider alongside the model and the snapshot date.
+
+  The corollary binds the evaluation: **the Sprint 4 gate must measure whichever provider
+  and model will serve production.** Measuring a local model and shipping a Workers AI one
+  would invalidate every number the paper reports.
+
 - **An LLM adjudicator is not assumed to be the best ranker.** A supervised ranking
   baseline is included in the evaluation, because at least one comparable study found
   supervised models beating decoder-only LLMs at this step.
@@ -566,6 +602,8 @@ Programme analyses are published only with the owning department's consent.
 | Local model too weak for reliable linking | Medium | High | RAG turns the task into constrained selection; if quality is insufficient, escalate model size before changing method — measured at the evaluation gate, not assumed |
 | API is beta (0.8.1) and may change | Medium | Low | Snapshots are pinned and versioned; the engine never calls the live API during analysis |
 | Single self-hosted server is a single point of failure | Medium | Low | Public site is fully static and unaffected; engine downtime delays new analyses only |
+| Thai quality of the Workers AI model is unvalidated | Medium | High | The Sprint 4 gate evaluates the provider that will serve production, not a proxy. If Workers AI models handle Thai adequately the seam pays for itself; if not, local remains primary and the seam still absorbs GPU contention for non-Thai-critical stages |
+| Silent provider switching corrupts an analysis | Low, if the rule holds | **High** | Provider is pinned per run and recorded; a quota exhaustion fails the run and requeues rather than switching. Enforced in the engine, not by convention |
 | **GPU contention with the lab's other projects.** `gpu-linux-server` is shared: a Prostate MRI training run held 7.8 GB of the 24 GB card for ~2 days in August 2026, leaving 15.4 GB. Desktop and X11 hold a further ~1.2 GB permanently | High — it will recur | Medium | Size model residency for the **contended** case (~15 GB), not the free case, so an analysis does not fail unpredictably when another project is training. Set `OLLAMA_KEEP_ALIVE` explicitly so models release VRAM between runs rather than holding it. Check free VRAM before starting a run and queue rather than fail. Sprints 1–2 need no GPU at all, so ingestion work proceeds regardless |
 
 ---

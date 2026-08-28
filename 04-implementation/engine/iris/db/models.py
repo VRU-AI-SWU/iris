@@ -74,6 +74,18 @@ class LinkStatus(enum.StrEnum):
     LEVEL_ADJUSTED = "level-adjusted"
 
 
+class ModelProvider(enum.StrEnum):
+    """Where inference ran. Pinned per analysis run — never switched mid-run.
+
+    A programme whose courses were linked by two different models is not a
+    reproducible analysis, so quota exhaustion fails the run and requeues rather
+    than falling back in place.
+    """
+
+    LOCAL = "local"  # OpenAI-compatible endpoint on gpu-linux-server
+    WORKERS_AI = "workers-ai"  # Cloudflare Workers AI
+
+
 class JobState(enum.StrEnum):
     QUEUED = "queued"
     RUNNING = "running"
@@ -229,7 +241,9 @@ class AnalysisRun(Base):
     career_slug: Mapped[str] = mapped_column(String(120))
     snapshot_date: Mapped[str] = mapped_column(String(10))
 
-    #: Model and prompt identity — required to reproduce the run.
+    #: Provider, model and prompt identity — required to reproduce the run.
+    #: Pinned for the whole run; a quota exhaustion requeues rather than switches.
+    provider: Mapped[ModelProvider | None] = mapped_column(Enum(ModelProvider))
     extraction_model: Mapped[str | None] = mapped_column(String(200))
     embedding_model: Mapped[str | None] = mapped_column(String(200))
 

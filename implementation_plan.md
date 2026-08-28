@@ -81,38 +81,62 @@ degenerate-career filter. The solution proposal, product design, `CLAUDE.md` and
 
 ---
 
-## Sprint 1 — Text-layer integrity gate and glyph repair
+## Sprint 1 — Text-layer integrity gate and glyph repair ✅
 
 **Goal:** turn a damaged TQF PDF into trustworthy Thai text, or refuse it clearly.
 
-🟢 **No GPU required for the main path.** The diagnostic, the glyph repair table and the
-integrity gate are pure CPU work. Only the vision fallback needs the card, and it is
-exercised on the KU excerpt alone — deferrable until the GPU is free.
+🟢 **No GPU required for the main path.** The diagnostic, the repair and the gate are
+pure CPU work. Only the vision fallback needs the card.
 
-- [ ] Thai combining-mark diagnostic — marks per 1,000 Thai characters, per mark, with
-      the clean-document baseline (~171 total; per-mark table in `data-feasibility.md`)
-- [ ] Classifier: `clean` / `repairable` / `unusable`, with a human-readable report
-- [ ] Glyph repair table keyed on `(substitute glyph, preceding character)`, derived from
-      the SWU document's substitution set (`2`→้, `=`→์, `‚`→ั, `-`→้, `?`→็, `A`→่, …)
-- [ ] `ำ`-collapse restoration via PyThaiNLP lexicon, with a reported residual error rate
-- [ ] **Vision fallback** — Typhoon OCR (3B) for documents whose text layer is lossy or
-      unusable; flag the document as vision-derived in provenance
-- [ ] Evaluate [xberg](https://github.com/xberg-io/xberg) as the OCR orchestration layer
-      (fallback chains, confidence thresholds, `vlm` backend for Typhoon, TATR/SLANet
-      tables). ⚠️ **Do not use its `quality_score` as the trigger** — it returns 1.0 on the
-      SWU document. Iris's diacritic diagnostic drives the fallback
-- [ ] Thai-character-proportion check to catch vision language-bias (drift into English)
-- [ ] Re-run the gate after repair **and after vision extraction**; fail closed if it still
-      does not pass
+- [x] Thai combining-mark diagnostic — total rate and per-mark rate per 1,000 Thai
+      characters, against the 171.0 clean-document baseline
+- [x] Classifier: `clean` / `repairable` / `lossy` / `unusable`, with a human-readable
+      report — plus `repaired`, the state a document reaches after a successful repair
+- [x] **Repair table learned from the document, not hard-coded.** A substituted glyph is
+      whichever combining mark turns the word it sits in into a real Thai word; longest
+      match wins; votes aggregate per `(font, glyph)`; rounds iterate as density falls
+- [x] `ำ`-collapse detection, above a length threshold so narrow vocabulary is not
+      mistaken for damage
+- [x] Re-run the gate after repair; fail closed if it still does not pass
+- [x] `iris check <pdf>` — diagnosis, repair, and the re-run gate
+- [ ] Vision fallback via Typhoon OCR for the `lossy` path ⚠️ **blocked on GPU**
+- [ ] Thai-character-proportion check for the vision path's language-bias failure
+      *(deferred with the vision path)*
 
-**Evaluation:** character-level accuracy against a manually corrected 2-page sample from
-each document. Repair must not introduce new errors.
+**Measured on the two real documents:**
 
-**Deliverable:** `iris ingest --check <pdf>` prints a diagnosis; repaired text for SWU
-passes the gate; the KU excerpt passes via the vision path.
+| | verdict | mark rate | repair | after |
+|---|---|---|---|---|
+| SWU, 216 pages | `repairable` | 134.5 | **4,518 of 4,918 (92%)**, 13 rules learned | `repaired`, **162.9** |
+| KU, 28 pages | `lossy` — no `ำ` anywhere | 171.0 | — | vision path |
 
-> ⚠️ Validate the repair table against a **third** TQF document from a different producer
-> before treating it as general.
+Rules learned with no hard-coding, highest-frequency first: `2`→้ (1,329 votes, 79%),
+`=`→์ (798, 78%), `-`→้ Bold (121, 81%), `A`→่ Bold (106, 92%), `?`→็ (93, 100%),
+`‚`→ั (93, 88%), and seven more. Words a reader can verify recovered: `ข้อมูล`,
+`คอมพิวเตอร์`, `ผลการเรียนรู้`, `หน่วยกิต`, `เป็น`, `วิเคราะห์`.
+
+**Deliverable:** ✅ `iris check` diagnoses both documents correctly and routes each to the
+right path. 36 tests pass; ruff clean.
+
+**Found during the sprint.**
+
+1. **Per-mark rates are vocabulary-dependent and cannot drive the verdict.** A
+   computer-science curriculum uses karan far more than the KU document the baseline came
+   from, so `์` sitting below baseline may mean different content rather than lost marks.
+   The verdict now rests on the *total* rate and the *intrusion count*, both robust to
+   vocabulary; per-mark retention is reported to localise damage for a human, and decides
+   nothing. The first version of the gate had this wrong and called a successfully
+   repaired document `lossy`.
+2. **"No `ำ` means collapse" needs a length threshold.** `คอมพิวเตอร์ ซอฟต์แวร์
+   อิเล็กทรอนิกส์` legitimately contains none. The inference is statistical, not logical,
+   and now requires 5,000 Thai characters before it fires. A test caught this.
+3. **~400 intrusions remain unrepaired**, led by `.`×178 and `/`×69 — many of which are
+   probably legitimate punctuation inside Thai text rather than damage. The residue is
+   reported rather than forced.
+
+> ⚠️ Still to validate: the learned-table method against a **third** TQF document from a
+> different producer. The method generalises by construction — it learns from whatever
+> document it is given — but that claim is untested outside these two files.
 
 ---
 
@@ -145,6 +169,13 @@ documents — SWU (78 codes seen) and KU (67). Every course must be found.
       definitions, select those the course develops; Pydantic-constrained to valid IDs
 - [ ] Bilingual channel — link Thai and English descriptions independently where both
       exist; record agreement as a confidence signal
+- [ ] **Provider seam** — one provider-blind interface over a local OpenAI-compatible
+      endpoint and Cloudflare Workers AI. Port the quota handling from Argus
+      `server/llm.ts`: a `code:4006` 429 is quota exhaustion and must never be retried;
+      other retryable statuses get backoff honouring `Retry-After`
+- [ ] **Pin the provider per run.** No mid-run fallback — quota exhaustion fails the run
+      and requeues on the other provider from the start. Record provider + model on
+      `analysis_run`
 - [ ] Record evidence span and retrieval rank for every accepted link
 - [ ] **Out-of-vocabulary as an explicit output**, not a similarity threshold — record
       skills a course appears to develop that the standard does not contain
@@ -203,6 +234,9 @@ second half is nearly free: the annotators are already performing the reviewer's
       ~70 % of links on that score
 - [ ] Record which confidence components carry the signal — retrieval rank, Thai/English
       channel agreement, level-source agreement
+- [ ] ⚠️ **Evaluate the provider that will serve production.** If Workers AI is primary,
+      the gate measures the Workers AI model. Measuring local and shipping Workers AI would
+      invalidate every number the paper reports
 
 **Gate — both halves:**
 1. Linking quality is documented, reproducible, and adequate for the intended claims
