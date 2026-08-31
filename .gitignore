@@ -51,3 +51,9 @@ Thumbs.db
 # ── Rust build artefacts ──────────────────────────────────────────────────────
 target/
 **/target/
+
+# Annotator workbooks — regenerable from the programme, the snapshot and the seed
+# (`iris sample <pdf> -o …`), so the seed and fingerprint are the record, not 130 KB
+# of derived CSV. The *completed* workbooks are a different artefact and belong with
+# the Sprint 4 evaluation results.
+04-implementation/annotation/workbooks/

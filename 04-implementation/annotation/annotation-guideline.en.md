@@ -247,7 +247,16 @@ to design the review screen in Sprint 9.
 
 ## 13. Scope of the work
 
-- **~50 courses**, stratified: core / elective / general education
+- **50 courses**, stratified: **core 16 · elective 28 · general education 6**.
+  You will receive `sample-A.csv` or `sample-B.csv` with the code, title, category,
+  source page and full course description already filled in. The columns you complete
+  are **skill · evidence span · level · out-of-vocabulary · notes**, and one course may
+  take several rows (rule 3).
+- ⚠️ **A `category` cell marked (โดยการคัดออก)** means the document does not state that
+  course's category directly — it is inferred from the course's absence from the
+  required categories. It does not change your task, but it marks a lower-confidence
+  label.
+- Both annotators receive **the same 50 courses**; the files differ only by name.
 - **2 annotators**, working the same set independently
 - First round roughly **3–4 hours** each · second round roughly **1.5–2 hours**
 - After both submit: a joint adjudication round of about 1 hour

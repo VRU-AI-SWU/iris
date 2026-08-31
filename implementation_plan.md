@@ -184,8 +184,14 @@ right path. 36 tests pass; ruff clean.
 - [x] `iris map <pdf>`
 - [x] **Parse per-course CLOs** and the leading verb that carries their cognitive demand
 - [x] `iris clo <pdf>`
+- [x] **Read the programme structure** — which category the document files each course
+      under (`iris structure`). Anchored on the three regulated divisions
+      (`หมวดวิชาศึกษาทั่วไป / เฉพาะ / เลือกเสรี`); the subdivisions beneath them are *not*
+      regulated and are read from whatever the document writes
 - [ ] Recover the ~30% of PSU courses whose descriptions are not being found
 - [ ] Extend matrix extraction to CMU and PSU (row labels are not course codes there)
+- [ ] Structure extraction returns nothing on KU (28-page excerpt, no structure section)
+      and PSU; SWU, SU and CMU work
 
 **Measured across the corpus — 350 courses with real Thai descriptions:**
 
@@ -329,11 +335,18 @@ second half is nearly free: the annotators are already performing the reviewer's
 
 ### 4a — Model quality
 
-- [ ] Stratified annotation sample: ~50 courses across core / elective / general education.
-      ⚠️ **Blocked on a Sprint 2 gap:** SWU yields 73 courses with descriptions (62 `คพ`,
-      11 general education), but nothing yet extracts *which major courses are core and
-      which are elective* — that lives in the programme-structure section, not the course
-      catalogue. Either extract it or have the domain expert mark it once by hand
+- [x] Stratified annotation sample: ~50 courses across core / elective / general education —
+      `iris sample <pdf> -o <dir>`, **seeded and reproducible** (seed 20260831, fingerprint
+      `a7617f16fde6`), because a gold standard that shifts between runs cannot anchor a
+      published number. Drawn: **core 16 · elective 28 · general education 6**
+      ⚠️ **Two limitations to carry into the results, not to fix by padding.**
+      *General education is under-powered* — the programme describes only 6 such courses
+      against a floor of 8, so any per-stratum figure for it is weak and must say so.
+      *27 of 73 courses take their category by elimination* — the listing names 46, and
+      absence from the required categories is only evidence because the credit check
+      confirms those categories are exhaustive (`2.1 วิชาแกน` claims 12 credits and yields
+      exactly 12). Those courses are flagged in the workbook so an annotator sees which
+      label was read and which was inferred
 - [x] Annotation guideline written from the standard's own skill definitions —
       [`04-implementation/annotation/annotation-guideline.md`](04-implementation/annotation/annotation-guideline.md),
       in Thai, for departmental faculty.

@@ -244,6 +244,56 @@ def _cmd_link(args: argparse.Namespace) -> int:
     return 1 if report.notes else 0
 
 
+def _cmd_sample(args: argparse.Namespace) -> int:
+    """Draw the Sprint 4 annotation sample and write one workbook per annotator."""
+    from iris.annotation import draw_sample, write_workbook
+    from iris.annotation.sample import fingerprint
+
+    courses, report = draw_sample(args.pdf, target=args.size, seed=args.seed)
+    print(report.summary())
+    for note in report.notes:
+        print(f"⚠️  {note}")
+    print(f"\nsample fingerprint {fingerprint(courses)} — record it with any result")
+
+    if args.out:
+        out = pathlib.Path(args.out)
+        names = args.annotator or ["A", "B"]
+        for name in names:
+            path = write_workbook(courses, report, out / f"sample-{name}.csv", annotator=name)
+            print(f"  wrote {path}")
+        return 0
+
+    for course in courses:
+        flag = "*" if course.by_elimination else " "
+        print(f"  {flag}{course.stratum:18} {course.code:9} {course.title_th[:44]}")
+    print("\n  * category inferred by elimination, not read from the listing")
+    return 0
+
+
+def _cmd_structure(args: argparse.Namespace) -> int:
+    """Read the programme structure — which category each course sits in."""
+    from iris.ingest.structure import extract_structure
+
+    placed, report = extract_structure(args.pdf)
+    print(f"{args.pdf}\n{report.summary()}\n")
+    for category in report.categories:
+        print(f"  {category}")
+    checks = report.credit_check()
+    if checks:
+        print("\ncredit check — the document's own claim against what was read:")
+        print("\n".join(checks))
+    if args.verbose:
+        from collections import defaultdict
+
+        grouped = defaultdict(list)
+        for code, category in sorted(placed.items()):
+            grouped[f"{category.number} {category.label}"].append(code)
+        print()
+        for label, codes in sorted(grouped.items()):
+            print(f"  {label:30} ({len(codes):2}) {' '.join(codes)}")
+    return 0 if report.categories else 1
+
+
 def _cmd_db_init(_: argparse.Namespace) -> int:
     from iris.db import create_all
 
@@ -305,6 +355,23 @@ def main(argv: list[str] | None = None) -> int:
     p_link.add_argument("-n", "--limit", type=int, help="stop after this many courses")
     p_link.add_argument("-v", "--verbose", action="store_true", help="show evidence spans")
     p_link.set_defaults(func=_cmd_link)
+
+    p_struct = sub.add_parser(
+        "structure", help="read the programme structure (core / elective / general education)"
+    )
+    p_struct.add_argument("pdf")
+    p_struct.add_argument("-v", "--verbose", action="store_true", help="list courses per category")
+    p_struct.set_defaults(func=_cmd_structure)
+
+    p_sample = sub.add_parser("sample", help="draw the Sprint 4 stratified annotation sample")
+    p_sample.add_argument("pdf")
+    p_sample.add_argument("-n", "--size", type=int, default=50, help="target sample size")
+    p_sample.add_argument("--seed", type=int, default=20260831, help="recorded with the sample")
+    p_sample.add_argument("-o", "--out", help="directory to write annotator workbooks into")
+    p_sample.add_argument(
+        "-a", "--annotator", action="append", help="annotator name; repeat for each (default A, B)"
+    )
+    p_sample.set_defaults(func=_cmd_sample)
 
     p_db = sub.add_parser("db", help="database operations")
     db_sub = p_db.add_subparsers(dest="db_command", required=True)

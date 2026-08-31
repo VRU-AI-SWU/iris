@@ -671,6 +671,34 @@ levels an unreviewed mapping is not evidence.**
 | **Confidence calibration** | Reliability of the confidence score used for bulk-accept | Calibrated before a screen relies on it |
 | End-to-end | Runtime on a full 216-page document | Fits an interactive workflow |
 
+### The sample the gate is measured on
+
+Drawn 2026-08-31 from SWU, seeded and reproducible — `iris sample`, seed 20260831,
+fingerprint `a7617f16fde6`. A gold standard that changes between runs cannot anchor a
+published number, so the draw is deterministic and the seed travels with the result.
+
+| Stratum | In the programme | Sampled |
+|---|---|---|
+| core (`วิชาแกน` + `วิชาบังคับ`) | 24 | **16** |
+| elective (`วิชาเลือก`, `วิชาโท`, `เลือกเสรี`) | 43 | **28** |
+| general education | 6 | **6** |
+
+The strata come from the programme's own numbered course listing, read by
+`iris structure`. Two limitations belong in the results rather than in a fix:
+
+- ⚠️ **General education is under-powered.** SWU describes six such courses against a
+  floor of eight, so all six are taken and any per-stratum figure for general
+  education is weak. This matters because the design reports the *zero-link rate* and
+  general education is where zero-link is expected — the figure will be directional,
+  not precise. Padding the stratum from elsewhere would be worse: it would state a
+  precision the sample does not have.
+- ⚠️ **27 of 73 courses take their category by elimination.** The listing names 46. The
+  remaining 27 are called elective because they are absent from the required
+  categories, and that absence is only evidence because the document validates it:
+  `2.1 วิชาแกน` claims 12 credits and the reader finds exactly 12, so the required
+  categories are listed exhaustively. Every such course is flagged in the annotator
+  workbook, so a reviewer can see which label was read and which was inferred.
+
 ⚠️ **The evaluation is single-programme in practice.** Only the SWU document is complete;
 the KU file is an excerpt without a curriculum mapping table. A ~50-course stratified
 sample drawn from one programme at one university supports claims about *the method*, not

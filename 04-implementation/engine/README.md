@@ -20,6 +20,8 @@ iris snapshot -v            # report on the pinned national standard
 iris check <มคอ.2.pdf> -v   # Thai text-layer integrity gate + glyph repair
 iris courses <มคอ.2.pdf>    # provenance-carrying course list
 iris link <มคอ.2.pdf> -v    # course → skill links with verified evidence
+iris structure <มคอ.2.pdf>  # core / elective / general education, per course
+iris sample <มคอ.2.pdf> -o annotation/  # the seeded Sprint 4 annotation sample
 pytest                      # 134 tests
 uvicorn iris.api.main:app --reload
 curl localhost:8000/health
@@ -41,6 +43,7 @@ iris/
 │   ├── courses.py     anchors on the credit spec; learns each document's code shape
 │   ├── curriculum_map.py  reads ● ○ positionally, classified by rendered ink
 │   └── clo.py         per-course learning outcomes and their cognitive-demand verbs
+├── annotation/        the Sprint 4 sample: seeded draw, annotator workbooks
 ├── link/              retrieval and adjudication
 │   ├── retrieval.py   BM25 over three surface forms + a consonant-skeleton channel
 │   ├── provider.py    one provider-blind interface; quota exhaustion is not a retry
