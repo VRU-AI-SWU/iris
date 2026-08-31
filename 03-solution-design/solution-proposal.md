@@ -1,5 +1,8 @@
 # Solution Proposal — Iris (Curriculum Skill Alignment)
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](solution-proposal.th.md)
+
 > Rewritten 2026-08-27 after the pivot to the national Skill Mapping standard.
 > Supersedes the 2026-04-30 proposal, which assumed Iris would build its own skill
 > vocabulary and scrape its own labour-market data. Both assumptions are now obsolete.
