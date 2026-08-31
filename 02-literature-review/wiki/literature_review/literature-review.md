@@ -1,5 +1,8 @@
 # Literature Review — Iris: Skill Gap Analysis for Thai Curricula
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](literature-review.th.md)
+
 > Narrative synthesis of the 23 papers in `wiki/papers/`, organised around the
 > project's 13 research questions (`wiki/questions/`). Inline citations are
 > `(Author Year)` hyperlinked to their paper note; full entries are in the
