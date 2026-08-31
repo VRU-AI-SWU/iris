@@ -1,5 +1,8 @@
 # Iris — Phase 4 Implementation Plan
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](implementation_plan.th.md)
+
 > Rewritten 2026-08-27. Supersedes the 2026-04-30 plan, whose sprints were built around
 > job-board scrapers and vocabulary clustering — neither of which exists in the current
 > design. Aligned with [`solution-proposal.md`](03-solution-design/solution-proposal.md)
@@ -526,9 +529,10 @@ from Sprint 5 onward begins before the Sprint 4 gate passes.**
 | Full KU มคอ.2 (current file is an excerpt) | KU | Sprint 5 evaluation breadth |
 | Provenance of the demand corpus — Thai or international, window, whether `N` is cumulative | สป.อว. / KMITL | Methods section wording |
 | Whether the ~100-skill cap is a display or data limit | สป.อว. / KMITL | Strength of gap claims |
-| A third TQF from a different PDF producer | any Thai university | Generality of the glyph repair table |
-| VRAM available on `gpu-linux-server` | — | Model selection in Sprint 0 |
-| Second annotator | department | Sprint 4 gate |
+| ~~A third TQF from a different PDF producer~~ | — | ✅ **Resolved Sprint 1** — five universities, five producers, three unrelated damage alphabets |
+| ~~VRAM available on `gpu-linux-server`~~ | — | ✅ **Resolved Sprint 3** — `iris-adjudicator` at 6.6 GB, sized for the contended case |
+| **Second annotator** | department | **Sprint 4 gate — the critical path.** Scheduling two faculty members is the longest-lead item and should start now, in parallel with Sprint 3's remainder, not after it |
+| **Core-vs-elective classification** for the stratified sample | department, or a Sprint 2 extension | Sprint 4 sample. SWU yields 73 courses with descriptions, but nothing yet extracts which major courses are core and which are elective |
 
 ---
 
