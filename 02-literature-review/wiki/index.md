@@ -1,5 +1,8 @@
 # Literature Review Wiki — Index · Iris (Curriculum Skill Alignment)
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](index.th.md)
+
 Knowledge graph for the Iris project: expressing a Thai TQF (มคอ.2) curriculum in the
 vocabulary of the **national Thailand Skill Mapping standard** (สป.อว. / KMITL), and
 measuring level-aware alignment against the skill demand that standard publishes.
