@@ -1,5 +1,8 @@
 # Iris — Technology Stack
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](tech_stack.th.md)
+
 > Rewritten 2026-08-27 for the national-standard pivot. The previous stack
 > (Rust/Axum + Apalis + HDBSCAN sidecar, or before that FastAPI + Celery + JSON files)
 > was built around scraping job boards and clustering an emergent skill vocabulary.
@@ -103,7 +106,7 @@ other provider from the start. `analysis_run` records provider, model and snapsh
 |---|---|
 | GPU | **NVIDIA GeForce RTX 3090, 24 GB** · driver 580.173.02 |
 | VRAM free at measurement | **15.4 GB** — ~9 GB held by something other than Ollama |
-| Ollama | running as a service, **no models pulled** |
+| Ollama | running as a service; `iris-adjudicator` and `llama3.1-typhoon2-8b` pulled 2026-08-31 |
 | Disk free | 193 GB |
 | Python | 3.12.3 — engine verified against it (23 tests pass) |
 
@@ -124,6 +127,10 @@ unpredictably whenever another project starts a run.
 
 Mitigations, all cheap:
 
+- **Size the context, not just the model.** Measured 2026-08-31, the *same* 8B model holds
+  **10.0 GB at Ollama's default 32,768 context and 6.6 GB at 8,192** — and Iris's prompt is
+  ~2,650 tokens. Context, not parameter count, dominates residency, and the 3.4 GB saved is
+  the difference between coexisting with another project's training and queueing behind it.
 - **Set `OLLAMA_KEEP_ALIVE` explicitly.** It is currently unset, so Ollama's 5-minute
   default applies. That default happens to be the right behaviour under contention —
   models release VRAM between runs — but it should be a decision, not an accident.
@@ -132,8 +139,22 @@ Mitigations, all cheap:
 - **Ingestion needs no GPU.** Sprints 1–2 — the integrity gate, glyph repair, PageIndex
   navigation and section extraction — are CPU work and proceed while the card is busy.
 
-> Model choice is decided at the **Sprint 4 gate on measured linking quality**, not here.
-> Sprint 0's job is to select *candidates that fit* and confirm they can be served.
+### Model — settled 2026-08-31
+
+**`iris-adjudicator`** — `qwen3:8b` re-registered through a Modelfile with `num_ctx 8192`
+and `temperature 0`. Chosen on measured linking behaviour against `llama3.1-typhoon2-8b`,
+not on size. Resident 6.6 GB, ~4.2 s per course.
+
+The context is set server-side rather than per request for two reasons: the
+OpenAI-compatible API carries no `num_ctx`, and the engine must keep speaking it so dev
+and production still differ only by `MODEL_SERVER_URL`.
+
+🔴 **Reasoning models must be told not to reason.** `qwen3` spends its budget in a
+`reasoning` field the OpenAI response shape does not return as content, so an answer
+arrives as an **empty string** with `finish_reason: length`. `reasoning_effort: "none"`
+fixes it; `think: false` and `chat_template_kwargs.enable_thinking` are silently ignored by
+Ollama. The engine treats a truncated completion as a **failure**, never as a zero-link
+course.
 
 ---
 
@@ -189,6 +210,7 @@ iris/
 │   └── data-feasibility.md
 ├── 04-implementation/
 │   ├── engine/                 Python — ingestion, linking, analysis, API
+│   ├── annotation/             annotator guideline for the Sprint 4 gate
 │   └── web/                    Astro — public site + gated app
 ├── 05-reports/
 └── data/skillmapping/          pinned national standard snapshots
@@ -202,8 +224,10 @@ iris/
 # Model server
 MODEL_SERVER_URL=http://localhost:1234/v1     # LM Studio (dev)
 # MODEL_SERVER_URL=http://ollama:11434/v1     # Ollama (production)
-EXTRACTION_MODEL=<pending VRAM check>
-EMBEDDING_MODEL=<pending VRAM check>
+IRIS_MODEL=iris-adjudicator                   # qwen3:8b @ num_ctx 8192
+IRIS_REASONING_EFFORT=none                    # required for reasoning models
+IRIS_PROVIDER=local                           # or workers-ai; pinned per run
+EMBEDDING_MODEL=<pending — dense retrieval lands with the Sprint 4 ablations>
 
 # Database
 DATABASE_URL=postgresql://iris:...@localhost:5432/iris
