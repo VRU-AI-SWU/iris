@@ -318,6 +318,26 @@ adjudicated by a local LLM against the candidates' definitions.
   Thai-only in its course descriptions (English appears in titles) and is the *severe*
   case. The channel is therefore absent from the document that would benefit most from
   it. Coverage must be reported per document, and no design decision may assume it.
+- **The model, and the two things measuring it taught us (2026-08-31).**
+  `iris-adjudicator` — `qwen3:8b` re-registered with `num_ctx 8192` and `temperature 0`.
+
+  ⚠️ **Context size, not parameter count, decides whether Iris fits on a shared GPU.**
+  Measured residency for the *same* 8B model: **32,768 ctx → 10.0 GB · 16,384 → 7.8 GB ·
+  8,192 → 6.6 GB · 4,096 → 6.0 GB.** Iris's prompt is ~2,650 tokens, so 8,192 is
+  comfortable and saves 3.4 GB against Ollama's default — the margin that lets a run
+  proceed while another project holds 8.3 GB for cross-validation. It is set server-side
+  in a Modelfile rather than per request, because the OpenAI-compatible API carries no
+  `num_ctx` and the engine must keep speaking it.
+
+  🔴 **A reasoning model returns an empty answer, not a reasoned one.** `qwen3` spends its
+  budget in a `reasoning` field that the OpenAI response shape does not return as content;
+  all six development courses came back as empty strings with `finish_reason: length`.
+  `reasoning_effort: "none"` fixes it — `think: false` and
+  `chat_template_kwargs.enable_thinking` are silently ignored by Ollama. **The engine
+  treats a truncated completion as a failure and never as a zero-link course**, because
+  the share of zero-link courses is a coverage statistic this design reports, and a model
+  that ran out of tokens must not contribute to it.
+
 - **Adjudication is multiple-choice, not open generation** — "which of these 30
   candidate skills does this course develop?" — which is materially easier for a small
   local model than free-form extraction, and produces output that is constrained to
@@ -397,6 +417,13 @@ of candidate context plus ~270 for the course description and ~300 of instructio
 **≈ 3,970 input tokens per course**, and **≈ 310 k input tokens per programme** of 78
 courses in one language, doubling where a bilingual channel exists. Output is a short
 structured object.
+
+**Measured 2026-08-31, and the estimate was ~50 % high.** Real prompts average
+**≈ 2,650 input tokens per course** (10,750 over four courses; 15,932 over six), because
+many skill definitions are far shorter than the median and some are absent. At **~4.2 s
+per course** on `iris-adjudicator`, a 78-course programme is **≈ 5–6 minutes and
+≈ 207 k input tokens** — comfortably inside the Workers AI free-tier arithmetic recorded
+above, with margin rather than at its edge.
 
 That is a modest load for a locally served model and is not the bottleneck. The
 document-side stages — PageIndex tree construction over 216 pages, and vision
@@ -566,6 +593,36 @@ this cannot be assumed: human–AI pairs frequently underperform the AI alone un
 automation bias. A gate that passes on model F1 would license building everything
 downstream on an untested assumption, and the screen itself would not be validated until
 Sprint 9 — after the entire design has been committed to it.
+
+### 🔴 What Sprint 3 proved the gate must guard against
+
+Sprint 3 built a 6-course development set to fix `k`. Used for recall that is exactly what
+it can do. Used for **precision it produced a number that was simply wrong**, and the way
+it failed is the specification for the annotation protocol.
+
+Scoring `iris-adjudicator` against those labels gave precision 23 %. Reading the source
+text showed the model was right and the labels were narrow: CP231's description says
+*โปรโตคอลการหาเส้นทางแบบสถิตและพลวัต* — static and dynamic routing protocols — and the model's
+`routing-protocols`, `communication-protocols` and `data-networks` were all correct
+against the text while absent from a gold set that held only `computer-networking`. CP251
+says *การออกแบบและการสร้างเว็บแอปพลิเคชัน*, and `web-application-design` was scored a false
+positive. This is precisely the single-gold trap
+[[zhang-2024-job-market-entity-linking]] reports.
+
+**Three requirements follow, and none of them is optional:**
+
+1. **Labels are derived exhaustively from the description text, not from the reviewer's
+   sense of what the course "is about".** A course names more skills than its title
+   suggests.
+2. **Labels are fixed before any model output is seen.** Widening a gold set after
+   reading predictions converts a measurement into a self-portrait.
+3. **Multiple correct links per course are permitted and scored as such** — which is also
+   why agreement is Krippendorff's α with MASI rather than κ.
+
+No precision figure may be reported before the gate. Sprint 3's recall figures stand;
+its precision figure is withdrawn.
+
+### The two halves
 
 The gate therefore has two halves. The second costs almost nothing, because the Sprint 4
 annotators are performing the reviewer's task already:

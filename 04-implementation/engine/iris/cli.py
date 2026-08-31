@@ -202,6 +202,48 @@ def _cmd_retrieve(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_link(args: argparse.Namespace) -> int:
+    """Link a whole programme: retrieve, adjudicate, report — one pinned provider."""
+    from iris.link import get_provider, link_programme
+    from iris.link.provider import OpenAICompatible, ProviderError
+
+    try:
+        provider = get_provider(args.provider)
+    except ProviderError as error:
+        print(f"provider unavailable: {error}")
+        return 2
+    if args.model and isinstance(provider, OpenAICompatible):
+        provider.model = args.model
+
+    ok, detail = provider.health()
+    print(f"provider {provider.name} · model {provider.model} · health {ok} ({detail})")
+    if not ok:
+        return 2
+
+    def show(result) -> None:
+        if result.failed:
+            print(f"\n  ! {result.course_code}  FAILED — {result.rejected[0]}")
+            return
+        head = f"\n  {result.course_code}"
+        print(
+            f"{head}  (no link — the vocabulary names nothing this course develops)"
+            if result.is_zero_link
+            else head
+        )
+        for link in result.links:
+            print(f"{link}")
+            if args.verbose and link.evidence:
+                print(f"        “{link.evidence[:70]}”")
+        if result.out_of_vocabulary:
+            print(f"      out-of-vocabulary: {', '.join(result.out_of_vocabulary[:4])}")
+
+    _, report = link_programme(args.pdf, provider, k=args.k, limit=args.limit, on_course=show)
+    print(f"\n{report.summary()}")
+    for note in report.notes:
+        print(f"⚠️  {note}")
+    return 1 if report.notes else 0
+
+
 def _cmd_db_init(_: argparse.Namespace) -> int:
     from iris.db import create_all
 
@@ -254,6 +296,15 @@ def main(argv: list[str] | None = None) -> int:
     p_retrieve.add_argument("-k", type=int, default=20, help="candidates per course")
     p_retrieve.add_argument("-n", "--limit", type=int, default=5, help="courses to show")
     p_retrieve.set_defaults(func=_cmd_retrieve)
+
+    p_link = sub.add_parser("link", help="link a programme to the national vocabulary")
+    p_link.add_argument("pdf", help="path to a มคอ.2 PDF")
+    p_link.add_argument("-p", "--provider", help="local | workers-ai (default: $IRIS_PROVIDER)")
+    p_link.add_argument("-m", "--model", help="override the model for this run")
+    p_link.add_argument("-k", type=int, default=30, help="candidates offered per course")
+    p_link.add_argument("-n", "--limit", type=int, help="stop after this many courses")
+    p_link.add_argument("-v", "--verbose", action="store_true", help="show evidence spans")
+    p_link.set_defaults(func=_cmd_link)
 
     p_db = sub.add_parser("db", help="database operations")
     db_sub = p_db.add_subparsers(dest="db_command", required=True)

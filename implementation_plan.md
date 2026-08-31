@@ -279,25 +279,33 @@ positions cannot be read from it.
       without the skeleton channel). `k = 30` carried forward
 - [ ] Embed skill titles + definitions once; hold as a 13 MB in-memory matrix
 - [ ] Hybrid candidate retrieval — add dense cosine to the measured lexical baseline
-- [ ] LLM adjudication: given a course description and ~30 candidate skills with their
-      definitions, select those the course develops; Pydantic-constrained to valid IDs
+- [x] LLM adjudication: given a course description and ~30 candidate skills with their
+      definitions, select those the course develops; JSON-schema-constrained, and a
+      selection outside the shortlist is rejected rather than repaired
 - [ ] Bilingual channel — link Thai and English descriptions independently where both
       exist; record agreement as a confidence signal
-- [ ] **Provider seam** — one provider-blind interface over a local OpenAI-compatible
+- [x] **Provider seam** — one provider-blind interface over a local OpenAI-compatible
       endpoint and Cloudflare Workers AI. Port the quota handling from Argus
       `server/llm.ts`: a `code:4006` 429 is quota exhaustion and must never be retried;
       other retryable statuses get backoff honouring `Retry-After`
-- [ ] **Pin the provider per run.** No mid-run fallback — quota exhaustion fails the run
+- [x] **Pin the provider per run.** No mid-run fallback — quota exhaustion fails the run
       and requeues on the other provider from the start. Record provider + model on
       `analysis_run`
-- [ ] Record evidence span and retrieval rank for every accepted link
+- [x] **Model selected on measurement:** `iris-adjudicator` (`qwen3:8b`, `num_ctx 8192`,
+      `temperature 0`) — 6.6 GB resident against 10.0 GB at Ollama's default context,
+      ~4.2 s per course. ⚠️ Reasoning must be disabled (`reasoning_effort: "none"`) or the
+      answer arrives empty; a truncated completion is a **failure**, never a zero-link
+- [x] Record evidence span and retrieval rank for every accepted link, and **verify the
+      span occurs in the course text** — folding Thai whitespace and combining marks, so
+      the damage Sprint 2 leaves unrepaired does not reject real provenance
 - [ ] **Out-of-vocabulary as an explicit output**, not a similarity threshold — record
       skills a course appears to develop that the standard does not contain.
       ⚠️ Decided **per skill after decomposition, never per course title**: measured
       2026-08-31, the vocabulary has no entry named *วิศวกรรมซอฟต์แวร์* but 46 `Software *`
       skills the course develops. See `q-out-of-vocabulary`
-- [ ] Synonym enhancement from the three surface forms per skill (Thai title, English
+- [x] Synonym enhancement from the three surface forms per skill (Thai title, English
       title, Thai definition)
+- [ ] Bilingual channel and the supervised ranking baseline — carried into Sprint 4
 
 **Evaluation:** retrieval recall@k on a small labelled set, to fix `k` before adjudication
 cost is spent. ✅ *Done for the lexical channel; re-run when the dense half lands.*
@@ -319,7 +327,12 @@ second half is nearly free: the annotators are already performing the reviewer's
 ### 4a — Model quality
 
 - [ ] Stratified annotation sample: ~50 courses across core / elective / general education
-- [ ] Annotation guideline written from the standard's own skill definitions
+- [ ] Annotation guideline written from the standard's own skill definitions.
+      🔴 **It must state the three rules Sprint 3's development set violated:** labels are
+      derived exhaustively from the *description text* (a course names more skills than its
+      title suggests); labels are fixed **before** any model output is seen; multiple
+      correct links per course are permitted. Scoring against a narrow single-gold set gave
+      a precision figure that reading the source text showed to be simply wrong
 - [ ] **Two annotators**, independently; **multiple correct links per course permitted**,
       since single-gold scoring understates performance
 - [ ] Agreement computed as **Krippendorff's α with the MASI distance** (Jaccard ×

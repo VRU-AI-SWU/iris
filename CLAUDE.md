@@ -133,9 +133,19 @@ commit. Finding evidence is not applying it — that lesson cost a full review r
   needs no GPU at all
 - Models served over an OpenAI-compatible endpoint; dev and production differ only by
   `MODEL_SERVER_URL`
-- Model selection is **pending a VRAM check** — decide on measured linking quality, not
-  model size. RAG makes adjudication a constrained selection task, which favours smaller
-  models more than open generation does
+- **Model settled 2026-08-31: `iris-adjudicator`** — `qwen3:8b` re-registered with
+  `num_ctx 8192`, `temperature 0`. Chosen on measured linking behaviour, not size.
+  ⚠️ **Context, not parameter count, dominates residency**: the same 8B model holds
+  **10.0 GB at Ollama's default 32,768 context and 6.6 GB at 8,192** — and Iris's prompt
+  is ~2,650 tokens. The 3.4 GB saved is the difference between coexisting with another
+  project's training and queueing behind it. Set server-side in a Modelfile, so the
+  engine keeps speaking plain OpenAI and dev/prod still differ only by `MODEL_SERVER_URL`
+- 🔴 **Reasoning models must be told not to reason.** `qwen3` spends its budget in a
+  `reasoning` field the OpenAI response shape does not return as content, so an answer
+  arrives as an **empty string** with `finish_reason: length`. Measured: all six
+  development courses came back empty. `reasoning_effort: "none"` fixes it (`think: false`
+  and `chat_template_kwargs.enable_thinking` are silently ignored by Ollama). The engine
+  treats a truncated completion as a **failure**, never as a zero-link course
 
 ## Open external dependencies
 
@@ -158,7 +168,7 @@ commit. Finding evidence is not applying it — that lesson cost a full review r
 | Test Engineer | Metric unit tests; reproducibility checks |
 | Domain Expert | Annotation, level validation, curriculum-committee fit |
 
-## Status (last updated 2026-08-28)
+## Status (last updated 2026-08-31)
 
 Phase 3 rewritten. National standard snapshot pinned
 (`data/skillmapping/2026-08-27/` — 138 digital careers, 4,376 skills, 2,043 with full
@@ -166,6 +176,20 @@ level detail). Feasibility measured on real SWU and KU documents: both text laye
 damaged, the damage is characterised and repairable, and the SWU document carries the
 curriculum mapping table that level inference depends on. Old implementation removed;
 `engine/` and `web/` are created in Sprint 0.
+
+**Sprints 1–3 built and measured.** Ingestion runs on five producers with no GPU.
+Linking runs end to end: `iris link <programme>` produces course → skill links with
+verified evidence spans. Lexical retrieval measured at **recall@10 75 %, @50 83 %** on a
+6-course development set; `k = 30` fixed. Adjudication runs on `iris-adjudicator` at
+6.6 GB, ~4 s per course.
+
+⚠️ **Precision is not yet measurable and must not be quoted.** The development set was
+hand-labelled by one annotator with deliberately narrow labels, and reading the source
+text showed the model right where the labels called it wrong — CP231's description names
+*โปรโตคอลการหาเส้นทางแบบสถิตและพลวัต*, which the gold set omitted. This is exactly the
+single-gold trap `zhang-2024-job-market-entity-linking` reports. Precision waits for the
+Sprint 4 gate: two annotators, multiple correct links permitted, labels derived
+exhaustively from the description **before** any model output is seen.
 
 **Design review 2026-08-28**, before Sprint 0. Caught that the primary metric as written
 was uncomputable — the demand side carries no required level — and replaced it with a
