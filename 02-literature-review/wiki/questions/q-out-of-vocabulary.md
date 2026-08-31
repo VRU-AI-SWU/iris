@@ -69,9 +69,43 @@ Two techniques transfer directly and are adopted:
    skills and check the linker declines to link courses that develop them. This produces
    out-of-vocabulary test cases with no extra annotation, and is added to the Sprint 4 gate.
 
+## Measured — Sprint 3, 2026-08-31
+
+An 18-topic probe of core Thai CS course subjects against the 4,376-skill vocabulary,
+asking two separate questions: does an entry carry this **title**, and does the phrase
+occur **anywhere** including definitions.
+
+**7 of 18 subjects have no entry titled for them.** But the reason splits in two, and the
+distinction changes the design:
+
+| Kind | Example | Titled | Anywhere | What it means |
+|---|---|---|---|---|
+| **Granularity mismatch** | วิศวกรรมซอฟต์แวร์ | ✗ | — | 46 `Software *` skills exist — `Requirements Analysis`, `Software Validation`, `Software Documentation`, `Software Quality Control`, `Software Project Management`. The subject is covered; it is just not *named* |
+| " | คอมไพเลอร์ | ✗ | ✓ (a definition) | Present as description, absent as an entry |
+| **Genuine absence** | คณิตศาสตร์ไม่ต่อเนื่อง | ✗ | ✗ | Nowhere in 4,376 entries |
+| " | สถาปัตยกรรมคอมพิวเตอร์ | ✗ | ✗ | Nowhere — despite 25 `Architecture` skills, all of them software or building |
+| " | สหกิจศึกษา | ✗ | ✗ | Nowhere; a curricular structure, not a skill |
+
+⚠️ **This corrects an earlier reading.** Sprint 3's first probe recorded *Software
+Engineering* and *Computer Architecture* as equally "zero entries". They are not
+equivalent: the vocabulary decomposes software engineering into its activities and omits
+computer architecture altogether. Reporting the first as out-of-vocabulary would be a
+false negative against a curriculum.
+
+**The design consequence — out-of-vocabulary is decided per skill, never per course.**
+A course whose *title* finds no entry may still develop five skills that are in the
+vocabulary. Iris must therefore run decomposition before declaring absence, which is
+exactly the mechanism [[luyen-2025-skill-decomposition-ontology]] describes and the
+reason the linker operates on the description text rather than the course name.
+
+The genuine residue is **theory and curricular structure** — discrete mathematics,
+computer architecture, cooperative education — i.e. the parts of a degree that no job
+advertisement describes, which is what this note predicted on principle and can now
+state on measurement.
+
 ## Remaining Uncertainty
-- What proportion of a Thai CS curriculum falls outside the vocabulary? *(measurable in
-  Sprint 3 — a headline number for the paper)*
-- Is the residue concentrated in general education, or does it reach into major courses?
-- Does the standard's digital industry cover academic CS adequately, or is it oriented
-  towards industry job roles?
+- The proportion above is a *subject-level* probe on one programme. The per-course
+  proportion, over the whole five-university corpus, needs the linker's adjudication
+  stage and lands at the Sprint 4 gate.
+- Whether the granularity mismatch is recoverable automatically, or needs the
+  decomposition step to be an explicit prompt instruction to the adjudicator.

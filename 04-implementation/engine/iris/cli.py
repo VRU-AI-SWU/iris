@@ -156,6 +156,52 @@ def _cmd_clo(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_retrieve(args: argparse.Namespace) -> int:
+    """Retrieve candidate skills for a course, or for free text.
+
+    This is the *first* of the two linking stages. It ranks; it does not decide.
+    A skill appearing here is a candidate an adjudicator must still weigh against
+    the course text, so nothing printed here is a link.
+    """
+    from iris.link import get_index
+
+    index = get_index()
+    if args.pdf:
+        from iris.ingest import (
+            Verdict,
+            diagnose,
+            extract,
+            extract_courses,
+            learn_and_repair,
+            normalise_chars,
+        )
+
+        document = extract(args.pdf)
+        chars, fonts, _ = normalise_chars(document.chars, document.fonts)
+        if diagnose("".join(chars)).verdict is Verdict.REPAIRABLE:
+            chars = list(learn_and_repair(chars, fonts).text)
+        courses, _ = extract_courses("".join(chars), document.page_of)
+        wanted = args.course.replace(" ", "") if args.course else None
+        targets = [
+            (c.code, f"{c.title_th or ''} {c.title_en or ''} {c.description_th}", c.page)
+            for c in courses
+            if c.description_th and (not wanted or c.code.replace(" ", "") == wanted)
+        ]
+        if not targets:
+            print(f"no course with a description matching {args.course or '(any)'}")
+            return 1
+        targets = targets[: args.limit]
+    else:
+        targets = [("query", args.text or "", None)]
+
+    for code, text, page in targets:
+        where = f" (p. {page})" if page else ""
+        print(f"\n{code}{where}  {' '.join(text.split())[:72]}")
+        for candidate in index.search(text, k=args.k):
+            print(f"  {candidate}")
+    return 0
+
+
 def _cmd_db_init(_: argparse.Namespace) -> int:
     from iris.db import create_all
 
@@ -198,6 +244,16 @@ def main(argv: list[str] | None = None) -> int:
     p_clo.add_argument("pdf")
     p_clo.add_argument("-n", "--limit", type=int, default=8)
     p_clo.set_defaults(func=_cmd_clo)
+
+    p_retrieve = sub.add_parser(
+        "retrieve", help="rank candidate skills for a course (stage 1 of linking)"
+    )
+    p_retrieve.add_argument("pdf", nargs="?", help="a มคอ.2 PDF; omit to rank free text")
+    p_retrieve.add_argument("-c", "--course", help="a single course code, e.g. คพ242")
+    p_retrieve.add_argument("-t", "--text", help="free text to rank, instead of a PDF")
+    p_retrieve.add_argument("-k", type=int, default=20, help="candidates per course")
+    p_retrieve.add_argument("-n", "--limit", type=int, default=5, help="courses to show")
+    p_retrieve.set_defaults(func=_cmd_retrieve)
 
     p_db = sub.add_parser("db", help="database operations")
     db_sub = p_db.add_subparsers(dest="db_command", required=True)

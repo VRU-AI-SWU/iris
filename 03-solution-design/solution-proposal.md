@@ -284,6 +284,31 @@ adjudicated by a local LLM against the candidates' definitions.
 - **Retrieval** combines dense similarity (embeddings of skill title + definition,
   held as a 13 MB in-memory matrix — exact cosine, no ANN index, no vector database)
   with lexical matching, which is essential for tool names and English terms.
+
+  **Built lexical-first, and measured — Sprint 3.** BM25 over three surface forms per
+  skill needs no model and therefore no GPU, so it gives a baseline before any inference
+  infrastructure exists. On a 6-course hand-labelled *development* set (⚠️ one annotator,
+  no agreement statistic — it fixes `k`, it is not evidence):
+
+  | | @10 | @20 | @30 | @50 |
+  |---|---|---|---|---|
+  | BM25, three surface forms | 67 % | 67 % | 75 % | 75 % |
+  | **+ consonant-skeleton channel** | **75 %** | 75 % | 75 % | **83 %** |
+
+  The gap from 100 % is the argument for the dense half, not a defect in the lexical one:
+  a course saying `การสื่อสารข้อมูล` and a skill titled `Network Architecture` share no
+  token. `k = 30` is carried forward, being where the lexical channel saturates.
+
+  **A third channel the design did not anticipate: consonant skeletons.** Sprint 2
+  deliberately left one class of damage unrepaired — a tone mark replaced by a *space* —
+  because rewriting it risks changing meaning (`ไม` silk against `ไม่` not). Measured
+  consequence: `คพ231 เครือข่ายคอมพิวเตอร์` retrieved *Storage Architecture, Rhinoceros,
+  Elementary Education*; hand-repaired, the same text retrieved *IT Networking, Computer
+  Network Operations, Network Architecture*. Residual damage does not degrade retrieval,
+  it destroys it. Indexing each Thai title *also* by its consonants — `เครือข่ายคอมพิวเตอร์`
+  and `เครือข ายคอมพิวเตอร=` both reduce to `ครอขยคอมพวตอร` — recovers the match without
+  touching the document. Measured collision cost: 7.2 % of the vocabulary shares a skeleton
+  with another entry, which is acceptable for a stage whose output an adjudicator filters.
 - **Bilingual channel, where the document provides one.** The vocabulary is fully
   bilingual, and some TQF documents give every course an English description. Where both
   exist, linking runs on each independently and agreement is recorded as a confidence
@@ -303,6 +328,21 @@ adjudicated by a local LLM against the candidates' definitions.
   theory, research method and ethics that no job advertisement describes; mapping those to
   the nearest labour-market skill would be confidently wrong. Modelling "none of these"
   as a first-class output beats similarity thresholding.
+
+  🔴 **It is decided per skill, never per course — measured Sprint 3.** Probing 18 core CS
+  subjects against the vocabulary, 7 have no entry carrying their title. But two different
+  things hide behind that number. *วิศวกรรมซอฟต์แวร์* has no entry, yet the vocabulary
+  holds 46 `Software *` skills — `Requirements Analysis`, `Software Validation`,
+  `Software Documentation`, `Software Quality Control` — that the course plainly develops:
+  the subject is covered, merely not *named*. *สถาปัตยกรรมคอมพิวเตอร์*, *คณิตศาสตร์ไม่ต่อเนื่อง*
+  and *สหกิจศึกษา* appear nowhere in the 4,376 entries at all, not even inside a definition.
+
+  Declaring absence from the course title would report the first kind as a curriculum gap
+  that does not exist. The linker therefore reads the **description**, decomposes, and
+  decides out-of-vocabulary on each candidate skill after decomposition — the mechanism
+  [[luyen-2025-skill-decomposition-ontology]] describes. The genuine residue is theory and
+  curricular structure, which is what `q-out-of-vocabulary` predicted on principle and can
+  now state on measurement.
 - **The model provider is a seam, not a hard-coded choice.** Embedding and adjudication
   run behind one provider-blind interface with two implementations: a local
   OpenAI-compatible endpoint on `gpu-linux-server`, and **Cloudflare Workers AI**. The

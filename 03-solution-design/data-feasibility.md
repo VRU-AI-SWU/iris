@@ -292,6 +292,32 @@ for those courses**. SWU's descriptions are Thai-only (English appears only in c
 titles), so this is a per-document opportunity, not a general solution. The linker
 should use both channels where available and agree between them as a confidence signal.
 
+### Finding D — the vocabulary names activities, not subjects *(measured 2026-08-31)*
+
+Probing 18 core Thai CS course subjects against the 4,376 entries, asking separately
+whether an entry carries the **title** and whether the phrase occurs **anywhere**
+(definitions included):
+
+| Subject | Titled | Anywhere | Reading |
+|---|---|---|---|
+| ระบบปฏิบัติการ · เครือข่ายคอมพิวเตอร์ · โครงสร้างข้อมูล · อัลกอริทึม · ฐานข้อมูล · ปัญญาประดิษฐ์ · การทดสอบซอฟต์แวร์ (11 of 18) | ✓ | ✓ | Direct |
+| วิศวกรรมซอฟต์แวร์ | ✗ | — | **Granularity mismatch** — 46 `Software *` entries exist |
+| วิศวกรรมความต้องการ | ✗ | ✓ | 11 `Requirement*` entries: `Requirements Analysis`, `Defining Requirements` |
+| คอมไพเลอร์ | ✗ | ✓ | Named inside a definition, absent as an entry |
+| สถาปัตยกรรมคอมพิวเตอร์ | ✗ | ✗ | **Genuine absence** — 25 `Architecture` entries, all software or building |
+| คณิตศาสตร์ไม่ต่อเนื่อง | ✗ | ✗ | Genuine absence |
+| สหกิจศึกษา | ✗ | ✗ | Genuine absence — a curricular structure, not a skill |
+
+The vocabulary was derived from labour-market data, and it shows: it enumerates what
+people **do** (`Software Documentation`, `Software Validation`) rather than what
+universities **teach** (`วิศวกรรมซอฟต์แวร์`). Composition by type — 2,911 hard skills,
+912 tools, 553 soft skills — says the same thing.
+
+**Two consequences.** First, a course is not out-of-vocabulary because its title is:
+linking must read the description and decompose. Second, the genuine residue is
+theory and curricular structure — precisely the part of a degree that distinguishes it
+from vocational training, so the residue must be reported rather than dropped.
+
 ---
 
 ## Consequences for the architecture
