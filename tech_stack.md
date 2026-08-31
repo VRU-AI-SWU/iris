@@ -108,9 +108,14 @@ other provider from the start. `analysis_run` records provider, model and snapsh
 | Python | 3.12.3 — engine verified against it (23 tests pass) |
 
 **Where the 9 GB goes** (measured 2026-08-28): a Prostate MRI training run holds
-**7,794 MiB** (`/opt/conda/bin/python`, PID 689325, expected to finish in ~2 days), and
-Xorg, Cinnamon, a browser, Steam and the terminal hold a further **~1,190 MiB permanently**.
-Nothing is stale or leaking.
+**7,794 MiB** (`/opt/conda/bin/python`), and Xorg, Cinnamon, a browser, Steam and the
+terminal hold a further **~1,190 MiB permanently**. Nothing is stale or leaking.
+
+⚠️ **The contention lasts days.** That project trains 5-fold cross-validation at ~30 hours
+per fold — roughly **150 hours for a full run**. Folds are launched one at a time
+deliberately, so the two projects can interleave; the dependable windows for anything that
+needs the whole card are therefore *between folds*, not "in a couple of days". Plan Iris's
+GPU work around that rather than waiting for it.
 
 ⚠️ **Plan for the contended case, not the free case.** This machine is shared with the
 lab's other projects, so ~15 GB is the figure an analysis must survive on; ~23 GB is what

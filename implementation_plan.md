@@ -61,10 +61,15 @@ the method — not to proceed and hope the UI distracts from it.
       to avoid competing for VRAM with the lab's other project. The decision itself belongs
       to the Sprint 4 gate regardless
 
-> ⚠️ **`gpu-linux-server` is shared.** Model residency is sized for the *contended* case
-> (~15 GB), not the free case (~23 GB), so an analysis does not fail unpredictably when
-> another project starts training. **Sprints 1 and 2 need no GPU**, so ingestion work is
-> unblocked by this.
+> ⚠️ **`gpu-linux-server` is shared, and the contention lasts days.** The lab's Prostate
+> MRI project trains 5-fold CV at ~30 h per fold, ~150 h for a full run, holding 7.8 GB
+> throughout. Folds are launched one at a time so the projects can interleave, so the
+> dependable windows for work needing the whole card are *between folds*.
+>
+> Model residency is sized for the *contended* case (~15 GB), not the free case (~23 GB).
+> **Sprints 1 and 2 need no GPU at all.** For Sprint 3, the Workers AI provider seam is the
+> answer rather than waiting — which is the case for building it early rather than
+> retrofitting it.
 
 **Deliverable:** ✅ `GET /health` returns 200 and reports snapshot provenance; the snapshot
 loads; 4,376 skills queryable; 12 seniority ladders computed.
