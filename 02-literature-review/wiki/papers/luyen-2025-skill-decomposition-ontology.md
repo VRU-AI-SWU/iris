@@ -9,6 +9,9 @@ relevance: medium
 questions: [q-implied-skills, q-level-inference, q-out-of-vocabulary, q-skill-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](luyen-2025-skill-decomposition-ontology.th.md)
+
 ## Research Question
 How can LLMs automatically decompose high-level skills into fine-grained sub-skills while maintaining structural alignment with expert ontologies?
 

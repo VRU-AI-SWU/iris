@@ -9,6 +9,9 @@ relevance: high
 questions: [q-skill-taxonomy, q-implied-skills]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](kavargyris-2025-escox-skill-extraction.th.md)
+
 ## Research Question
 How can LLMs and text embeddings be combined with the ESCO taxonomy to extract skills and occupations from unstructured job postings and general text, with a usable open-source tool for researchers and practitioners?
 

@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](temporal-drift.th.md)
+
 ## Definition
 **Temporal drift** is the decay of a skill-demand measurement as the labour market moves
 away from the moment it was taken. A snapshot describes the past; a curriculum designed

@@ -4,6 +4,9 @@ owner: Researcher + Domain Expert
 status: answered
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-thai-ontology.th.md)
+
 > ⚠️ **Answer reversed 2026-08-27.** This question was previously marked *answered* with
 > the conclusion "no Thai skill ontology exists at the needed granularity — a confirmed
 > gap". **That conclusion is now false.** It was correct when the literature review was

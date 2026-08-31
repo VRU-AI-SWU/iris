@@ -9,6 +9,9 @@ relevance: high
 questions: [q-prevalence-metrics, q-temporal-drift]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](macedo-2022-skills-demand-forecasting-temporal.th.md)
+
 ## Research Question
 How effectively can past skill demand patterns from online job advertisements predict future demand, and what temporal modelling approach produces the most reliable forecasts?
 

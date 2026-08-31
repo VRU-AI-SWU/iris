@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](job-posting-analysis.th.md)
+
 ## Definition
 **Job posting analysis** treats online job advertisements as a corpus for measuring
 labour demand: scrape or license postings, extract skills, aggregate by occupation and

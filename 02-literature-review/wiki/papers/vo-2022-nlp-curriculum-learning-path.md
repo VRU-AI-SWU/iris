@@ -9,6 +9,9 @@ relevance: high
 questions: [q-skill-taxonomy, q-implied-skills]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](vo-2022-nlp-curriculum-learning-path.th.md)
+
 ## Research Question
 How can a domain-specific NLP system extract CS/IT skills from course content and job postings to support course recommendation and curriculum design at tech universities?
 

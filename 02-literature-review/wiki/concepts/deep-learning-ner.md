@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](deep-learning-ner.th.md)
+
 ## Definition
 **Deep-learning NER** treats skill extraction as supervised sequence labelling: tag each
 token BIO-style as inside or outside a skill span, using a BiLSTM-CRF or a fine-tuned

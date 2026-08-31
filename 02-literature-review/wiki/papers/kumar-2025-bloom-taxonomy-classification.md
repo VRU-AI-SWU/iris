@@ -9,6 +9,9 @@ relevance: high
 questions: [q-level-inference, q-credit-weighting]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](kumar-2025-bloom-taxonomy-classification.th.md)
+
 ## Research Question
 Which model family best classifies learning outcomes and exam questions into Bloom's
 Taxonomy cognitive levels, given that labelled data in this domain is scarce?

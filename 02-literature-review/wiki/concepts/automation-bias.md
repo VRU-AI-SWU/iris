@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](automation-bias.th.md)
+
 ## Definition
 **Automation bias** is the tendency to accept an automated system's output without the
 scrutiny one would apply to the same claim from another source. Its practical consequence

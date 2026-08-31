@@ -9,6 +9,9 @@ relevance: medium
 questions: [q-thai-nlp]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](nonesung-2025-thaiocrbench.th.md)
+
 ## Research Question
 How well do current vision-language models actually understand **Thai text-rich documents**,
 and where specifically do they fail?

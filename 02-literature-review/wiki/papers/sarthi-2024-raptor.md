@@ -9,6 +9,9 @@ relevance: medium
 questions: [q-implied-skills, q-visualisation]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](sarthi-2024-raptor.th.md)
+
 ## Research Question
 Can retrieval over long documents be improved by building a **hierarchy of abstractions**
 rather than retrieving flat, contiguous chunks?

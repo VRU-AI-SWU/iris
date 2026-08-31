@@ -9,6 +9,9 @@ relevance: high
 questions: [q-visualisation, q-implied-skills, q-level-inference]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](chen-2025-interface-design-high-stakes.th.md)
+
 ## Research Question
 Which interface mechanisms — explanations and cognitive forcing functions — actually
 improve expert decision quality and trust calibration when a person reviews AI

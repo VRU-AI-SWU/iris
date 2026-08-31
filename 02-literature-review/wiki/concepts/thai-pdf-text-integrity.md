@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](thai-pdf-text-integrity.th.md)
+
 ## Definition
 Thai text extracted from PDFs is frequently corrupted in ways that are **invisible to a
 naive parser**: the extraction succeeds, returns plausible-looking Thai, and silently

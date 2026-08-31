@@ -4,6 +4,9 @@ owner: Data Scientist + Domain Expert
 status: open
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-credit-weighting.th.md)
+
 > ℹ️ **Still open, scope widened 2026-08-27.** Credit weighting remains an empirical
 > Phase 4 question with no literature behind it. It now interacts with level inference: a
 > course's contribution to a programme's profile depends on credits *and* on the level it

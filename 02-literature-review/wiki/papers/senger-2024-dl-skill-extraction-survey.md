@@ -9,6 +9,9 @@ relevance: high
 questions: [q-gap-direction, q-implied-skills, q-out-of-vocabulary, q-skill-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](senger-2024-dl-skill-extraction-survey.th.md)
+
 ## Research Question
 What deep learning methods exist for skill extraction and classification from job postings, and what terminology, dataset, and evaluation inconsistencies exist in the field?
 

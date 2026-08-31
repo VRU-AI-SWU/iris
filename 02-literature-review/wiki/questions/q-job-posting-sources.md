@@ -4,6 +4,9 @@ owner: Data Engineer
 status: closed
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-job-posting-sources.th.md)
+
 > ⛔ **Closed 2026-08-27 — no longer applicable.** Iris no longer collects job postings.
 > Labour-market demand comes from [[thailand-skill-mapping]], which publishes it already
 > aggregated per career. The scraper work this question justified was removed from the

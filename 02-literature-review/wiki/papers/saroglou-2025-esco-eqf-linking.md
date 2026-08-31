@@ -9,6 +9,9 @@ relevance: high
 questions: [q-skill-taxonomy, q-implied-skills, q-prevalence-metrics]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](saroglou-2025-esco-eqf-linking.th.md)
+
 ## Research Question
 Should job-vacancy text be linked to ESCO/EQF by **Sentence Linking** (classify a whole
 sentence to a taxonomy entry) or by **Entity Linking** (recognise a span first, then link

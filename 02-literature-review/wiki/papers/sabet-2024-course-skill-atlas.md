@@ -9,6 +9,9 @@ relevance: high
 questions: [q-gap-direction, q-level-inference, q-out-of-vocabulary, q-prevalence-metrics, q-sample-size, q-skill-taxonomy, q-temporal-drift]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](sabet-2024-course-skill-atlas.th.md)
+
 ## Research Question
 Which skills are being taught in U.S. higher education, and how does curriculum skill coverage align with — and drift from — evolving labour market demands?
 

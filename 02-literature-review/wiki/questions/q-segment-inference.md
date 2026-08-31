@@ -4,6 +4,9 @@ owner: AI Engineer + Data Scientist
 status: closed
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-segment-inference.th.md)
+
 > ⛔ **Closed 2026-08-27 — no longer applicable.** This question asked how reliably an
 > LLM could infer a job posting's industry segment. Iris no longer processes job postings;
 > careers arrive pre-classified in [[thailand-skill-mapping]].

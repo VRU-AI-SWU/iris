@@ -4,6 +4,9 @@ owner: Data Scientist + Researcher
 status: open
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-prevalence-metrics.th.md)
+
 ## Question
 The national standard publishes skill demand as **prevalence**, not as a probability
 distribution. Which alignment metrics are valid on it?

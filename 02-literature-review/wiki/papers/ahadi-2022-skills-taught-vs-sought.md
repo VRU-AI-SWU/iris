@@ -9,6 +9,9 @@ relevance: high
 questions: [q-gap-direction, q-level-inference, q-prevalence-metrics, q-skill-taxonomy, q-visualisation]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](ahadi-2022-skills-taught-vs-sought.th.md)
+
 ## Research Question
 How can skills analytics identify and visualise gaps between skills taught in university curricula and skills sought by the job market, at the course-to-occupation level?
 

@@ -4,6 +4,9 @@ owner: Researcher + Domain Expert
 status: open
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-out-of-vocabulary.th.md)
+
 ## Question
 What should happen to skills a course clearly develops that the **national vocabulary
 does not contain**?

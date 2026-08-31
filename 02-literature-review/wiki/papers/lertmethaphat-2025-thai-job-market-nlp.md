@@ -9,6 +9,9 @@ relevance: high
 questions: [q-thai-nlp, q-job-posting-sources, q-sample-size]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](lertmethaphat-2025-thai-job-market-nlp.th.md)
+
 ## Research Question
 How can NLP and ML automatically standardise high-frequency, bilingual Thai job posting data into ISCO-2008 occupational codes to enable construction of the Thai Beveridge curve and real-time labour market monitoring?
 

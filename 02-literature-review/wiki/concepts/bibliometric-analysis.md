@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](bibliometric-analysis.th.md)
+
 ## Definition
 **Bibliometric analysis** studies a research field quantitatively through its
 publications: co-citation and co-word networks, keyword clustering, publication and

@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](skill-gap-quantification.th.md)
+
 ## Definition
 Skill gap quantification is the process of measuring the difference between a supply-side skill distribution (what a programme teaches) and a demand-side skill distribution (what the market requires). Methods range from simple set difference (missing skills) to statistical measures like cosine similarity (overall alignment), KL divergence (asymmetric distributional difference), and chi-square tests (distributional equality testing).
 

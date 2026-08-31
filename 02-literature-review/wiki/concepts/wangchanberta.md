@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](wangchanberta.th.md)
+
 ## Definition
 WangchanBERTa is a RoBERTa-base transformer model pretrained on 78 GB of Thai text (social media, news, public datasets). It is the state-of-the-art Thai language model for sequence and token classification tasks, outperforming multilingual models (mBERT, XLM-R) on Thai NLP benchmarks. Developed by the AI Research Institute of Thailand (ARIT) team. Best variant: `wangchanberta-base-att-spm-uncased`.
 

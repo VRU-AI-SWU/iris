@@ -9,6 +9,9 @@ relevance: high
 questions: [q-level-inference, q-implied-skills, q-out-of-vocabulary, q-visualisation]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](le-2026-competency-tagging-evidence.th.md)
+
 ## Research Question
 How can learning resources be aligned to a competency framework **automatically but
 auditably** — so that a human can see why each competency was assigned?

@@ -4,6 +4,9 @@ owner: Data Engineer
 status: closed
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-registry-lookup.th.md)
+
 > ⛔ **Closed 2026-08-27 — no longer applicable.** This question concerned looking up
 > Thai company registries (DBD/SET) to classify employers behind job postings. Iris no
 > longer processes job postings or employers.

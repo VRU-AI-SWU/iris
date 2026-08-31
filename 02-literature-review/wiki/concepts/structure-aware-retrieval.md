@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](structure-aware-retrieval.th.md)
+
 ## Definition
 **Structure-aware retrieval** indexes a long document by its organisation rather than as a
 flat sequence of chunks, so retrieval can operate at several levels of granularity. Two

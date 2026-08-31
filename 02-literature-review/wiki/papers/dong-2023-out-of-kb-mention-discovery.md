@@ -9,6 +9,9 @@ relevance: high
 questions: [q-out-of-vocabulary, q-skill-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](dong-2023-out-of-kb-mention-discovery.th.md)
+
 ## Research Question
 How can an entity-linking system recognise that a mention has **no corresponding entry**
 in the knowledge base, instead of forcing it onto the nearest available entity?

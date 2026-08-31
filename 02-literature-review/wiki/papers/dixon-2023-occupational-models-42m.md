@@ -9,6 +9,9 @@ relevance: high
 questions: [q-job-posting-sources, q-out-of-vocabulary, q-sample-size, q-skill-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](dixon-2023-occupational-models-42m.th.md)
+
 ## Research Question
 How can 42 million unstructured US job postings be structured into occupational codes and skill associations, and how can these models be made openly available for research reuse?
 

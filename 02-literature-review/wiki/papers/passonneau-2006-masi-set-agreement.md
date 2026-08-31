@@ -9,6 +9,9 @@ relevance: high
 questions: [q-implied-skills, q-level-inference, q-out-of-vocabulary]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](passonneau-2006-masi-set-agreement.th.md)
+
 ## Research Question
 How should inter-annotator agreement be measured when each annotator assigns a **set** of
 labels to an item, rather than choosing one category from a fixed list?

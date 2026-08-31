@@ -9,6 +9,9 @@ relevance: high
 questions: [q-job-posting-sources, q-sample-size, q-segment-taxonomy, q-thai-ontology]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](tipsena-2025-predicting-thai-digital-workforce.th.md)
+
 ## Research Question
 Can machine learning models predict future workforce requirements across five segments of Thailand's digital industry using web-scraped job posting data from 2023–2024?
 

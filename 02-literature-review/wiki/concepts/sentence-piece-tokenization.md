@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](sentence-piece-tokenization.th.md)
+
 ## Definition
 **SentencePiece** learns a subword vocabulary directly from raw text, without requiring
 pre-tokenised words. Because it treats the input as a character stream — encoding

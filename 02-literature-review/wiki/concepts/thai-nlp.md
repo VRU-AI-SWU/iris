@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](thai-nlp.th.md)
+
 ## Definition
 Thai NLP refers to natural language processing techniques applied to the Thai language. Key challenges: no whitespace between words (word segmentation required), tonal language, complex orthography, code-switching with English (common in technical and job posting contexts), low-resource relative to European languages.
 

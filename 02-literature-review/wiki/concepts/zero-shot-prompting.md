@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](zero-shot-prompting.th.md)
+
 ## Definition
 **Zero-shot prompting** asks a language model to perform a task from an instruction alone,
 with no examples and no retrieved context. It is the cheapest way to apply an LLM to a new

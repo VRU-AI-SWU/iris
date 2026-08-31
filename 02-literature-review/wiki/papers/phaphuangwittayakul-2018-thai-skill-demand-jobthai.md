@@ -9,6 +9,9 @@ relevance: high
 questions: [q-job-posting-sources, q-sample-size, q-segment-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](phaphuangwittayakul-2018-thai-skill-demand-jobthai.th.md)
+
 ## Research Question
 What skills are in demand in the Thai labour market, and how can job posting data from Thai recruitment websites be analysed to surface these demands?
 

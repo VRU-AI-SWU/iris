@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](proficiency-levels.th.md)
+
 ## Definition
 A **proficiency level** grades how deeply a skill is held, rather than recording it as
 present or absent. Competency frameworks that define levels usually attach observable

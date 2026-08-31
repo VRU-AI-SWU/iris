@@ -9,6 +9,9 @@ relevance: medium
 questions: [q-gap-direction, q-segment-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](weerasombat-2025-thai-employer-skill-priorities.th.md)
+
 ## Research Question
 What skills do Thai employers prioritise, and what are the actual skill gaps between what employers demand and what Thai senior students (supply side) self-assess as their skill level?
 

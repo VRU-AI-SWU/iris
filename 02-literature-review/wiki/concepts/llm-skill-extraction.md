@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](llm-skill-extraction.th.md)
+
 ## Definition
 **LLM-based skill extraction** uses a general-purpose language model, prompted rather than
 trained, to identify skills in text. It displaced supervised

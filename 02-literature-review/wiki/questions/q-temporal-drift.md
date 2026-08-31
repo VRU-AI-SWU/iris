@@ -4,6 +4,9 @@ owner: Data Engineer + Data Scientist
 status: revised
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-temporal-drift.th.md)
+
 > ⚠️ **Reframed 2026-08-27.** This question was posed for a system taking a single
 > 12-month scrape, where drift was a threat to validity. The national standard publishes a
 > per-skill **`growth`** rate per career (10,815 values in the digital industry, range

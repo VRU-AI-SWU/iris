@@ -4,6 +4,9 @@ owner: AI Engineer + Data Scientist
 status: revised
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-implied-skills.th.md)
+
 > ⚠️ **Reframed 2026-08-27.** The question is unchanged in substance but better defined:
 > with a fixed vocabulary, "skills a course develops without naming them" becomes
 > **recall in [[skill-entity-linking]]** — a quantity that can be measured against expert

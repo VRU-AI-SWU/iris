@@ -4,6 +4,9 @@ owner: Data Scientist
 status: closed
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-sample-size.th.md)
+
 > ⛔ **Closed 2026-08-27 — no longer applicable.** Iris no longer collects its own
 > postings, so it does not choose a sample size. The national standard's per-career
 > posting counts `N` are given (range 203 – 6,291,725, median 25,740) and are not under

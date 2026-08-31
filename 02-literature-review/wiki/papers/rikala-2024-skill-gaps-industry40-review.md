@@ -9,6 +9,9 @@ relevance: medium
 questions: [q-gap-direction, q-prevalence-metrics, q-skill-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](rikala-2024-skill-gaps-industry40-review.th.md)
+
 ## Research Question
 What is the current state of understanding and measurement of skill gaps in the context of Industry 4.0, and what methodological approaches have been used?
 

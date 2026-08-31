@@ -9,6 +9,9 @@ relevance: medium
 questions: [q-thai-nlp]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](phatthiyaphaibun-2023-pythainlp.th.md)
+
 ## Research Question
 How can Thai NLP tools be made accessible, standardised, and reproducible for the research community through an open-source library?
 

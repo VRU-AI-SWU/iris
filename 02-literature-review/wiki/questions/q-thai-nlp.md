@@ -4,6 +4,9 @@ owner: AI Engineer + Data Scientist
 status: revised
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-thai-nlp.th.md)
+
 > ⚠️ **Extended 2026-08-27.** The answer below still holds for *processing* Thai text.
 > It assumed, as the Thai NLP literature generally does, that the input text is correct.
 >

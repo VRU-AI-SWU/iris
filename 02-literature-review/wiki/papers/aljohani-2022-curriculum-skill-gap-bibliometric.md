@@ -9,6 +9,9 @@ relevance: medium
 questions: [q-gap-direction, q-curriculum-analytics]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](aljohani-2022-curriculum-skill-gap-bibliometric.th.md)
+
 ## Research Question
 What are the dominant research themes, key contributors, and intellectual structure of the literature on curriculum alignment and skill gap between higher education and the job market (2010–2021)?
 

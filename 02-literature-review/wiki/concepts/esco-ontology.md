@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](esco-ontology.th.md)
+
 ## Definition
 ESCO (European Skills, Competences, Qualifications and Occupations) is a multilingual classification system developed by the European Commission. It contains ~13,890 skills/competences and ~3,008 occupations with relationships between them, available in 27 languages. It is the most widely used skill taxonomy in the NLP/labour market literature.
 

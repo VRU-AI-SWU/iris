@@ -4,6 +4,9 @@ owner: UX/UI Designer + Domain Expert
 status: revised
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-visualisation.th.md)
+
 > ⚠️ **Extended 2026-08-27.** The heatmap remains the primary format and the validation
 > behind it ([[ahadi-2022-skills-taught-vs-sought]], [[hilliger-2022-curriculum-analytics-tool]])
 > still stands. Two additions:

@@ -9,6 +9,9 @@ relevance: high
 questions: [q-level-inference, q-visualisation]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](hilliger-2022-curriculum-analytics-tool.th.md)
+
 ## Research Question
 How can a curriculum analytics (CA) tool be designed to support continuous curriculum improvement in higher education, and what lessons can be learned from its deployment?
 

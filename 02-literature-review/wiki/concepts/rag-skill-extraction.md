@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](rag-skill-extraction.th.md)
+
 ## Definition
 Retrieval-Augmented Generation (RAG) applied to skill extraction: rather than asking an LLM to extract skills from text in zero-shot, RAG first retrieves relevant skill definitions from a knowledge base (e.g. a skill taxonomy or prior extracted skills), then prompts the LLM to extract and normalise skills in context of the retrieved examples. This grounds the extraction in an existing skill vocabulary and reduces hallucination.
 

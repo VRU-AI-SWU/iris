@@ -4,6 +4,9 @@ owner: Data Scientist + Product Manager
 status: revised
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-gap-direction.th.md)
+
 > ⚠️ **Revised 2026-08-27.** The working answer below assumed both sides of the
 > comparison were probability distributions. They are not: the national standard publishes
 > **prevalence** — percentages across a career sum to well over 100 — and the demand vector

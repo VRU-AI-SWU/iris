@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](inter-annotator-agreement.th.md)
+
 ## Definition
 **Inter-annotator agreement (IAA)** measures how consistently independent human annotators
 apply an annotation scheme. It is the evidence that a gold standard is a property of the

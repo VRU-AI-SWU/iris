@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](skill-extraction.th.md)
+
 ## Definition
 **Skill extraction** is the task of identifying skill mentions in free text — job
 postings, syllabi, CVs — and returning them as strings. It is the *open-vocabulary*

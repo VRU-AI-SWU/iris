@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](thai-job-market.th.md)
+
 ## Definition
 The **Thai labour market** context for computing graduates: which roles exist, what
 employers ask for, and how that is documented in Thai-language sources.

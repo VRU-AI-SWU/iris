@@ -9,6 +9,9 @@ relevance: low
 questions: [q-implied-skills, q-skill-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](herandi-2024-skill-llm.th.md)
+
 ## Research Question
 Does fine-tuning a general-purpose LLM for skill extraction outperform the NER-based
 approaches that dominate the field?

@@ -4,6 +4,9 @@ owner: Researcher + AI Engineer + Domain Expert
 status: open
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-level-inference.th.md)
+
 ## Question
 How should a course's **proficiency level** for a linked skill be inferred from a TQF
 (มคอ.2) document, and how reliable is each available signal?

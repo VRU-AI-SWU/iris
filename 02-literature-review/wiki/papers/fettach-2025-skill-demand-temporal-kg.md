@@ -9,6 +9,9 @@ relevance: medium
 questions: [q-temporal-drift]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](fettach-2025-skill-demand-temporal-kg.th.md)
+
 ## Research Question
 Can temporal knowledge graph (TKG) embeddings forecast future skill demand for IT occupations more effectively than static approaches?
 

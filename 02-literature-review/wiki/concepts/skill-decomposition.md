@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](skill-decomposition.th.md)
+
 ## Definition
 **Skill decomposition** breaks a coarse skill statement into finer constituent skills, to
 resolve the **granularity mismatch** between how text names a capability and how a

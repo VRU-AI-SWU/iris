@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](few-shot-prompting.th.md)
+
 ## Definition
 **Few-shot prompting** supplies worked examples in the prompt. **Dynamic few-shot**
 selects those examples per input, retrieving the nearest labelled cases rather than using

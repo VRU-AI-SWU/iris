@@ -9,6 +9,9 @@ relevance: high
 questions: [q-thai-nlp, q-skill-taxonomy, q-implied-skills]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](arslan-2026-turkish-skill-extraction.th.md)
+
 ## Research Question
 How should skill extraction be done for a **morphologically complex, low-resource
 language** that has neither a skill taxonomy nor an annotated dataset — and does extraction

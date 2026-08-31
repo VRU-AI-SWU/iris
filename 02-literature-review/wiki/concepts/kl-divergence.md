@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](kl-divergence.th.md)
+
 ## Definition
 Kullback-Leibler (KL) divergence measures the asymmetric difference between two probability distributions P and Q. KL(P||Q) quantifies how much information is lost when Q is used to approximate P. In skill gap analysis, it measures how much the programme skill distribution diverges from the market demand distribution — and can also measure temporal drift between skill snapshots across time.
 

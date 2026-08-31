@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](thai-bert.th.md)
+
 ## Definition
 **Thai BERT** refers to transformer encoders pretrained on Thai text.
 [[wangchanberta]] ([[lowphansirikul-2021-wangchanberta]]) is the reference model: a

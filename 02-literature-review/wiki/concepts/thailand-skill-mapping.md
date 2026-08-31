@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](thailand-skill-mapping.th.md)
+
 ## Definition
 **Thailand Skill Mapping** is the national skill reference database published by the
 Office of the Permanent Secretary, Ministry of Higher Education, Science, Research and

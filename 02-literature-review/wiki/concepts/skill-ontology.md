@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](skill-ontology.th.md)
+
 ## Definition
 A **skill ontology** is a [[skill-taxonomy]] that also encodes *relations* between
 entries — broader/narrower, prerequisite, part-of, equivalence — so the structure can be

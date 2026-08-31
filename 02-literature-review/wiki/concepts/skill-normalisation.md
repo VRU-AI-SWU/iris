@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](skill-normalisation.th.md)
+
 ## Definition
 **Skill normalisation** maps the many surface forms a skill takes in text onto one
 canonical representation: `SQL`, `ภาษาเอสคิวแอล`, `Structured Query Language` and

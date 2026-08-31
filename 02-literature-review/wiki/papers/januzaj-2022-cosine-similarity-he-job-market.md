@@ -9,6 +9,9 @@ relevance: low
 questions: [q-gap-direction, q-prevalence-metrics]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](januzaj-2022-cosine-similarity-he-job-market.th.md)
+
 ## Research Question
 How can cosine similarity (with TF-IDF normalisation) be applied to compare textual documents representing higher education programme content and job market requirements?
 

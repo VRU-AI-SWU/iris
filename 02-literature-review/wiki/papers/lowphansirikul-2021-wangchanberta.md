@@ -9,6 +9,9 @@ relevance: high
 questions: [q-thai-nlp]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](lowphansirikul-2021-wangchanberta.th.md)
+
 ## Research Question
 Can a Thai-specific transformer language model — trained on a large, deduplicated Thai corpus — outperform multilingual alternatives (mBERT, XLM-R) on Thai NLP tasks?
 

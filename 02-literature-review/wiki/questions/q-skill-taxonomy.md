@@ -4,6 +4,9 @@ owner: Researcher + Domain Expert
 status: answered
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-skill-taxonomy.th.md)
+
 > ⚠️ **Answer replaced 2026-08-27.** The previous working answer — emergent vocabulary at
 > extraction time, post-hoc ESCO mapping — is superseded by the adoption of the national
 > standard. See [[q-thai-ontology]] for why.

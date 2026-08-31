@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](skill-taxonomy.th.md)
+
 ## Definition
 A **skill taxonomy** is a curated, enumerated set of skills with stable identifiers,
 against which text can be classified or linked. Distinguished from a

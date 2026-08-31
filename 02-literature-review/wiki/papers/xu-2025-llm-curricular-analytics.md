@@ -9,6 +9,9 @@ relevance: high
 questions: [q-implied-skills, q-level-inference, q-skill-taxonomy, q-thai-nlp]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](xu-2025-llm-curricular-analytics.th.md)
+
 ## Research Question
 How reliably can LLMs extract skills from curriculum documents compared to traditional NLP methods, and which strategies work best for which document types?
 

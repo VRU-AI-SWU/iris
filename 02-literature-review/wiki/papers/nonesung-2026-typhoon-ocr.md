@@ -9,6 +9,9 @@ relevance: high
 questions: [q-thai-nlp]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](nonesung-2026-typhoon-ocr.th.md)
+
 ## Research Question
 Can an open, lightweight vision-language model extract text and structure from **real Thai
 documents** as well as far larger proprietary models?

@@ -4,6 +4,9 @@ owner: Domain Expert + Researcher
 status: superseded
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](q-segment-taxonomy.th.md)
+
 > ⛔ **Superseded 2026-08-27.** The tipsena-2025 five-segment DEPA framework and the
 > chaiaroon-2025 20-role list are replaced by the national standard's own hierarchy:
 > 5 industries → 371 careers (138 in `ดิจิทัล`), each with a published demand vector.

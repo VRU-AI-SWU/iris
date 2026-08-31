@@ -9,6 +9,9 @@ relevance: high
 questions: [q-thai-ontology, q-segment-taxonomy, q-gap-direction]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](siddoo-2019-thai-digital-workforce-competency.th.md)
+
 ## Research Question
 What are the competencies required by IT-related industries in Thailand for the digital workforce, and how can these competencies be clustered into meaningful categories?
 

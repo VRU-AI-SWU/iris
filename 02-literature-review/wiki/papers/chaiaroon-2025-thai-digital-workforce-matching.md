@@ -9,6 +9,9 @@ relevance: high
 questions: [q-job-posting-sources, q-sample-size, q-segment-taxonomy, q-thai-ontology]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](chaiaroon-2025-thai-digital-workforce-matching.th.md)
+
 ## Research Question
 How can ML and NLP optimise digital workforce matching in Thailand by classifying job positions and recommending them based on skill requirements across 20 digital job categories?
 

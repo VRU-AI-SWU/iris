@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](skill-entity-linking.th.md)
+
 ## Definition
 **Skill entity linking** is the task of mapping a span of free text to an entry in a
 fixed, controlled skill vocabulary. It differs from *skill extraction*, which produces

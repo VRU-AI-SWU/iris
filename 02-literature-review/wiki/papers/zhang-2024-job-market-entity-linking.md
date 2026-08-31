@@ -9,6 +9,9 @@ relevance: high
 questions: [q-implied-skills, q-out-of-vocabulary, q-prevalence-metrics, q-skill-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](zhang-2024-job-market-entity-linking.th.md)
+
 ## Research Question
 Can fine-grained, span-level skill mentions in job-market text be linked to a standardised
 occupational taxonomy (ESCO), rather than classifying whole sentences?

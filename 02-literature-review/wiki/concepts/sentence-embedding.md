@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](sentence-embedding.th.md)
+
 ## Definition
 A **sentence embedding** maps a phrase or sentence to a fixed-length dense vector such
 that semantically similar inputs land near each other, enabling similarity search over

@@ -9,6 +9,9 @@ relevance: high
 questions: [q-temporal-drift, q-skill-taxonomy]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](seif-2024-dynamic-jobs-skills-kg.th.md)
+
 ## Research Question
 How can a jobs-skills knowledge graph be kept dynamically current over time, combining expert knowledge from a national skills framework with continuous signals from labour market data?
 

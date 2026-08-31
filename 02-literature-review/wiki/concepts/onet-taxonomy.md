@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](onet-taxonomy.th.md)
+
 ## Definition
 **O*NET** (Occupational Information Network) is the US Department of Labor's occupational
 database. Its unit of analysis is the **Detailed Work Activity (DWA)** — around 2,000

@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](thai-tokenization.th.md)
+
 ## Definition
 Thai is written **without spaces between words**. Spaces mark phrase or clause boundaries
 instead, so word segmentation is a required first step for almost any Thai NLP task, and

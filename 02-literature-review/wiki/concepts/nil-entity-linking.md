@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](nil-entity-linking.th.md)
+
 ## Definition
 **NIL entity linking** (also *out-of-KB mention discovery*) is the sub-problem of entity
 linking concerned with mentions that have **no correct entry** in the target knowledge

@@ -9,6 +9,9 @@ relevance: high
 questions: [q-level-inference, q-credit-weighting, q-visualisation]
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](zaki-2023-clo-plo-mapping-automation.th.md)
+
 ## Research Question
 Can the mapping of course learning outcomes (CLOs) to programme learning outcomes (PLOs) —
 the matrix every outcome-based curriculum must publish for accreditation — be automated and

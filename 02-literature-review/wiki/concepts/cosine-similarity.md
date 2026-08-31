@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](cosine-similarity.th.md)
+
 ## Definition
 **Cosine similarity** measures the angle between two vectors, ignoring magnitude:
 

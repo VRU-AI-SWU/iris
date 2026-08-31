@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](roberta-architecture.th.md)
+
 ## Definition
 **RoBERTa** (Robustly Optimized BERT Pretraining Approach) is a refinement of BERT that
 keeps the transformer encoder and changes the training recipe: masked language modelling

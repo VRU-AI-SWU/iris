@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](curriculum-analytics.th.md)
+
 ## Definition
 Curriculum analytics is the application of data analysis and NLP to academic programme documents (syllabi, course descriptions, learning outcomes) to extract, quantify, and compare the skills and knowledge a programme delivers. It sits at the intersection of learning analytics and labour market analysis.
 

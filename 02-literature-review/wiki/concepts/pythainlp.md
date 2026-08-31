@@ -2,6 +2,9 @@
 type: concept
 ---
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](pythainlp.th.md)
+
 ## Definition
 **PyThaiNLP** is the standard open-source Thai NLP toolkit: word tokenisation, sentence
 segmentation, POS tagging, normalisation, transliteration, spell checking, and Thai
