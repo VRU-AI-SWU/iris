@@ -326,8 +326,14 @@ second half is nearly free: the annotators are already performing the reviewer's
 
 ### 4a — Model quality
 
-- [ ] Stratified annotation sample: ~50 courses across core / elective / general education
-- [ ] Annotation guideline written from the standard's own skill definitions.
+- [ ] Stratified annotation sample: ~50 courses across core / elective / general education.
+      ⚠️ **Blocked on a Sprint 2 gap:** SWU yields 73 courses with descriptions (62 `คพ`,
+      11 general education), but nothing yet extracts *which major courses are core and
+      which are elective* — that lives in the programme-structure section, not the course
+      catalogue. Either extract it or have the domain expert mark it once by hand
+- [x] Annotation guideline written from the standard's own skill definitions —
+      [`04-implementation/annotation/annotation-guideline.md`](04-implementation/annotation/annotation-guideline.md),
+      in Thai, for departmental faculty.
       🔴 **It must state the three rules Sprint 3's development set violated:** labels are
       derived exhaustively from the *description text* (a course names more skills than its
       title suggests); labels are fixed **before** any model output is seen; multiple
