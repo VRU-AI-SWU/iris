@@ -1,5 +1,14 @@
 # Brainstorm — Iris (Skill Gap Analysis)
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](brainstorm.th.md)
+
+> 🔴 **Historical record — this document predates the 2026-08-27 pivot.** It describes an
+> emergent skill vocabulary built by clustering, demand measured by scraping four Thai job
+> boards, and a 20-role taxonomy. The national Skill Mapping standard superseded all three.
+> Kept as the Phase 1 record of how the problem was first framed; for what Iris does now,
+> read [`../03-solution-design/data-feasibility.md`](../03-solution-design/data-feasibility.md).
+
 > **This is a living document.** Phases 1 (Brainstorm) and 2 (Literature Review) are iterative.
 > Each pass through the literature may refine or redirect the ideas here. Update this document
 > after each iteration. Proceed to Phase 3 only after a formal go decision.

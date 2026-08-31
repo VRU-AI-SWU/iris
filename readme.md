@@ -4,9 +4,12 @@
 
 # Iris — Curriculum Skill Alignment
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](readme.th.md)
+
 > **Domain:** Thai higher education · curriculum analytics
 > **Aligned to:** [Thailand Skill Mapping](https://www.skillmapping.in.th/en) — the national skill standard published by สป.อว. (OPS MHESI), developed by KMITL
-> **Status:** Phase 4 — Implementation, Sprint 0 *(redesigned 2026-08-27)*
+> **Status:** Phase 4 — Implementation, Sprint 4 *(redesigned 2026-08-27)*
 
 ---
 
@@ -49,9 +52,9 @@ See [`03-solution-design/solution-proposal.md`](03-solution-design/solution-prop
 | Phase | Description | Status |
 |---|---|---|
 | 1 | Brainstorm — problem scoping, hypotheses | ✅ Complete |
-| 2 | Literature review — 23 papers across 13 questions | 🔄 Updating for the pivot |
+| 2 | Literature review — 36 papers across 16 questions | ✅ Updated for the pivot |
 | 3 | Solution design — architecture, product, data feasibility | ✅ Rewritten 2026-08-27 |
-| 4 | Implementation — build and evaluate | 🔄 Sprint 0 |
+| 4 | Implementation — build and evaluate | 🔄 Sprint 4 (evaluation gate) |
 | 5 | Reports — research paper and institutional report | ⬜ Planned |
 
 ---
@@ -68,6 +71,7 @@ iris/
 │   └── data-feasibility.md         what the data actually supports  ◄ read this first
 ├── 04-implementation/
 │   ├── engine/                     Python — ingestion, linking, alignment, API
+│   ├── annotation/                 annotator guideline for the Sprint 4 gate
 │   └── web/                        Astro — public site + gated app
 ├── 05-reports/
 └── data/skillmapping/              pinned snapshots of the national standard
