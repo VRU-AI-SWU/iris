@@ -1,5 +1,8 @@
 # Iris Engine
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](README.th.md)
+
 Reads a Thai TQF (มคอ.2) document, links each course to the **national Thailand
 Skill Mapping vocabulary** at an inferred proficiency level, and measures the
 result against the demand that standard publishes for a career.
@@ -13,9 +16,11 @@ Runs on `gpu-linux-server`. See [`../../tech_stack.md`](../../tech_stack.md) and
 uv venv --python 3.13 .venv
 uv pip install -e '.[dev]'
 
-iris snapshot -v          # report on the pinned national standard
-iris check <มคอ.2.pdf> -v # Thai text-layer integrity gate + glyph repair
-pytest                    # 36 tests
+iris snapshot -v            # report on the pinned national standard
+iris check <มคอ.2.pdf> -v   # Thai text-layer integrity gate + glyph repair
+iris courses <มคอ.2.pdf>    # provenance-carrying course list
+iris link <มคอ.2.pdf> -v    # course → skill links with verified evidence
+pytest                      # 134 tests
 uvicorn iris.api.main:app --reload
 curl localhost:8000/health
 ```
@@ -28,10 +33,19 @@ iris/
 ├── snapshot/          the pinned national standard, read-only
 │   ├── models.py      Skill · Career · SkillDemand · SeniorityPair
 │   └── loader.py      loading + the design's data-quality filters
-├── ingest/            the text-layer integrity gate and glyph repair
+├── ingest/            the text-layer integrity gate and course extraction
 │   ├── integrity.py   Thai combining-mark diagnostic → clean/repairable/lossy/unusable
 │   ├── repair.py      learns the substitution table *from the document*
-│   └── pdf.py         per-character text with font attribution
+│   ├── normalise.py   reverses structural sara-am breaks; no learned table needed
+│   ├── pdf.py         per-character text with font attribution, repair applied
+│   ├── courses.py     anchors on the credit spec; learns each document's code shape
+│   ├── curriculum_map.py  reads ● ○ positionally, classified by rendered ink
+│   └── clo.py         per-course learning outcomes and their cognitive-demand verbs
+├── link/              retrieval and adjudication
+│   ├── retrieval.py   BM25 over three surface forms + a consonant-skeleton channel
+│   ├── provider.py    one provider-blind interface; quota exhaustion is not a retry
+│   ├── adjudicate.py  constrained selection; evidence spans verified against the text
+│   └── pipeline.py    a whole programme, one pinned provider
 ├── db/                SQLAlchemy schema and sessions
 ├── api/               FastAPI; /health only until Sprint 9
 └── cli.py             `iris …` — how the pipeline is driven through Sprint 7
@@ -85,20 +99,30 @@ the longest match winning and votes aggregated per `(font, glyph)`.
 Measured on the two real documents:
 
 ```
-SWU  216p  REPAIRABLE 134.5 → repair 4,518/4,918 (92%), 13 rules → REPAIRED 162.9
-KU    28p  LOSSY — no ำ anywhere → vision path
+CMU  148p  MS Word 2016        lossy → normalise → CLEAN 188.0
+KU    28p  MS Word 2013        lossy → normalise → CLEAN 171.0
+PSU  229p  macOS Quartz        repairable → 83%, 38 rules → CLEAN 175.7
+SU   254p  Adobe Acrobat Pro   repairable → 96%, 14 rules → CLEAN 173.8
+SWU  216p  Bullzip PDF Printer repairable → 92%, 13 rules → CLEAN 162.9
 ```
 
-Against a clean-document baseline of 171.0 marks per 1,000 Thai characters.
+Against a clean-document baseline of 171.0 marks per 1,000 Thai characters. Three
+unrelated damage alphabets across five producers, with no overlap between the learned
+tables — and **every document reaches a usable text layer without a vision model**, which
+takes the GPU off the ingestion path entirely.
 
 ## Status
 
-**Sprints 0 and 1 complete.** Sprint 2 is PageIndex navigation and course extraction.
+**Sprints 0–3 complete and measured.** `iris link` runs a whole programme end to end.
 
-Blocked on the GPU, which is shared with the lab's other projects: model
-selection, and the Typhoon OCR vision fallback for the KU document. Neither
-blocks Sprint 2, which is CPU work.
+Lexical retrieval measures **recall@10 75 %, @50 83 %** on a 6-course development set,
+which fixes `k = 30`. Adjudication runs on `iris-adjudicator` (`qwen3:8b` at `num_ctx 8192`)
+holding 6.6 GB, about 4.2 s per course.
 
-Still open: the VRAM check on `gpu-linux-server` that selects the adjudication
-and embedding models. `EXTRACTION_MODEL` and `EMBEDDING_MODEL` are deliberately
-empty until then, and `/health` reports them as `null`.
+⚠️ **No precision figure may be quoted yet.** Scoring against the development set gave 23 %,
+and reading the source text showed the model right where the labels were narrow. Precision
+waits for the Sprint 4 gate: two annotators, multiple correct links permitted, labels fixed
+before any model output is seen.
+
+Still open: the dense half of retrieval, the bilingual channel, and `EMBEDDING_MODEL` —
+all of which land with the Sprint 4 ablations.
