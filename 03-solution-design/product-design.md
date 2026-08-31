@@ -1,5 +1,8 @@
 # Product Design — Iris (Curriculum Skill Alignment)
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](product-design.th.md)
+
 > Rewritten 2026-08-27 for the national-standard pivot and the two-surface deployment.
 > Supersedes the 2026-04-30 design, which assumed a single application serving
 > administrators, curriculum designers, and students against a self-built vocabulary.

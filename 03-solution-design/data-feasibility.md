@@ -1,5 +1,8 @@
 # Data Feasibility Study — Iris (post-pivot)
 
+<!-- lang-switch -->
+**English** · [ภาษาไทย](data-feasibility.th.md)
+
 > Empirical groundwork for the Phase 3 redesign, run 2026-08-27.
 > Two questions had to be answered with real data before any architecture could be
 > chosen: (1) what does the national Skill Mapping standard actually give us, and
