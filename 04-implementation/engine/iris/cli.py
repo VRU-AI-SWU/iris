@@ -137,6 +137,25 @@ def _cmd_map(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_clo(args: argparse.Namespace) -> int:
+    """Extract per-course learning outcomes and their cognitive-demand verbs."""
+    from iris.ingest import extract_learning_outcomes
+
+    outcomes, report = extract_learning_outcomes(args.pdf)
+    print(f"{args.pdf}\n{report.summary()}")
+    if not outcomes:
+        return 1
+    by_course: dict[str, list] = {}
+    for outcome in outcomes:
+        by_course.setdefault(outcome.course_code or "—", []).append(outcome)
+    for code, entries in list(by_course.items())[: args.limit]:
+        print(f"\n  {code}")
+        for entry in sorted(entries, key=lambda e: e.number):
+            band = entry.verb_band or "?"
+            print(f"     {entry.number}. [{band:10}] {entry.text[:66]}")
+    return 0
+
+
 def _cmd_db_init(_: argparse.Namespace) -> int:
     from iris.db import create_all
 
@@ -174,6 +193,11 @@ def main(argv: list[str] | None = None) -> int:
     p_map.add_argument("-v", "--verbose", action="store_true")
     p_map.add_argument("-n", "--limit", type=int, default=12)
     p_map.set_defaults(func=_cmd_map)
+
+    p_clo = sub.add_parser("clo", help="extract per-course learning outcomes")
+    p_clo.add_argument("pdf")
+    p_clo.add_argument("-n", "--limit", type=int, default=8)
+    p_clo.set_defaults(func=_cmd_clo)
 
     p_db = sub.add_parser("db", help="database operations")
     db_sub = p_db.add_subparsers(dest="db_command", required=True)

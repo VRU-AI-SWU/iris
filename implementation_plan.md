@@ -144,14 +144,14 @@ right path. 36 tests pass; ruff clean.
 2. **"No `ำ` means collapse" needs a length threshold.** `คอมพิวเตอร์ ซอฟต์แวร์
    อิเล็กทรอนิกส์` legitimately contains none. The inference is statistical, not logical,
    and now requires 5,000 Thai characters before it fires. A test caught this.
-3. **~400 intrusions remain unrepaired** on SWU, led by `.`×178 and `/`×69 — mostly
+4. **~400 intrusions remain unrepaired** on SWU, led by `.`×178 and `/`×69 — mostly
    legitimate punctuation rather than damage. Reported, never forced.
-4. 🔄 **The KU document is not lossy, and the feasibility study was wrong to say so.**
+5. 🔄 **The KU document is not lossy, and the feasibility study was wrong to say so.**
    `pdftotext -layout` renders `ค าอธิบาย` as `คาอธิบาย`, which read as a collapse.
    Character-level extraction shows a **space** where `ำ` belongs — the position survives,
    and since `า` cannot begin a syllable, a space before it is always an artefact. KU and
    CMU both normalise to clean. Corrected in `data-feasibility.md` and the proposal.
-5. **Verdict ordering was wrong twice.** Intrusions are evidence of substitution *only
+6. **Verdict ordering was wrong twice.** Intrusions are evidence of substitution *only
    when marks are missing to explain*; a document at full mark rate with ASCII inside Thai
    words has punctuation, not damage. Judging on intrusions first classified two intact
    documents (CMU at 188.0, PSU at 175.7) as damaged.
@@ -179,7 +179,8 @@ right path. 36 tests pass; ruff clean.
 - [x] **Parse the curriculum-responsibility matrix into `(course, outcome, ● | ○)`** —
       positionally, since the marks are Wingdings glyphs invisible to text extraction
 - [x] `iris map <pdf>`
-- [ ] Parse per-course CLOs (SWU `ชุดรายวิชา` format)
+- [x] **Parse per-course CLOs** and the leading verb that carries their cognitive demand
+- [x] `iris clo <pdf>`
 - [ ] Recover the ~30% of PSU courses whose descriptions are not being found
 - [ ] Extend matrix extraction to CMU and PSU (row labels are not course codes there)
 
@@ -201,6 +202,28 @@ literal `3.1.5 คำอธิบายรายวิชา`. PSU numbers it `4
 **CMU calls courses `กระบวนวิชา` rather than `รายวิชา`**. The regulated thing is the
 credit specification, not the heading — so that is what the extractor anchors on, and
 PageIndex is not needed for this step.
+
+**Course learning outcomes — the second level-inference input:**
+
+SWU is the only fully outcome-based document in the corpus. It yields **116 outcomes,
+108 tied to a course across 37 courses, 94 with a leading verb**, in a table printed
+sideways whose columns are named by its own header
+(`ชุดรายวิชา | คำอธิบายรายวิชา | CLOs | MLOs | ELOs`).
+
+The verb distribution is what level inference will read:
+
+| band | count | example |
+|---|---|---|
+| understand | 42 | `อธิบายหลักการของอัลกอริทึม` |
+| apply | 21 | `ประยุกต์ใช้วิธีการพัฒนาระบบ` |
+| create | 15 | `ออกแบบฐานข้อมูล` |
+| analyse | 9 | `วิเคราะห์หาความต้องการระบบ` |
+| evaluate | 6 | |
+| recall | 1 | |
+
+The banding is **evidence, not a level** — mapping it onto the standard's
+`พื้นฐาน / ปานกลาง / สูง` is an open question for the Sprint 4 gate, not a decision taken
+in the extractor.
 
 **Curriculum-responsibility matrix — the level-inference input:**
 
@@ -229,7 +252,14 @@ positions cannot be read from it.
 1. ⚠️ **PSU finds only 36 usable descriptions from 150 codes.** Its layout puts curriculum-
    map rows adjacent to credit specs, and its code list includes service courses from other
    faculties. The other four documents are at 86–100%.
-2. **Marks lost as whitespace are not recovered.** SWU drops some mai ek into a space —
+2. 🔄 **Positional extractors were bypassing the repair pipeline.** They read spans
+   directly rather than the flat character stream, so verbs arrived as `ประยุกต=` and 44 %
+   of verb matches were lost. Fixed by a shared `repaired_lines` reader — which then had
+   to be made **intrusion-aware**: applying the table to every character turned the course
+   code `คพ242` into `คพ้4้`, because SWU's table maps `2` to `้`. Substitution now happens
+   only where a character has Thai on both sides, the same rule the main repair uses.
+   Caching the reader took a run from 12.6 s to 0.1 ms.
+3. **Marks lost as whitespace are not recovered.** SWU drops some mai ek into a space —
    `ไม่น้อยกว่า` extracts as `ไม น้อยกว า`. Unlike the sara-am case, **no orthographic
    constraint makes recovery safe**: Thai uses spaces as phrase separators, and `ไม` (silk)
    is as real a word as `ไม่` (not), so a wrong repair changes meaning. Measurement found

@@ -1,5 +1,11 @@
 """Document ingestion — the integrity gate, glyph repair, and PDF extraction."""
 
+from iris.ingest.clo import (
+    CLOReport,
+    LearningOutcome,
+    classify_verb,
+    extract_learning_outcomes,
+)
 from iris.ingest.courses import (
     CourseEntry,
     ExtractionReport,
@@ -20,30 +26,36 @@ from iris.ingest.integrity import (
     is_thai,
 )
 from iris.ingest.normalise import NormaliseResult, normalise, normalise_chars
-from iris.ingest.pdf import ExtractedText, extract
+from iris.ingest.pdf import ExtractedText, TextLine, extract, repaired_lines
 from iris.ingest.repair import RepairResult, Rule, find_intrusions, learn_and_repair
 
 __all__ = [
     "CLEAN_BASELINE",
+    "CLOReport",
     "CourseEntry",
     "CurriculumMapReport",
     "CurriculumMark",
     "ExtractedText",
     "ExtractionReport",
     "IntegrityReport",
+    "LearningOutcome",
     "NormaliseResult",
     "RepairResult",
     "Responsibility",
     "Rule",
+    "TextLine",
     "Verdict",
+    "classify_verb",
     "diagnose",
     "extract",
     "extract_courses",
     "extract_curriculum_map",
+    "extract_learning_outcomes",
     "find_intrusions",
     "is_thai",
     "learn_and_repair",
     "learn_code_shape",
     "normalise",
     "normalise_chars",
+    "repaired_lines",
 ]
